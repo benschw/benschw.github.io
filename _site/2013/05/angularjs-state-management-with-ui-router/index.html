@@ -1,0 +1,504 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset='utf-8' />
+		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+		<meta name="viewport" content="width=device-width">
+		<meta name="description" content="Slate is a responsive theme for GitHub Pages" />
+
+		<!-- <link rel="stylesheet" type="text/css" media="screen" href="/css/stylesheet.css"> -->
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+
+		<!-- syntax highlighting CSS -->
+		<link rel="stylesheet" href="/css/syntax.css">
+
+		<!-- Custom CSS -->
+		<link rel="stylesheet" href="/css/main.css">
+		
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+		<![endif]-->
+
+		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+		<title>AngularJS State Management with ui-router</title>
+	</head>
+
+	<body>
+
+		<!-- HEADER -->
+		<div class="navbar navbar-inverse navbar-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="/">txt.fliglio.com</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="/about">about</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="container">
+			<div class="row row-offcanvas row-offcanvas-right">
+
+				<div class="col-xs-12 col-sm-9">
+					<p class="pull-right visible-xs">
+						<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+					</p>
+				
+					<div class="page-header">
+	<h1>AngularJS State Management with ui-router</h1>
+</div>
+
+<p class="meta">03 May 2013</p>
+<p class="meta"><a href="#disqus_thread">comments</a></p>
+
+<p>Managing state with AngularJS&#39;s ui-router (<a href="https://github.com/angular-ui/ui-router">https://github.com/angular-ui/ui-router</a>) is down right elegant. How is it different from a traditional router you might ask? Well I&#39;ll tell you, but first...</p>
+
+<!--more-->
+
+<h2>A little history about routers</h2>
+
+<p>Routers provide an abstraction between a url and a request that an application knows how to satisfy. With traditional web service applications, this is straight forward:
+<ul>
+    <li>A url is routed to a request.</li>
+    <li>A request is used to look up some driver code that knows how to build a response.</li>
+</ul>
+When a service is rendering a page or retrieving data, this separation of responsibilities makes sense.</p>
+
+<p><strong>But what happens when the concept of a &quot;page&quot; becomes more ambiguous?</strong> What happens when only parts of a page need to be updated, or the end user is given the option to perform their own curation of a page? <strong>What happens when modularity is needed in a request?</strong></p>
+
+<p>If page composition is fluid, but we still need urls to discretely (for the most part) represent the various permutations of content, how do we effectively route requests? No matter how much we decouple our page components, we&#39;re still left with convoluted logic evaluating how to organize them into a specific page.</p>
+
+<p>Sure something like a router is necessary to translate between a url and a request, but how can you include modularity in a request when you are declaratively mapping it to a url?
+<h2>AngularJS State Manager</h2>
+You Don&#39;t!</p>
+
+<p>The most interesting thing about AngularJS&#39;s new router, isn&#39;t the router itself, but the state manager that comes with it. Instead of targeting a controller/view to render for a given url, you target a state. States are managed in a heirarchy providing inheritance of parent states and complex composition of page components, all the while remaining declarative in nature.</p>
+
+<p>Without further ado, start fiddling: <a title="angular state demo" href="http://jsfiddle.net/benschwartz/LhydD/">http://jsfiddle.net/benschwartz/LhydD/</a></p>
+
+<p>or digging into angular&#39;s own docs: <a title="ui-router wiki" href="https://github.com/angular-ui/ui-router/wiki">https://github.com/angular-ui/ui-router/wiki</a></p>
+
+<p>... or stick around for an explanation.
+<h2> What can State do for me?</h2>
+Lets start with a simple example:</p>
+
+<p>index.html</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;body</span> <span class="na">ng-app=</span><span class="s">&quot;myApp&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">2</span>     <span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="lineno">3</span>     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="lineno">4</span> <span class="nt">&lt;/body&gt;</span>
+</code></pre></div>
+
+<p>app.js </p>
+
+<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myApp&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ui.state&#39;</span><span class="p">])</span>
+<span class="lineno"> 2</span>     <span class="p">.</span><span class="nx">config</span><span class="p">([</span><span class="s1">&#39;$stateProvider&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$stateProvider</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>         <span class="kd">var</span> <span class="nx">home</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno"> 5</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;home&#39;</span><span class="p">,</span>
+<span class="lineno"> 6</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+<span class="lineno"> 7</span>             <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;Hello {{name}}&#39;</span><span class="p">,</span>
+<span class="lineno"> 8</span>             <span class="nx">controller</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 9</span>                 <span class="nx">$scope</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;World&quot;</span><span class="p">;</span>
+<span class="lineno">10</span>             <span class="p">}]</span>
+<span class="lineno">11</span>         <span class="p">};</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span>         <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">home</span><span class="p">);</span>
+<span class="lineno">14</span>     <span class="p">}])</span>
+</code></pre></div>
+
+<p>Not much is going on here, but basically this is how you&#39;d implement a conventional route with the state manager. </p>
+
+<p>Lets build a simplified version of the settings section from the  <a href="http://jsfiddle.net/benschwartz/LhydD/">JSFiddle example</a>.
+</a>
+<h2>Settings</h2>
+<a href="/images/settings-comp2.png"><img src="/images/settings-comp2.png" alt="settings-comp2" width="523" height="266" class="alignnone size-full wp-image-107" /></a></p>
+
+<p>So how do we build it?
+Lets start by decomposing our pages (edit details and edit quotes) into states. To represent these two pages, we need three states: an abstract base state (settings) and two concrete child states (details and quotes.)</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span> <span class="kd">var</span> <span class="nx">settings</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno"> 2</span>     <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings&#39;</span><span class="p">,</span>
+<span class="lineno"> 3</span>     <span class="kr">abstract</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="lineno"> 4</span>     <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/settings&#39;</span>
+<span class="lineno"> 5</span> <span class="p">};</span>
+<span class="lineno"> 6</span> 
+<span class="lineno"> 7</span> <span class="kd">var</span> <span class="nx">details</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno"> 8</span>     <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.details&#39;</span><span class="p">,</span>
+<span class="lineno"> 9</span>     <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
+<span class="lineno">10</span>     <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
+<span class="lineno">11</span> <span class="p">};</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span> <span class="kd">var</span> <span class="nx">quotes</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno">14</span>     <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.quotes&#39;</span><span class="p">,</span>
+<span class="lineno">15</span>     <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
+<span class="lineno">16</span>     <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/quotes&#39;</span>
+<span class="lineno">17</span> <span class="p">};</span>
+</code></pre></div>
+
+<p>Though incomplete, this is the gist of how you define states with ui-router. Right off the bat, you can see that urls are built through state inheritance: to edit quotes, we&#39;ll navigate to &quot;settings/quotes&quot; since the quotes state declares settings as its parent and thus inherits its url among other things.</p>
+
+<p>Next lets fill in the gaps and wire this up into an Angular module.</p>
+
+<h3>accountSettings Module</h3>
+
+<p>app.js</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;accountSettings&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ui.state&#39;</span><span class="p">])</span>
+<span class="lineno"> 2</span>     <span class="p">.</span><span class="nx">config</span><span class="p">([</span><span class="s1">&#39;$stateProvider&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$stateProvider</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>         <span class="kd">var</span> <span class="nx">settings</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno"> 5</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings&#39;</span><span class="p">,</span>
+<span class="lineno"> 6</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/settings&#39;</span><span class="p">,</span>
+<span class="lineno"> 7</span>             <span class="kr">abstract</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="lineno"> 8</span>             <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;settings.html&#39;</span><span class="p">,</span> 
+<span class="lineno"> 9</span>             <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;SettingsController&#39;</span>
+<span class="lineno">10</span>         <span class="p">};</span>
+<span class="lineno">11</span> 
+<span class="lineno">12</span>         <span class="kd">var</span> <span class="nx">details</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno">13</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.details&#39;</span><span class="p">,</span>
+<span class="lineno">14</span>             <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
+<span class="lineno">15</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="lineno">16</span>             <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;settings.details.html&#39;</span>
+<span class="lineno">17</span>         <span class="p">};</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span>         <span class="kd">var</span> <span class="nx">quotes</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno">20</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.quotes&#39;</span><span class="p">,</span>
+<span class="lineno">21</span>             <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
+<span class="lineno">22</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/quotes&#39;</span><span class="p">,</span>
+<span class="lineno">23</span>             <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;settings.quotes.html&#39;</span>
+<span class="lineno">24</span>         <span class="p">};</span>
+<span class="lineno">25</span> 
+<span class="lineno">26</span>         <span class="nx">$stateProvider</span>
+<span class="lineno">27</span>             <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">settings</span><span class="p">)</span>
+<span class="lineno">28</span>             <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">details</span><span class="p">)</span>
+<span class="lineno">29</span>             <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">quotes</span><span class="p">);</span>
+<span class="lineno">30</span> 
+<span class="lineno">31</span>     <span class="p">}])</span>
+<span class="lineno">32</span>     <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;SettingsController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">33</span>         <span class="nx">$scope</span><span class="p">.</span><span class="nx">user</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno">34</span>             <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Bob Loblaw&quot;</span><span class="p">,</span>
+<span class="lineno">35</span>             <span class="nx">email</span><span class="o">:</span> <span class="s2">&quot;bobloblaw@lawblog.com&quot;</span><span class="p">,</span>
+<span class="lineno">36</span>             <span class="nx">password</span><span class="o">:</span> <span class="s1">&#39;semi-secret&#39;</span><span class="p">,</span>
+<span class="lineno">37</span>             <span class="nx">quotes</span><span class="o">:</span> <span class="s2">&quot;Lorem ipsum dolor sic amet&quot;</span>
+<span class="lineno">38</span>         <span class="p">};</span>
+<span class="lineno">39</span>     <span class="p">}])</span>
+</code></pre></div>
+
+<p>index.html</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;body</span> <span class="na">ng-app=</span><span class="s">&quot;accountSettings&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">2</span>     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="lineno">3</span>     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="lineno">4</span> <span class="nt">&lt;/body&gt;</span>
+</code></pre></div>
+
+<p>settings.html</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno"> 1</span> <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 2</span>   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span3&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 3</span>     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;pa-sidebar well well-small&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 4</span>       <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;nav nav-list&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 5</span>         <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;nav-header&quot;</span><span class="nt">&gt;</span>Settings<span class="nt">&lt;/li&gt;</span>
+<span class="lineno"> 6</span>         <span class="nt">&lt;li</span> <span class="na">ng-class=</span><span class="s">&quot;{ active: $state.includes(\&#39;settings.user.default\&#39;)}&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#/settings&quot;</span> <span class="nt">&gt;</span>User Details<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="lineno"> 7</span>         <span class="nt">&lt;li</span> <span class="na">ng-class=</span><span class="s">&quot;{ active: $state.includes(\&#39;settings.quotes\&#39;)}&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#/settings/quotes&quot;</span> <span class="nt">&gt;</span>User Quotes<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="lineno"> 8</span>       <span class="nt">&lt;/ul&gt;</span>
+<span class="lineno"> 9</span>       <span class="nt">&lt;hr&gt;</span>
+<span class="lineno">10</span>     <span class="nt">&lt;/div&gt;</span>
+<span class="lineno">11</span>   <span class="nt">&lt;/div&gt;</span>
+<span class="lineno">12</span>   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span9&quot;</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="lineno">13</span> <span class="nt">&lt;/div&gt;</span>
+</code></pre></div>
+
+<p>settings.details.html</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;h3&gt;</span>{{user.name}}\&#39;s Details<span class="nt">&lt;/h3&gt;</span>
+<span class="lineno">2</span> <span class="nt">&lt;hr&gt;</span>
+<span class="lineno">3</span> <span class="nt">&lt;div&gt;&lt;label&gt;</span>Name<span class="nt">&lt;/label&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;user.name&quot;</span> <span class="nt">/&gt;&lt;/div&gt;</span>
+<span class="lineno">4</span> <span class="nt">&lt;div&gt;&lt;label&gt;</span>Email<span class="nt">&lt;/label&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;user.email&quot;</span> <span class="nt">/&gt;&lt;/div&gt;</span>
+<span class="lineno">5</span> 
+<span class="lineno">6</span> <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">&quot;btn&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;done()&quot;</span><span class="nt">&gt;</span>Save<span class="nt">&lt;/button&gt;</span>
+</code></pre></div>
+
+<p>settings.quotes.html</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;h3&gt;</span>{{user.name}}\&#39;s Quotes<span class="nt">&lt;/h3&gt;</span>
+<span class="lineno">2</span> <span class="nt">&lt;hr&gt;</span>
+<span class="lineno">3</span> <span class="nt">&lt;div&gt;&lt;label&gt;</span>Quotes<span class="nt">&lt;/label&gt;&lt;textarea</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;user.quotes&quot;</span><span class="nt">&gt;&lt;/textarea&gt;&lt;/div&gt;</span>
+<span class="lineno">4</span> 
+<span class="lineno">5</span> <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">&quot;btn&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;done()&quot;</span><span class="nt">&gt;</span>Save<span class="nt">&lt;/button&gt;</span>
+</code></pre></div>
+
+<p>We&#39;re Done!</p>
+
+<h3>Wait, what happened?</h3>
+
+<p>Ok ok, we can take a look at the code before we call it done.</p>
+
+<p>The first thing you might notice, is that settings has a url but details doesn&#39;t. Since it doesn&#39;t make sense to go to the settings state (if for no other reason then that it&#39;s abstract) we have assigned the concrete state &quot;details&quot; to have a url of &#39;&#39; so that traffic to &#39;/settings&#39; will route to it. We could have done this the other way around, but as we add new pages to our accountSettings module (and children to our settings state) it makes sense for the parent state to declare the url namespace.</p>
+
+<p>The other interesting thing (and this is where we really start realizing the power of states) is that there is only one controller and it&#39;s only wired up against the settings state! How are the &#39;details&#39; and &#39;quotes&#39; states getting populated with data only accessible by &#39;settings&#39; state you ask? Controller inheritance! Sorry if I&#39;m getting excited here, but think about what we just did: without any convoluted registry/cache scheme, we were able to remove the one-to-one relationship that is typical between server requests and building a page. All of a sudden, we can start thinking about what data we need for a feature and how to present that data to the user as not intrinsically linked!</p>
+
+<h3>Scope Creep!</h3>
+
+<p>No, not $scope creep. Scope creep like what Marketing throws at you after you&#39;re 90% done with their initial request.</p>
+
+<p>Now we&#39;re being asked to create a status bar in the settings section that will always display a description of what the user is supposed to be doing. (Don&#39;t ask me why marketing would want this... but it does help to illustrate another feature of ui-router)</p>
+
+<p><a href="/images/settings-comp3.png"><img src="/images/settings-comp3.png" alt="settings-comp3" width="528" height="387" class="alignnone size-full wp-image-145" /></a></p>
+
+<h3>Multiple (named) Views</h3>
+
+<p>We&#39;ve already seen multiple views per page in the form of hierarchical states, each with their own view, but what about a single state that needs to display multiple views? Our new requirement, displaying a description of what the user is supposed to be doing, relies on just that.</p>
+
+<p>So maybe you&#39;ve guessed by now that ui-router supports declaring multiple named views per state. If so, you&#39;re right; and here&#39;s an update to our hello world example illustrating how:</p>
+
+<p>index.html</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;body</span> <span class="na">ng-app=</span><span class="s">&quot;myApp&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">2</span>     <span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="lineno">3</span>     static nonsense
+<span class="lineno">4</span>     <span class="nt">&lt;div</span> <span class="na">ui-view=</span><span class="s">&quot;foo&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="lineno">5</span>     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="lineno">6</span> <span class="nt">&lt;/body&gt;</span>
+</code></pre></div>
+
+<p>app.js </p>
+
+<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myApp&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ui.state&#39;</span><span class="p">])</span>
+<span class="lineno"> 2</span>     <span class="p">.</span><span class="nx">config</span><span class="p">([</span><span class="s1">&#39;$stateProvider&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$stateProvider</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>         <span class="kd">var</span> <span class="nx">home</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno"> 5</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;home&#39;</span><span class="p">,</span>
+<span class="lineno"> 6</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+<span class="lineno"> 7</span>             <span class="nx">views</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno"> 8</span>                 <span class="s1">&#39;&#39;</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno"> 9</span>                     <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;Hello {{name}}&#39;</span><span class="p">,</span>
+<span class="lineno">10</span>                     <span class="nx">controller</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">11</span>                         <span class="nx">$scope</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;World&quot;</span><span class="p">;</span>
+<span class="lineno">12</span>                     <span class="p">}]</span>
+<span class="lineno">13</span>                 <span class="p">},</span>
+<span class="lineno">14</span>                 <span class="s1">&#39;foo&#39;</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno">15</span>                     <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span>
+<span class="lineno">16</span>                 <span class="p">}</span>
+<span class="lineno">17</span>         <span class="p">};</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span>         <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">home</span><span class="p">);</span>
+<span class="lineno">20</span>     <span class="p">}])</span>
+</code></pre></div>
+
+<p>There you have it. One state updating two views. The default view (represented by &#39;&#39;) and the &#39;foo&#39; view.</p>
+
+<h3>accountSettings Module Updates</h3>
+
+<p>Since this is such an easy feature to add on, we&#39;ll let marketing slide it in (even though we were already done.) All we need to do is add a named view to the settings.html partial and convert our &#39;details&#39; and &#39;quotes&#39; states to update both views.</p>
+
+<p>settings.html</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno"> 1</span> <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;alert&quot;</span> <span class="na">ui-view=</span><span class="s">&quot;hint&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="lineno"> 2</span> <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 3</span>   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span3&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 4</span>     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;pa-sidebar well well-small&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 5</span>       <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;nav nav-list&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 6</span>         <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;nav-header&quot;</span><span class="nt">&gt;</span>Settings<span class="nt">&lt;/li&gt;</span>
+<span class="lineno"> 7</span>         <span class="nt">&lt;li</span> <span class="na">ng-class=</span><span class="s">&quot;{ active: $state.includes(\&#39;settings.user.default\&#39;)}&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#/settings&quot;</span> <span class="nt">&gt;</span>User Details<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="lineno"> 8</span>         <span class="nt">&lt;li</span> <span class="na">ng-class=</span><span class="s">&quot;{ active: $state.includes(\&#39;settings.quotes\&#39;)}&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#/settings/quotes&quot;</span> <span class="nt">&gt;</span>User Quotes<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="lineno"> 9</span>       <span class="nt">&lt;/ul&gt;</span>
+<span class="lineno">10</span>       <span class="nt">&lt;hr&gt;</span>
+<span class="lineno">11</span>     <span class="nt">&lt;/div&gt;</span>
+<span class="lineno">12</span>   <span class="nt">&lt;/div&gt;</span>
+<span class="lineno">13</span>   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span9&quot;</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="lineno">14</span> <span class="nt">&lt;/div&gt;</span>
+</code></pre></div>
+
+<p>state definitions from app.js</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span>         <span class="kd">var</span> <span class="nx">details</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno"> 2</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.details&#39;</span><span class="p">,</span>
+<span class="lineno"> 3</span>             <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
+<span class="lineno"> 4</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="lineno"> 5</span>             <span class="nx">views</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno"> 6</span>                 <span class="s1">&#39;&#39;</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno"> 7</span>                     <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;settings.details.html&#39;</span>
+<span class="lineno"> 8</span>                 <span class="p">},</span>
+<span class="lineno"> 9</span>                 <span class="s1">&#39;hint&#39;</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno">10</span>                     <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;edit your details!&#39;</span>
+<span class="lineno">11</span>                 <span class="p">}</span>
+<span class="lineno">12</span>         <span class="p">};</span>
+<span class="lineno">13</span> 
+<span class="lineno">14</span>         <span class="kd">var</span> <span class="nx">quotes</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno">15</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.quotes&#39;</span><span class="p">,</span>
+<span class="lineno">16</span>             <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
+<span class="lineno">17</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/quotes&#39;</span><span class="p">,</span>
+<span class="lineno">18</span>             <span class="nx">views</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno">19</span>                 <span class="s1">&#39;&#39;</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno">20</span>                     <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;settings.quotes.html&#39;</span>
+<span class="lineno">21</span>                 <span class="p">},</span>
+<span class="lineno">22</span>                 <span class="s1">&#39;hint&#39;</span><span class="o">:</span> <span class="p">{</span>
+<span class="lineno">23</span>                     <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;edit your quotes!&#39;</span>
+<span class="lineno">24</span>                 <span class="p">}</span>
+<span class="lineno">25</span>         <span class="p">};</span>
+</code></pre></div>
+
+<h2>Conclusion</h2>
+
+<p>In a perfect world, the <a href="http://en.wikipedia.org/wiki/Design_Patterns" title="Design Patterns">GOF</a> would come along and explain in simple terms the &quot;right&quot; way to route urls to requests in single page Javascript applications, and this way would soon become ubiquitous.</p>
+
+<p>In lieu of this, we&#39;ll just have to keep trying things out and seeing what works. Maybe one day we&#39;ll be back to that comfort zone which Routing provided for web service application architecture.</p>
+
+<p>Since I only scratched the surface, go check out <a href="https://github.com/angular-ui/ui-router" title="ui-router">ui-router on GitHub</a>. There&#39;s a more complete example there as well as some documentation on the wiki. </p>
+
+
+
+<div id="social-tools">
+
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/" data-via="benhschwartz">Tweet</a>
+	
+	<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+
+	<div class="g-plus" data-action="share"></div>
+
+	<!-- google -->
+	<script type="text/javascript">
+		(function() {
+			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			po.src = 'http://apis.google.com/js/platform.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		})();
+	</script>
+
+	<!-- twitter -->
+	<script>
+		!function(d,s,id){
+			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+			if(!d.getElementById(id)){
+				js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);
+			}
+		}(document, 'script', 'twitter-wjs');
+	</script>
+
+	<br /><br />
+	
+	<div id="disqus_thread"></div>
+
+</div>
+
+
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+	var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
+	var disqus_url = 'http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/';
+
+	//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
+	//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
+	var disqus_container_id = 'disqus_thread';
+	var disqus_domain = 'disqus.com';
+	var disqus_shortname = 'fligliotxt';
+	var disqus_title = "AngularJS State Management with ui-router";
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+
+	    /* * * DON'T EDIT BELOW THIS LINE * * */
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+	
+					
+				</div>
+
+				<!-- MAIN NAV -->
+				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+					<ul class="nav navbar-nav navbar-left share-icons">
+						<!-- icons: https://github.com/danleech/simpleicons -->
+						<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
+						<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
+						<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
+						<li><a class="share-icon bitly" target="_blank" href="https://bitly.com/u/o_28dsjkv7t4"><img src="/images/bitly-32.png" alt="bitly"/></a></li>
+					</ul>
+					<br />
+					<h3 class="small">Recent Posts</h3>
+					<ul id="posts-nav">
+					
+						<li><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></li>
+					
+						<li><a href="/2013/12/service-discovery-with-docker-docker-links-and-beyond/">Service Discovery with Docker: Docker links and beyond</a></li>
+					
+						<li><a href="/2013/11/creating-a-mysql-docker-container/">Creating a MySQL Docker Container</a></li>
+					
+						<li><a href="/2013/09/oauth-2-grant-types-demystified/">OAuth 2 Grant Types Demystified</a></li>
+					
+						<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
+					
+						<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
+					
+						<li><a href="/2013/04/publishing-a-yeoman-app-with-github-pages/">Publishing a Yeoman app with GitHub Pages</a></li>
+					
+						<li><a href="/2013/04/hello-world/">Hello world!</a></li>
+					
+						<li><a href="/all-posts">more...</a></li>
+					</ul>
+
+					<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="false">Follow @benhschwartz</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+				
+				</div><!--/span-->
+			</div>
+
+			<!-- FOOTER  -->
+			<hr>
+			<footer class="container">
+
+				<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+					<img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/80x15.png" />
+				</a>
+				<br />
+				This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+			</footer>
+		</div>
+
+
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-46191138-1', 'fliglio.com');
+			ga('send', 'pageview');
+
+		</script>
+
+		<script>
+		$(document).ready(function() {
+			$('[data-toggle=offcanvas]').click(function() {
+				$('.row-offcanvas').toggleClass('active');
+			});
+		});
+		</script>
+
+	</body>
+</html>
