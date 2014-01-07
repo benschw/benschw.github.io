@@ -16,6 +16,8 @@ comments: []
 ---
 It seems like a couple times a year I need to work with Auth and realize that i've forgotten how grant types work. What is each grant type for? What does the workflow to use each look like? Which is the one I should be using for this problem?
 
+<!--more-->
+
 After googling around and reading some "getting started with OAuth" blogs, I eventually end up wading through the specification <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-31" target="_blank">tools.ietf.org</a>. Not the worst use of time, but not the best use either.
 
 This time I decided to document my research in a way that will hopefully serve as a cheat-sheet reference next time this comes up.

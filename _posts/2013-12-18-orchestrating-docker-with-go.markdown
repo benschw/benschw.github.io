@@ -26,6 +26,8 @@ comments: []
 <li>Portable: really, we're only talking about Linux with Docker, so a single statically linked binary is as portable as you can get</li>
 </ul>
 
+<!--more-->
+
 <p>So get some ideas here (or use this as a starting point) and go build your own toolkit to codify (no pun intended) the conventions, opinions, and nuances of your environment in a format that you can maintain and test.</p>
 
 <p>All of this info is repeated on the project page, so if you want to dive right in, <a href="https://github.com/benschw/dockit" target="_blank">go there now.</a>

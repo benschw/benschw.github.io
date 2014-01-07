@@ -15,6 +15,7 @@ This is "post 1" in a series of tutorials designed to stand up an Amazon ec2 ins
 
 If asked to characterize Docker (I know, no one has), I'd say that it's a pattern/software that revolutionizes application and service deployment by reducing artifacts to a lowest common denominator, while at the same time making orchestration and discovery a pain in the ass. In this post (and others in the series if I get around to it) I'm going to attempt to play to docker's strengths while automating the "pain in the ass" parts, to create a platform which will make hosting prototypes dirt simple. Why prototypes and not production applications? Because (right now at least) I don't plan on addressing data persistence, scalability (beyond a single EC2 instance), or different environments like dev and uat. Don't get me wrong, docker (and Hipache, which I'll introduce later) is actually quite good at handling these concerns, but again... I don't plan on addressing them.
 
+<!--more-->
 
 <h2>Build a free Amazon EC2 instance for this tutorial</h2>
 

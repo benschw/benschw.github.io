@@ -23,6 +23,8 @@ if ($thisWorks) {
 ?>
 {% endhighlight %}
 
+<!--more-->
+
 {% highlight javascript linenos %}
 
 if (window.thisWorks) {

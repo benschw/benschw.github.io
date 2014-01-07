@@ -22,6 +22,9 @@ Service Discovery is an umbrella term for the many aspects of managing the knowl
 	<li>Providing a way for an end user to locate and communicate with your application.</li>
 	<li>Providing a way to keep the details of how your environment is wired and distributed decoupled from your application.</li>
 </ul>
+
+<!--more-->
+
 <h2>Vis-à-vis Docker</h2>
 A few characteristics of Docker containers make some aspects of service discovery especially important.
 <ul>

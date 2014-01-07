@@ -4,14 +4,15 @@ title: txt.fliglio.com
 ---
 
 <div id="home">
-	<div class="page-header">
-		<h1>Posts</h1>
-	</div>
-	<ul class="posts">
-		{% for post in site.posts %}
+	<ul class="post-excerpts">
+		{% for post in site.posts limit:5 %}
 			<li>
-				<span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a>
+				<h1><a href="{{ post.url }}">{{ post.title }}</a></h1>
+				<h4>{{ post.date | date_to_string }}</h4>
+				<p>{{ post.excerpt }}</p>
 			</li>
 		{% endfor %}
+		<li><h1><a href="/all-posts">more...</a></h1></li>
+
 	</ul>
 </div>

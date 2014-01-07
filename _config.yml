@@ -4,3 +4,4 @@ url: txt.fliglio.com
 markdown: redcarpet
 pygments: true
 permalink: /:year/:month/:title/
+excerpt_separator: <!--more-->

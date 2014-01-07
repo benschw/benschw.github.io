@@ -16,6 +16,8 @@ On the surface, creating a MySQL container for Docker is pretty easy, but if you
 
 I'm going to start with that simplistic example (with ephemeral database storage and no way to connect) and build on the example until we have something useful. Still not production ready, but good enough for hacking ;)
 
+<!--more-->
+
 Oh, and you can jump to the <a href="https://gist.github.com/benschw/7391723" target="_blank">gist</a> (which has the files for building the container as well as some scripts to build and run it) if things get too boring or convoluted.
 
 <h2>Getting Started</h2>

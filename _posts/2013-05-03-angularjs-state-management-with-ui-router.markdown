@@ -12,6 +12,9 @@ date: 2013-05-03 13:45:54.000000000 -05:00
 ---
 
 Managing state with AngularJS's ui-router (<a href="https://github.com/angular-ui/ui-router">https://github.com/angular-ui/ui-router</a>) is down right elegant. How is it different from a traditional router you might ask? Well I'll tell you, but first...
+
+<!--more-->
+
 <h2>A little history about routers</h2>
 Routers provide an abstraction between a url and a request that an application knows how to satisfy. With traditional web service applications, this is straight forward:
 <ul>

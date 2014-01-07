@@ -15,6 +15,9 @@ categories:
 There comes a time in every Github user's life, when they begin to assume that other people might give a damn about the code they have written. While this assumption is by and large wrong, every so often someone produces something worth wrapping a marketing homepage around. Or they might want to dress up their GitHub page enough that their coworkers are willing to treat their reinvention of the wheel as a first class framework.
 
 For the rest of this doc I'll be writing to the latter group (since that's the category I fall into) but the steps should be the same in either case.
+
+<!--more-->
+
 <h2>Getting Started</h2>
 We're going to need to get a few things going before we get started:
 <ul>
