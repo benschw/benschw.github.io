@@ -1,0 +1,6 @@
+name: txt.fliglio.com
+description: foo
+url: txt.fliglio.com
+markdown: redcarpet
+pygments: true
+permalink: /:year/:month/:title/

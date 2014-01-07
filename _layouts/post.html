@@ -1,0 +1,81 @@
+---
+layout: default
+comments: true
+---
+
+
+<div class="page-header">
+	<h1>{{ page.title }}</h1>
+</div>
+
+<p class="meta">{{ page.date | date_to_string }}</p>
+<p class="meta"><a href="#disqus_thread">comments</a></p>
+
+{{ content }}
+
+
+<div id="social-tools">
+
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com{{page.url}}" data-via="benhschwartz">Tweet</a>
+	
+	<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+
+	<div class="g-plus" data-action="share"></div>
+
+	<!-- google -->
+	<script type="text/javascript">
+		(function() {
+			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			po.src = 'http://apis.google.com/js/platform.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		})();
+	</script>
+
+	<!-- twitter -->
+	<script>
+		!function(d,s,id){
+			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+			if(!d.getElementById(id)){
+				js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);
+			}
+		}(document, 'script', 'twitter-wjs');
+	</script>
+
+	<br /><br />
+	
+	<div id="disqus_thread"></div>
+
+</div>
+
+
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+	var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
+	var disqus_url = 'http://txt.fliglio.com{{page.url}}';
+
+	//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
+	//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
+	var disqus_container_id = 'disqus_thread';
+	var disqus_domain = 'disqus.com';
+	var disqus_shortname = 'fligliotxt';
+	var disqus_title = "{{page.title}}";
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+
+	    /* * * DON'T EDIT BELOW THIS LINE * * */
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+	
