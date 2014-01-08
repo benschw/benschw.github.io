@@ -7,11 +7,10 @@ Have you ever wished your front end testing could be sped up? Has it ever seemed
 
 Specifically, this post will... 
 
-- Start with a stock [Yeoman](http://http://yeoman.io/) generated Angular app
-- Introduce [Protractor](https://github.com/angular/protractor) (and [grunt-protractor-runner](https://github.com/teerapap/grunt-protractor-runner))
-- (add in some demo tests)
 - Show you how to run a tunable and scalable Selenium grid cluster in a single [Vagrant](http://www.vagrantup.com/) vm with [Docker](https://www.docker.io/)
-- Configure the [Grunt](http://http://gruntjs.com/) build to run the tests concurrently using the cluster
+- Introduce [Protractor](https://github.com/angular/protractor) (and [grunt-protractor-runner](https://github.com/teerapap/grunt-protractor-runner)) 
+  into a stock [Yeoman](http://http://yeoman.io/) generated Angular app
+- And configure the [Grunt](http://http://gruntjs.com/) build to run some example tests concurrently using the cluster
 
 <!--more-->
 
@@ -26,36 +25,36 @@ One last note before I get started... [Francisco Martinez](https://github.com/FM
 
 
 ## Get started with Selenium Grid <small>(in a single vagrant vm)</small>
+I've put together two projects to supply the Selenium Grid functionality. The [docker-selenium-grid](https://github.com/benschw/docker-selenium-grid) project supplies Dockerfiles for two Docker containers: a hub and a Firefox node; and comes with a script to help you add start and stop the cluster or new nodes. The [vagrant-selenium-grid](https://github.com/benschw/vagrant-selenium-grid) project is a Vagrant wrapper for the first project which further simplifies starting a cluster to simply running `vagrant up`.
 
+To boot your cluster, simply run the following commands
+
+	git clone https://github.com/benschw/vagrant-selenium-grid
+	cd vagrant-selenium-grid
 	vagrant up
 
-thats it: this will boot a selenium grid cluster with 3 firefox nodes running.
+This VM defaults to using 2gb of ram, but this can easily be tuned by tweaking the `Vagrantfile` before running `vagrant up`. It will run three firefox nodes by default, but you can tweak this by shelling into the Vagrant vm and interacting with the cluster via `~/docker-selenium-grid/grid.sh`
 
-Tweak the settings by shelling in and working with the 
-[docker-selenium-grid](https://github.com/benschw/docker-selenium-grid) repo:
-
-	vagrant ssh
-	cd docker-selenium-grid
-	./grid.sh
-
-## test your install
-
-If you want to make sure it works, install 
-[protractor](https://github.com/angular/protractor) and run `./test.sh`
+_If you want to make sure it works, install [protractor](https://github.com/angular/protractor) and run `./test.sh`_
  
-
 	npm install -g protractor
 	./test.sh
 
+#### Why Docker?
+Docker provide's lighweight virtualization. In other words, your laptop is probably capable of driving a handfull of browsers at once, but not a handfull of VMs. Docker gives you to encapsulation of a VM with (almost) none of the overhead. It does require a Linux kernel however, which is why i've recommended running your grid inside a Vagrant vm.
 
+Running Linux? Skip the VM and run [docker-selenium-grid](https://github.com/benschw/docker-selenium-grid) on your host (you'll just have to [install Docker](http://docs.docker.io/en/latest/installation/ubuntulinux/) first.)
 
+## Concurrent Protractor Testing
 
-# protractor concurrency demo
+### Yo Angular!
+I'll assume you've used Yeoman before, but just in case - here's how to get it:
 
 	sudo npm install -g yo
-	sudo npm install -g protractor
 	sudo npm install -g grunt-cli
 	sudo npm install -g bower
+
+Now that you have the basics, lets use our new tools to generate an angular app:
 
 	mkdir protractor-demo
 	cd protractor-demo
@@ -63,20 +62,31 @@ If you want to make sure it works, install
 	npm install generator-angular
 
 	yo angular # go ahead and "Y" everything
-	# bower install
 
-## protractor
+This sets up [Yeoman's](http://http://yeoman.io/) opinionated default angular app. Deps are installed with [bower](http://bower.io/) and a build script is provided that can be run with [grunt](http://gruntjs.com/).
 
+
+
+### Introducing Protractor
+Now lets start adding in Protractor.
+
+Install the npm deps:
+
+	sudo npm install -g protractor
 	npm install protractor --save-dev
 	npm install grunt-protractor-runner --save-dev
 
-	# add in protractor test scenarios
-	cp -r ../protractor-demo-bak/test/scenario/ test/scenario
-	
+#### Add some tests and Update your build
+At this point you can decide if you want to follow along and patch your `Gruntfile.js` by hand, or just grab a copy from the [protractor-demo](https://github.com/benschw/protractor-demo) project. Additionally, I've included [scenario.tar.bz2](https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2) which holds the example tests we will be wiring up.
 
+The quick way:
 
-### Gruntfile Updates
-after "karma" section
+	wget -N https://raw.github.com/benschw/protractor-demo/master/Gruntfile.js
+	wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2 | tar -C ./test/ -xjvf -
+
+#### What are the changes?
+
+Add in your Protractor test wiring after the "karma" section:
 
 {% highlight javascript %}
 
@@ -102,7 +112,7 @@ after "karma" section
     }
 {% endhighlight %}
 
-at top
+Provide the `getIpAddress()` function at the top of your file. Since your grid is running in a VM, we need to give it more than `localhost` to target:
 
 {% highlight javascript %}
 
@@ -126,7 +136,7 @@ at top
 {% endhighlight %}
 
 
-in "concurrent" section
+Reference our two test features in the "concurrent" section:
 
 {% highlight javascript %}
 
@@ -138,7 +148,7 @@ in "concurrent" section
 
 
 
-update "connect.options" to use `hostname: '0.0.0.0'`, and "connect.dist" to use `port: 9002` 
+In the "connect" section, update "connect.options" to use `hostname: '0.0.0.0'`, and "connect.dist" to use `port: 9002` 
 
 {% highlight javascript %}
 
@@ -160,7 +170,7 @@ update "connect.options" to use `hostname: '0.0.0.0'`, and "connect.dist" to use
     }
 {% endhighlight %}
 
-register task
+And last but not least, add a new task at the bottom of the file so we can run these bad boys:
 
 {% highlight javascript %}
 
@@ -172,3 +182,10 @@ register task
 {% endhighlight %}
 
 
+#### Run the tests... Fast!
+
+Assuming all our updates made it in and Yeoman's Angular generator hasn't changed, we should now be able to run tests for our two test features concurrently:
+
+	grunt ptr
+
+I hope it worked for you, and I hope this helped.
