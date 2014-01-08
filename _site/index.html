@@ -59,6 +59,23 @@
 	<ul class="post-excerpts">
 		
 			<li>
+				<h1><a href="/2014/01/protractor/">Concurrent Protractor Tests with Selenium Grid in Docker</a></h1>
+				<h4>07 Jan 2014</h4>
+				<p><p>Have you ever wished your front end testing could be sped up? Has it ever seemed like Selenium was a royal pain in the ass? I hate to break it to you but, though I agree, this isn&#39;t the post that will relieve those problems. What it is, is a way to make testing your Angular app <em>slightly</em> less painful by providing light weight <a href="https://code.google.com/p/selenium/wiki/Grid2">Selenium grid</a> node parallelization with <a href="https://github.com/angular/protractor">Protractor</a> and <a href="https://www.docker.io/">Docker</a>.</p>
+
+<p>Specifically, this post will... </p>
+
+<ul>
+<li>Start with a stock <a href="http://http://yeoman.io/">Yeoman</a> generated Angular app</li>
+<li>Introduce <a href="https://github.com/angular/protractor">Protractor</a> (and <a href="https://github.com/teerapap/grunt-protractor-runner">grunt-protractor-runner</a>)</li>
+<li>(add in some demo tests)</li>
+<li>Show you how to run a tunable and scalable Selenium grid cluster in a single <a href="http://www.vagrantup.com/">Vagrant</a> vm with <a href="https://www.docker.io/">Docker</a></li>
+<li>Configure the <a href="http://http://gruntjs.com/">Grunt</a> build to run the tests concurrently using the cluster</li>
+</ul>
+</p>
+			</li>
+		
+			<li>
 				<h1><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></h1>
 				<h4>18 Dec 2013</h4>
 				<p><h2>dockit</h2>
@@ -109,15 +126,6 @@ Service Discovery is an umbrella term for the many aspects of managing the knowl
 </p>
 			</li>
 		
-			<li>
-				<h1><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></h1>
-				<h4>18 Sep 2013</h4>
-				<p><p>This is &quot;post 1&quot; in a series of tutorials designed to stand up an Amazon ec2 instance which will provide the automated hosting of applications using docker. This first post starts with some base line provisioning and ends with a manual walk through of what we will automate in later posts.</p>
-
-<p>If asked to characterize Docker (I know, no one has), I&#39;d say that it&#39;s a pattern/software that revolutionizes application and service deployment by reducing artifacts to a lowest common denominator, while at the same time making orchestration and discovery a pain in the ass. In this post (and others in the series if I get around to it) I&#39;m going to attempt to play to docker&#39;s strengths while automating the &quot;pain in the ass&quot; parts, to create a platform which will make hosting prototypes dirt simple. Why prototypes and not production applications? Because (right now at least) I don&#39;t plan on addressing data persistence, scalability (beyond a single EC2 instance), or different environments like dev and uat. Don&#39;t get me wrong, docker (and Hipache, which I&#39;ll introduce later) is actually quite good at handling these concerns, but again... I don&#39;t plan on addressing them.</p>
-</p>
-			</li>
-		
 		<li><h1><a href="/all-posts">more...</a></h1></li>
 
 	</ul>
@@ -137,6 +145,8 @@ Service Discovery is an umbrella term for the many aspects of managing the knowl
 					<br />
 					<h3 class="small">Recent Posts</h3>
 					<ul id="posts-nav">
+					
+						<li><a href="/2014/01/protractor/">Concurrent Protractor Tests with Selenium Grid in Docker</a></li>
 					
 						<li><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></li>
 					

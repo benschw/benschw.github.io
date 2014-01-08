@@ -2,10 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>txt.fliglio.com/</loc>
-    <lastmod>2014-01-07T18:36:36-06:00</lastmod>
+    <lastmod>2014-01-07T20:52:21-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  
+    <url>
+      <loc>txt.fliglio.com/2014/01/protractor/</loc>
+      
+        <lastmod>2014-01-07T20:52:19-06:00</lastmod>
+      
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
   
     <url>
       <loc>txt.fliglio.com/2013/12/orchestrating-docker-with-go/</loc>
