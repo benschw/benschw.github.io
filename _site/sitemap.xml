@@ -2,13 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>txt.fliglio.com/</loc>
-    <lastmod>2014-01-08T09:28:15-06:00</lastmod>
+    <lastmod>2014-01-08T14:34:26-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/12/orchestrating-docker-with-go/</loc>
+      <loc>http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/</loc>
       
         <lastmod>2013-12-18T12:22:05Z</lastmod>
       
@@ -17,7 +17,7 @@
     </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/12/service-discovery-with-docker-docker-links-and-beyond/</loc>
+      <loc>http://txt.fliglio.com/2013/12/service-discovery-with-docker-docker-links-and-beyond/</loc>
       
         <lastmod>2013-12-02T22:59:16Z</lastmod>
       
@@ -26,7 +26,7 @@
     </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/11/creating-a-mysql-docker-container/</loc>
+      <loc>http://txt.fliglio.com/2013/11/creating-a-mysql-docker-container/</loc>
       
         <lastmod>2013-11-10T06:31:25Z</lastmod>
       
@@ -35,7 +35,7 @@
     </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/09/oauth-2-grant-types-demystified/</loc>
+      <loc>http://txt.fliglio.com/2013/09/oauth-2-grant-types-demystified/</loc>
       
         <lastmod>2013-09-28T02:30:42Z</lastmod>
       
@@ -44,7 +44,7 @@
     </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/09/protyping-web-stuff-with-docker/</loc>
+      <loc>http://txt.fliglio.com/2013/09/protyping-web-stuff-with-docker/</loc>
       
         <lastmod>2013-09-18T06:23:09Z</lastmod>
       
@@ -53,7 +53,7 @@
     </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/</loc>
+      <loc>http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/</loc>
       
         <lastmod>2013-05-03T18:45:54Z</lastmod>
       
@@ -62,7 +62,7 @@
     </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/</loc>
+      <loc>http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/</loc>
       
         <lastmod>2013-04-30T03:10:53Z</lastmod>
       
@@ -71,7 +71,7 @@
     </url>
   
     <url>
-      <loc>txt.fliglio.com/2013/04/hello-world/</loc>
+      <loc>http://txt.fliglio.com/2013/04/hello-world/</loc>
       
         <lastmod>2013-04-28T00:32:26Z</lastmod>
       
@@ -81,7 +81,7 @@
   
   
   <url>
-    <loc>txt.fliglio.com/sitemap.xml</loc>
+    <loc>http://txt.fliglio.com/sitemap.xml</loc>
     
       <lastmod>2014-01-08</lastmod>
     
@@ -94,7 +94,7 @@
   </url>
   
   <url>
-    <loc>txt.fliglio.com/feed.xml</loc>
+    <loc>http://txt.fliglio.com/feed.xml</loc>
     
       <lastmod>2014-01-08</lastmod>
     
@@ -107,7 +107,7 @@
   </url>
   
   <url>
-    <loc>txt.fliglio.com/about/index.html</loc>
+    <loc>http://txt.fliglio.com/about/index.html</loc>
     
       <lastmod>2014-01-08</lastmod>
     
@@ -120,7 +120,7 @@
   </url>
   
   <url>
-    <loc>txt.fliglio.com/all-posts/index.html</loc>
+    <loc>http://txt.fliglio.com/all-posts/index.html</loc>
     
       <lastmod>2014-01-08</lastmod>
     
@@ -133,7 +133,7 @@
   </url>
   
   <url>
-    <loc>txt.fliglio.com/index.html</loc>
+    <loc>http://txt.fliglio.com/index.html</loc>
     
       <lastmod>2014-01-08</lastmod>
     
