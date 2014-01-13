@@ -5,3 +5,5 @@ markdown: redcarpet
 pygments: true
 permalink: /:year/:month/:title/
 excerpt_separator: <!--more-->
+encoding: utf-8
+exclude: ["Dockerfile"]
