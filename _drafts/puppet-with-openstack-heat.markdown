@@ -3,15 +3,17 @@ layout: post
 title: Provisioning in Openstack with Heat and Puppet
 ---
 
-I apologize in advance, because this is more _stream of consciousness in a terminal_ then how to use either Puppet or Openstack's Heat. But there is a noticeable void in terms of documentation, so I figure putting something out there is better then nothing... and hopefully people will comment and tell me how I _should_ be doing things.
+I apologize in advance, because this is more _"stream of consciousness in a terminal"_ than how to correctly use either Puppet or Heat with Openstack. But there is a noticeable void in terms of community Openstack documentation, so I figure putting something out there is better then nothing... and hopefully people will comment and tell me how I _should_ be doing things.
 
-That said, here's an incredibly opinionated way to use puppet in conjunction with heat to provision a server to serve a Jekyll site (or anything else you can find a puppet module for.)
+That said, here's an incredibly opinionated way to use Puppet in conjunction with Heat to provision a vm to host a [Jekyll](http://jekyllrb.com/) site (or anything else you can find or build a puppet module for.) 
+
+What site will we be serving you ask? Why this one of course ([txt.fliglio.com](https://github.com/benschw/txt.fliglio.com))!
 
 <!--more-->
 
 ## Get a Base Image Ready
 
-First things first: get a base image ready to work from. I'm going to work from Ubuntu's cloud images, which you can find [here](http://cloud-images.ubuntu.com/).
+First thing's first: get a base image ready to work from. I'm going to use one of [Ubuntu's cloud images](http://cloud-images.ubuntu.com/).
 
 	glance image-create \
 		--name ubuntu-precise \
@@ -33,24 +35,26 @@ Going forward, I'll be updating a [hot template](https://github.com/openstack/he
 
 ### Making Puppet Hot
 
-There are a number of ways to run puppet and even more ways to get puppet modules / dependencies in place. I will walk you through one (very) opinionated way using [r10k](https://github.com/adrienthebo/r10k) to fetch dependencies and using `user_data` to provide a generic install script to run.
+There are a number of ways to run puppet and even more ways to get puppet modules / dependencies in place. I will walk you through one (very) opinionated way. 
 
-I've hosted a git repo ([puppet-txt.fliglio.com](https://github.com/benschw/puppet-txt.fliglio.com)) to serve as our example controller repo. It contains a `Puppetfile` to provide `r10k` with a deps list, and a `default.pp` manifest to drive setting up the vm. We will invoke this driver using a bootstrap script contained in `user_data`. Specifically, it will:
+Though we will try to keep our provisioning in Puppet, a small amount of bootstrapping is still needed to kick things off. This we can provide with a brief (and more importantly generic) bash script encoded in user\_data. This script will obtain a _Puppet Controller_  with git and apply it to our vm. Ok, I just made that term up... it's the name I'm using to describe a repo containing a `Puppetfile` to provide `r10k` with a list of deps, and a `default.pp` manifest to drive provisioning the vm; here's the one for our example: [puppet-txt.fliglio.com](https://github.com/benschw/puppet-txt.fliglio.com).
 
-- Update puppet since Precise comes with a 2.x version
-- install r10k and git
-- clone the example controller repo (notice I've parameterized the repo address so you could use this same template to provision any number of things)
-- grab deps with r10k
+To recap, the bootstrap shell script will:
+
+- Install packages (only those needed for the script)
+- clone the controller repo
+- grab Puppet deps with r10k
 - run puppet apply
 
-The puppet code we will be applying to our vm will:
+For our example controller ([puppet-txt.fliglio.com](https://github.com/benschw/puppet-txt.fliglio.com)), the `puppet apply` command will:
 
 - install [Jekyll](http://jekyllrb.com/)
-- clone a copy of [txt.fliglio.com](https://github.com/benschw/txt.fliglio.com.git) from github (this is specified in the controller repo's `default.pp`)
-- install an `upstart` config which configures a service to serve the site.
-- start the newly configured service (and start serving the site)
+- clone a copy of [txt.fliglio.com](https://github.com/benschw/txt.fliglio.com) from github (this address is specified in our controller repo's `default.pp`)
+- install an `upstart` service to serve the site.
+- start the newly configured service
 
-excerpt from the modified heat template:
+
+Here's an excerpt from the modified heat template showing what the bootstrap script looks like:
 
 {% highlight yaml %}
 
