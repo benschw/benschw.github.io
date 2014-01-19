@@ -3,15 +3,15 @@ layout: post
 title: Provisioning in Openstack with Heat and Puppet
 ---
 
-I appologise in advance, because this is more _stream of consciousness in a terminal_ then how to use either puppet or openstack's heat. But there is a noticible void in terms of documentation, so I figured putting something out there was better then nothing... and hopefully people will comment and tell me how I _should_ be doing things.
+I apologize in advance, because this is more _stream of consciousness in a terminal_ then how to use either Puppet or Openstack's Heat. But there is a noticeable void in terms of documentation, so I figure putting something out there is better then nothing... and hopefully people will comment and tell me how I _should_ be doing things.
 
-That said, here's an incredibly opinionated way to use puppet in conjunction with heat to provision a server with Java (or anything else you can find a puppet module for.)
+That said, here's an incredibly opinionated way to use puppet in conjunction with heat to provision a server to serve a Jekyll site (or anything else you can find a puppet module for.)
 
 <!--more-->
 
 ## Get a Base Image Ready
 
-First things first: get a base image ready to work from. I'm going to work from Ubuntu's cloud images, which you can find [here](http://cloud-images.ubuntu.com/) or just use the same [January 2014 Precise build](http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img) I'm using.
+First things first: get a base image ready to work from. I'm going to work from Ubuntu's cloud images, which you can find [here](http://cloud-images.ubuntu.com/).
 
 	glance image-create \
 		--name ubuntu-precise \
@@ -25,27 +25,30 @@ It will probably take a few minutes to load; make sure it's "ACTIVE" before cont
 
 ## Adding some Heat
 
-At this point, we can actually start playing with [Heat.](https://wiki.openstack.org/wiki/Heat) Take a look at [some templates](https://github.com/openstack/heat-templates) to get an idea of how this works. 
+At this point, we can start playing with [Heat](https://wiki.openstack.org/wiki/Heat). Take a look at [some templates](https://github.com/openstack/heat-templates) to get an idea of how this works, or just keep reading. 
 
-If you're like me however, the idea of wrestling with user data formats and using bash scripts to build your box causes anxiety. So let's build up our box with [Puppet](http://puppetlabs.com/) instead.
+If you're like me, the idea of wrestling with user data formats and using bash scripts to build your box causes anxiety. So let's build up our box with [Puppet](http://puppetlabs.com/) instead.
 
-Going forward, I'll be updating a [hot template](https://github.com/openstack/heat-templates/blob/master/hot/servers_in_existing_neutron_net.yaml) I found in openstack's [heat templates](https://github.com/openstack/heat-templates) github repo which I pared down to only launch a single server ("Server1").
+Going forward, I'll be updating a [hot template](https://github.com/openstack/heat-templates/blob/master/hot/servers_in_existing_neutron_net.yaml) I found in Openstack's [heat templates](https://github.com/openstack/heat-templates) github repo which I pared down to only launch a single server ("Server1").
 
 ### Making Puppet Hot
 
 There are a number of ways to run puppet and even more ways to get puppet modules / dependencies in place. I will walk you through one (very) opinionated way using [r10k](https://github.com/adrienthebo/r10k) to fetch dependencies and using `user_data` to provide a generic install script to run.
 
-I've hosted a git repo ([puppet-java-app](https://github.com/benschw/puppet-java-app)) with a `Puppetfile` to provide `r10k` with a deps list, and a `default.pp` manifest to install Oracle's version of Java 7. From here, you can add in puppet code to install your own Java app by adding your dependency modules to the `Puppetfile` and invocation to `default.pp`
-
-
-To provision our stack (single instance) with the [sample puppet repo](https://github.com/benschw/puppet-java-app), we need to:
+I've hosted a git repo ([puppet-txt.fliglio.com](https://github.com/benschw/puppet-txt.fliglio.com)) to serve as our example controller repo. It contains a `Puppetfile` to provide `r10k` with a deps list, and a `default.pp` manifest to drive setting up the vm. We will invoke this driver using a bootstrap script contained in `user_data`. Specifically, it will:
 
 - Update puppet since Precise comes with a 2.x version
 - install r10k and git
-- clone the java7 puppet repo (notice we've parameterized the repo address so you could use this same template to provision any number of things)
+- clone the example controller repo (notice I've parameterized the repo address so you could use this same template to provision any number of things)
 - grab deps with r10k
 - run puppet apply
 
+The puppet code we will be applying to our vm will:
+
+- install [Jekyll](http://jekyllrb.com/)
+- clone a copy of [txt.fliglio.com](https://github.com/benschw/txt.fliglio.com.git) from github (this is specified in the controller repo's `default.pp`)
+- install an `upstart` config which configures a service to serve the site.
+- start the newly configured service (and start serving the site)
 
 excerpt from the modified heat template:
 
@@ -62,12 +65,12 @@ resources:
     type: OS::Nova::Server
     properties:
       name: Server1
-      image: { get_param: image }
-      flavor: { get_param: flavor }
-      key_name: { get_param: key_name }
-      # admin_user: { get_param: admin_user }
+      image: { get\_param: image }
+      flavor: { get\_param: flavor }
+      key\_name: { get\_param: key\_name }
+      # admin\_user: { get\_param: admin\_user }
       networks:
-        - port: { get_resource: server1_port }
+        - port: { get\_resource: server1\_port }
       user_data: 
         str_replace:
           template: |
@@ -98,13 +101,13 @@ resources:
 
 ### Getting ready to launch...
 
-The last steps before we can provision our java7 stack, are...
+The last steps before we can provision our stack are...
 
-Add in an ssh key:
+Add in an ssh key (only if you need to shell into the box):
 
 	nova keypair-add --pub_key ~/.ssh/id_rsa.pub bens
 
-Identify the public and private net_id values. You can get this with `neutron` ("net04\_ext" is the public one)
+Identify the public and private net_id values. You can get this with `neutron`:
 
 	$ neutron net-list
 	+--------------------------------------+-----------+----------------------------------------------------+
@@ -114,7 +117,7 @@ Identify the public and private net_id values. You can get this with `neutron` (
 	| d98bc495-ac30-4136-9690-6545a8436468 | net04_ext | 4590955a-f4ac-42fa-81bf-5c730efb62b9 10.6.148.0/22 |
 	+--------------------------------------+-----------+----------------------------------------------------+
 
-Identify the private\_subnet\_id (the one _without_ \_ext):
+Identify the private\_subnet\_id:
 
 	$ neutron subnet-list
 	+--------------------------------------+-------------------+---------------+------------------------------------------------+
@@ -125,18 +128,18 @@ Identify the private\_subnet\_id (the one _without_ \_ext):
 	+--------------------------------------+-------------------+---------------+------------------------------------------------+
 
 
-And make sure we have our heat template ready (download my copy [here](https://raw.github.com/benschw/puppet-java-app/master/demo.yml))
+And make sure we have our heat template ready (download my copy [here](https://raw.github.com/benschw/puppet-txt.fliglio.com/master/demo.yml))
 
 ### That's all? you mean we're ready?
 
-Lets launch a stack (again... single instance in this case)
+Let's launch a stack:
 
 	heat stack-create teststack \
 		-f ./demo.yml \
-		-P "key_name=bens;image=ubuntu-precise;flavor=m1.small;public_net_id=d98bc495-ac30-4136-9690-6545a8436468;private_net_id=1152a93b-d221-41a7-b5be-3428ed991eb2;private_subnet_id=552ca915-8bb6-46bf-b29c-3e0eceeef064;puppet_repo=https://github.com/benschw/puppet-java-app.git"
+		-P "key_name=bens;image=ubuntu-precise;flavor=m1.small;public_net_id=d98bc495-ac30-4136-9690-6545a8436468;private_net_id=1152a93b-d221-41a7-b5be-3428ed991eb2;private_subnet_id=552ca915-8bb6-46bf-b29c-3e0eceeef064;puppet_repo=https://github.com/benschw/puppet-txt.fliglio.com.git"
 
 
-Now you can figure out the public ip and shell in:
+Now you can figure out the public ip and navigate to it in your browser:
 
 	$ nova list
 	+--------------------------------------+------------+---------+------------+-------------+-------------------------------+
@@ -146,14 +149,15 @@ Now you can figure out the public ip and shell in:
 	| 2e9e994c-d2f9-4232-82bd-752ccdff346c | ubuntuinst | SHUTOFF | None       | Shutdown    | net04=10.6.40.13              |
 	+--------------------------------------+------------+---------+------------+-------------+-------------------------------+
 
-	ssh ec2-user@10.6.150.16
+	$ chromium-browser 10.6.150.16
+
 
 Some notes...
 
-- When I ran through this example, there was no way to specify an admin_user with heat, so your ssh key will always be installed to `ec2-user` 
-- When you shell in, our user_data will likely still be being applied, so don't expect everything to be ready yet. `ps -ef` should give you some idea of how far along things are.
+- When I ran through this example, there was no way to specify an admin_user with heat, so your ssh key will always be installed to `ec2-user`. This option seems to be available now, so if you're using a more recent version of Havana you may have better luck. 
+- It takes a while to apply the user_data, so don't expect everything to be ready yet. Shelling in and running `ps -ef` should give you some idea of how far along things are.
 
-## Final Throughts
+## Final Thoughts
 
-Heat is pretty cool (and pretty rough around the edges) and I've only scratched the surface. Everything done here could basically be accomplished with `nova`; heat's real power isn't revealed until you start configuring multiple nodes with complex relationships. Maybe i'll get into that another time.
+Heat is pretty cool (and pretty rough around the edges) and I've only scratched the surface. Everything done here could basically be accomplished with `nova`; heat's real power isn't revealed until you start configuring multiple nodes with complex relationships. Maybe I'll get into that another time.
 
