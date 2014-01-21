@@ -70,77 +70,6 @@
 			</li>
 		
 			<li>
-				<h1><a href="/2014/01/patching-openstack-base-image/">Patching Openstack Base Image</a></h1>
-				<h4>17 Jan 2014</h4>
-				<p><h3>Import Ubuntu Cloud Image</h3>
-
-<p>First things first: import one of Ubuntu&#39;s cloud image into OpenStack. You can find some <a href="http://cloud-images.ubuntu.com/">here</a> or just use the same <a href="http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img">January 2014 Precise build</a> I&#39;m using.</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">glance image-create \
-    --name ubuntu-precise \
-    --disk-format ami \
-    --container-format bare \
-    --is-public True \
-    --copy-from \
-    http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img
-</code></pre></div>
-<p>It will probably take a few minutes to load; make sure it&#39;s &quot;ACTIVE&quot; before continuing (you can check the status with <code>nova image-list</code>)</p>
-
-<h3>heat-cfntools</h3>
-
-<p>Why does Heat use <a href="https://github.com/openstack/heat-cfntools">heat-cfntools</a> instead of <a href="https://help.ubuntu.com/community/CloudInit">CloutInit</a> to apply <a href="http://docs.openstack.org/user-guide/content/user-data.html">user-data</a>? I couldn&#39;t tell you. But it does, and it doesn&#39;t come with Ubuntu&#39;s cloud images, so we need to add it. There are different tools for building your own base images (which you could use to include <code>heat-cfntools</code>) but for this tutorial I&#39;m going to go take the quick and dirty route: install them with CloudInit and take a snapshot to use as my base for my Heat stack.</p>
-
-<p>So how do we install heat-cfntools with CloudInit? With <a href="http://docs.openstack.org/developer/nova/">nova.</a></p>
-
-<p>To boot our instance, we first need to figure out a network to boot it into. You can get this with <code>neutron</code>:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">neutron net-list
-
-+--------------------------------------+-----------+----------------------------------------------------+
-| id                                   | name      | subnets                                            |
-+--------------------------------------+-----------+----------------------------------------------------+
-| 1152a93b-d221-41a7-b5be-3428ed991eb2 | net04     | 552ca915-8bb6-46bf-b29c-3e0eceeef064 10.6.40.0/22  |
-| d98bc495-ac30-4136-9690-6545a8436468 | net04_ext | 4590955a-f4ac-42fa-81bf-5c730efb62b9 10.6.148.0/22 |
-+--------------------------------------+-----------+----------------------------------------------------+
-</code></pre></div>
-<p>We want the internal network, so we&#39;ll use the id which corresponds to &quot;net04.&quot;</p>
-
-<p>Next we need to supply the <code>heat-cfntools</code> install instructions to CloudInit via user data. There are a few different <a href="https://help.ubuntu.com/community/CloudInit">user data input formats</a> available, but I&#39;m going to use the &quot;Cloud Config Data&quot; format, which is specified by beginning your user-data with <code>#cloud-config</code>. Here&#39;s the file I made to pass to <code>nova boot</code> later:</p>
-
-<p>cfntools-cloud-config.txt</p>
-
-<div class="highlight"><pre><code class="yaml"><span class="c1">#cloud-config</span>
-<span class="l-Scalar-Plain">ssh_import_id</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">steve-stevebaker</span><span class="p-Indicator">]</span>
-<span class="l-Scalar-Plain">apt_sources</span><span class="p-Indicator">:</span>
- <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">source</span><span class="p-Indicator">:</span> <span class="s">&quot;ppa:steve-stevebaker/heat-cfntools&quot;</span>
-<span class="l-Scalar-Plain">packages</span><span class="p-Indicator">:</span>
- <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">heat-cfntools</span>
-</code></pre></div>
-
-<p>Armed with our net id and cloud config, we can now add <code>heat-cfntools</code> to our base image:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">nova boot --flavor m1.tiny --image ubuntu-precise --user-data ./cfntools-cloud-config.txt --nic net-id=1152a93b-d221-41a7-b5be-3428ed991eb2 ubuntuinst
-</code></pre></div>
-<p>After waiting a sufficient amount of time that we are sure the instance is provisioned, we can shut it down and take a <a href="http://docs.openstack.org/user-guide/content/nova_manage_images.html">snapshot</a> to use as our Heat base image:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">nova stop ubuntuinst
-nova image-create ubuntuinst ubuntu-heat
-</code></pre></div></p>
-			</li>
-		
-			<li>
-				<h1><a href="/2014/01/protractor/">Concurrent Protractor Tests with Selenium Grid in Docker</a></h1>
-				<h4>08 Jan 2014</h4>
-				<p><p>Have you ever wished your front end testing could be sped up? Has it ever seemed like Selenium was a royal pain in the ass? Though I agree, this isn&#39;t the post that will relieve those problems. What it is, is a way to make testing your Angular app <em>slightly</em> less painful by providing light weight <a href="https://code.google.com/p/selenium/wiki/Grid2">Selenium grid</a> node parallelization with <a href="https://github.com/angular/protractor">Protractor</a> and <a href="https://www.docker.io/">Docker</a>.</p>
-
-<p>Specifically, this post will... </p>
-
-<ul>
-<li>Show you how to run a tunable and scalable Selenium grid cluster in a single <a href="http://www.vagrantup.com/">Vagrant</a> vm with <a href="https://www.docker.io/">Docker</a></li>
-<li>Introduce <a href="https://github.com/angular/protractor">Protractor</a> (and <a href="https://github.com/teerapap/grunt-protractor-runner">grunt-protractor-runner</a>) 
-into a stock <a href="http://http://yeoman.io/">Yeoman</a> generated Angular app</li>
-<li>And configure the <a href="http://http://gruntjs.com/">Grunt</a> build to run some example tests concurrently using the cluster</li>
-</ul>
-</p>
-			</li>
-		
-			<li>
 				<h1><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></h1>
 				<h4>18 Dec 2013</h4>
 				<p><h2>dockit</h2>
@@ -175,6 +104,22 @@ Service Discovery is an umbrella term for the many aspects of managing the knowl
 </p>
 			</li>
 		
+			<li>
+				<h1><a href="/2013/11/creating-a-mysql-docker-container/">Creating a MySQL Docker Container</a></h1>
+				<h4>10 Nov 2013</h4>
+				<p><p>On the surface, creating a MySQL container for Docker is pretty easy, but if you want to connect in (not sure what a mysql server that didn&#39;t allow that would be good for) and decouple your databases from your container (I&#39;m assuming you don&#39;t want those to go away with your container) then there are a few problems to sort out.</p>
+
+<p>I&#39;m going to start with that simplistic example (with ephemeral database storage and no way to connect) and build on the example until we have something useful. Still not production ready, but good enough for hacking ;)</p>
+</p>
+			</li>
+		
+			<li>
+				<h1><a href="/2013/09/oauth-2-grant-types-demystified/">OAuth 2 Grant Types Demystified</a></h1>
+				<h4>28 Sep 2013</h4>
+				<p><p>It seems like a couple times a year I need to work with Auth and realize that i&#39;ve forgotten how grant types work. What is each grant type for? What does the workflow to use each look like? Which is the one I should be using for this problem?</p>
+</p>
+			</li>
+		
 		<li><h1><a href="/all-posts">more...</a></h1></li>
 
 	</ul>
@@ -197,10 +142,6 @@ Service Discovery is an umbrella term for the many aspects of managing the knowl
 					
 						<li><a href="/2014/01/openstack_with_puppet_and_heat/">Building a Jekyll App in Openstack with Heat and Puppet</a></li>
 					
-						<li><a href="/2014/01/patching-openstack-base-image/">Patching Openstack Base Image</a></li>
-					
-						<li><a href="/2014/01/protractor/">Concurrent Protractor Tests with Selenium Grid in Docker</a></li>
-					
 						<li><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></li>
 					
 						<li><a href="/2013/12/service-discovery-with-docker-docker-links-and-beyond/">Service Discovery with Docker: Docker links and beyond</a></li>
@@ -214,6 +155,8 @@ Service Discovery is an umbrella term for the many aspects of managing the knowl
 						<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
 					
 						<li><a href="/2013/04/publishing-a-yeoman-app-with-github-pages/">Publishing a Yeoman app with GitHub Pages</a></li>
+					
+						<li><a href="/2013/04/hello-world/">Hello world!</a></li>
 					
 						<li><a href="/all-posts">more...</a></li>
 					</ul>
