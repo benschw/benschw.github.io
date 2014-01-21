@@ -7,7 +7,7 @@
 		<atom:link href="txt.fliglio.com/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Building a Jekyll App in Openstack with Heat and Puppet</title>
+				<title>Provisioning a Jekyll Site in Openstack with Heat and Puppet</title>
 				<description>&lt;p&gt;I apologize in advance, because this is more &lt;em&gt;&amp;quot;stream of consciousness in a terminal&amp;quot;&lt;/em&gt; than how to correctly use either Puppet or Heat with Openstack. But there is a noticeable void in terms of community Openstack documentation, so I figure putting something out there is better then nothing... and hopefully people will comment and tell me how I &lt;em&gt;should&lt;/em&gt; be doing things.&lt;/p&gt;
 
 &lt;p&gt;That said, here&amp;#39;s an incredibly opinionated way to use Puppet in conjunction with Heat to provision a vm to host a &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; site (or anything else you can find or build a puppet module for.) &lt;/p&gt;
