@@ -2,10 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://txt.fliglio.com/</loc>
-    <lastmod>2014-01-19T15:12:08-06:00</lastmod>
+    <lastmod>2014-01-21T08:23:07-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  
+    <url>
+      <loc>http://txt.fliglio.com/2014/01/openstack_with_puppet_and_heat/</loc>
+      
+        <lastmod>2014-01-21T08:21:55-06:00</lastmod>
+      
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
+  
+    <url>
+      <loc>http://txt.fliglio.com/2014/01/patching-openstack-base-image/</loc>
+      
+        <lastmod>2014-01-17T08:57:35-06:00</lastmod>
+      
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
+  
+    <url>
+      <loc>http://txt.fliglio.com/2014/01/protractor/</loc>
+      
+        <lastmod>2014-01-08T09:27:27-06:00</lastmod>
+      
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
   
     <url>
       <loc>http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/</loc>
@@ -83,7 +110,7 @@
   <url>
     <loc>http://txt.fliglio.com/sitemap.xml</loc>
     
-      <lastmod>2014-01-19</lastmod>
+      <lastmod>2014-01-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -96,7 +123,7 @@
   <url>
     <loc>http://txt.fliglio.com/feed.xml</loc>
     
-      <lastmod>2014-01-19</lastmod>
+      <lastmod>2014-01-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -109,7 +136,7 @@
   <url>
     <loc>http://txt.fliglio.com/about/index.html</loc>
     
-      <lastmod>2014-01-19</lastmod>
+      <lastmod>2014-01-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -122,7 +149,7 @@
   <url>
     <loc>http://txt.fliglio.com/all-posts/index.html</loc>
     
-      <lastmod>2014-01-19</lastmod>
+      <lastmod>2014-01-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -135,7 +162,7 @@
   <url>
     <loc>http://txt.fliglio.com/index.html</loc>
     
-      <lastmod>2014-01-19</lastmod>
+      <lastmod>2014-01-21</lastmod>
     
     
       <changefreq>monthly</changefreq>

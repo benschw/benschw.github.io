@@ -7,6 +7,406 @@
 		<atom:link href="txt.fliglio.com/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Building a Jekyll App in Openstack with Heat and Puppet</title>
+				<description>&lt;p&gt;I apologize in advance, because this is more &lt;em&gt;&amp;quot;stream of consciousness in a terminal&amp;quot;&lt;/em&gt; than how to correctly use either Puppet or Heat with Openstack. But there is a noticeable void in terms of community Openstack documentation, so I figure putting something out there is better then nothing... and hopefully people will comment and tell me how I &lt;em&gt;should&lt;/em&gt; be doing things.&lt;/p&gt;
+
+&lt;p&gt;That said, here&amp;#39;s an incredibly opinionated way to use Puppet in conjunction with Heat to provision a vm to host a &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; site (or anything else you can find or build a puppet module for.) &lt;/p&gt;
+
+&lt;p&gt;What site will we be serving you ask? Why this one of course (&lt;a href=&quot;https://github.com/benschw/txt.fliglio.com&quot;&gt;txt.fliglio.com&lt;/a&gt;)!&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2&gt;Get a Base Image Ready&lt;/h2&gt;
+
+&lt;p&gt;First thing&amp;#39;s first: get a base image ready to work from. I&amp;#39;m going to use one of &lt;a href=&quot;http://cloud-images.ubuntu.com/&quot;&gt;Ubuntu&amp;#39;s cloud images&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;glance image-create \
+    --name ubuntu-precise \
+    --disk-format ami \
+    --container-format bare \
+    --is-public True \
+    --copy-from \
+    http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It will probably take a few minutes to load; make sure it&amp;#39;s &amp;quot;ACTIVE&amp;quot; before continuing (you can check the status with &lt;code&gt;nova image-list&lt;/code&gt;)&lt;/p&gt;
+
+&lt;h2&gt;Adding some Heat&lt;/h2&gt;
+
+&lt;p&gt;At this point, we can start playing with &lt;a href=&quot;https://wiki.openstack.org/wiki/Heat&quot;&gt;Heat&lt;/a&gt;. Take a look at &lt;a href=&quot;https://github.com/openstack/heat-templates&quot;&gt;some templates&lt;/a&gt; to get an idea of how this works, or just keep reading. &lt;/p&gt;
+
+&lt;p&gt;If you&amp;#39;re like me, the idea of wrestling with user data formats and using bash scripts to build your box causes anxiety. So let&amp;#39;s build up our box with &lt;a href=&quot;http://puppetlabs.com/&quot;&gt;Puppet&lt;/a&gt; instead.&lt;/p&gt;
+
+&lt;p&gt;Going forward, I&amp;#39;ll be updating a &lt;a href=&quot;https://github.com/openstack/heat-templates/blob/master/hot/servers_in_existing_neutron_net.yaml&quot;&gt;hot template&lt;/a&gt; I found in Openstack&amp;#39;s &lt;a href=&quot;https://github.com/openstack/heat-templates&quot;&gt;heat templates&lt;/a&gt; github repo which I pared down to only launch a single server (&amp;quot;Server1&amp;quot;).&lt;/p&gt;
+
+&lt;h3&gt;Making Puppet Hot&lt;/h3&gt;
+
+&lt;p&gt;There are a number of ways to run puppet and even more ways to get puppet modules / dependencies in place. I will walk you through one (very) opinionated way. &lt;/p&gt;
+
+&lt;p&gt;Though we will try to keep our provisioning in Puppet, a small amount of bootstrapping is still needed to kick things off. This we can provide with a brief (and more importantly generic) bash script encoded in user_data. This script will obtain a &lt;em&gt;Puppet Controller&lt;/em&gt;  with git and apply it to our vm. Ok, I just made that term up... it&amp;#39;s the name I&amp;#39;m using to describe a repo containing a &lt;code&gt;Puppetfile&lt;/code&gt; to provide &lt;code&gt;r10k&lt;/code&gt; with a list of deps, and a &lt;code&gt;default.pp&lt;/code&gt; manifest to drive provisioning the vm; here&amp;#39;s the one for our example: &lt;a href=&quot;https://github.com/benschw/puppet-txt.fliglio.com&quot;&gt;puppet-txt.fliglio.com&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;To recap, the bootstrap shell script will:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Install packages (only those needed for the script)&lt;/li&gt;
+&lt;li&gt;clone the controller repo&lt;/li&gt;
+&lt;li&gt;grab Puppet deps with r10k&lt;/li&gt;
+&lt;li&gt;run puppet apply&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For our example controller (&lt;a href=&quot;https://github.com/benschw/puppet-txt.fliglio.com&quot;&gt;puppet-txt.fliglio.com&lt;/a&gt;), the &lt;code&gt;puppet apply&lt;/code&gt; command will:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;install &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;clone a copy of &lt;a href=&quot;https://github.com/benschw/txt.fliglio.com&quot;&gt;txt.fliglio.com&lt;/a&gt; from github (this address is specified in our controller repo&amp;#39;s &lt;code&gt;default.pp&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;install an &lt;code&gt;upstart&lt;/code&gt; service to serve the site.&lt;/li&gt;
+&lt;li&gt;start the newly configured service&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here&amp;#39;s an excerpt from the modified heat template showing what the bootstrap script looks like:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;yaml&quot;&gt;&lt;span class=&quot;nn&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;parameters&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;puppet_repo&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;string&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Git repo with puppet Puppetfile and manifests&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;server1&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;OS::Nova::Server&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;properties&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Server1&lt;/span&gt;
+      &lt;span class=&quot;l-Scalar-Plain&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;get_param&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;image&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;l-Scalar-Plain&quot;&gt;flavor&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;get_param&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;flavor&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;l-Scalar-Plain&quot;&gt;key_name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;get_param&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;key_name&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# admin_user: { get_param: admin_user }&lt;/span&gt;
+      &lt;span class=&quot;l-Scalar-Plain&quot;&gt;networks&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;get_resource&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;server1_port&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;l-Scalar-Plain&quot;&gt;user_data&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; 
+        &lt;span class=&quot;l-Scalar-Plain&quot;&gt;str_replace&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;l-Scalar-Plain&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;|&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;#!/bin/bash&lt;/span&gt;
+
+            &lt;span class=&quot;no&quot;&gt;apt-key adv --recv-key --keyserver pool.sks-keyservers.net 4BD6EC30&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;echo &amp;quot;deb http://apt.puppetlabs.com precise main&amp;quot; &amp;gt; /etc/apt/sources.list.d/puppetlabs.list&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;echo &amp;quot;deb http://apt.puppetlabs.com precise dependencies&amp;quot; &amp;gt;&amp;gt; /etc/apt/sources.list.d/puppetlabs.list&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;apt-get update&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;apt-get -y install puppet ruby1.9.1-full git&lt;/span&gt;
+
+            &lt;span class=&quot;no&quot;&gt;gem install r10k&lt;/span&gt;
+
+            &lt;span class=&quot;no&quot;&gt;TMP_PATH=`mktemp -d`&lt;/span&gt;
+
+            &lt;span class=&quot;no&quot;&gt;git clone $PUPPET_REPO $TMP_PATH&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;cp $TMP_PATH/puppet/Puppetfile /etc/puppet/Puppetfile # r10k gets cranky if the Puppetfile isn&amp;#39;t here&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;cd /etc/puppet&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;r10k puppetfile install ./Puppetfile&lt;/span&gt;
+
+            &lt;span class=&quot;no&quot;&gt;puppet apply $TMP_PATH/puppet/Manifests/default.pp&lt;/span&gt;
+
+          &lt;span class=&quot;l-Scalar-Plain&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;l-Scalar-Plain&quot;&gt;$PUPPET_REPO&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;get_param&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;puppet_repo&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;   &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;Getting ready to launch...&lt;/h3&gt;
+
+&lt;p&gt;The last steps before we can provision our stack are...&lt;/p&gt;
+
+&lt;p&gt;Add in an ssh key (only if you need to shell into the box):&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;nova keypair-add --pub_key ~/.ssh/id_rsa.pub bens
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Identify the public and private net_id values. You can get this with &lt;code&gt;neutron&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ neutron net-list
++--------------------------------------+-----------+----------------------------------------------------+
+| id                                   | name      | subnets                                            |
++--------------------------------------+-----------+----------------------------------------------------+
+| 1152a93b-d221-41a7-b5be-3428ed991eb2 | net04     | 552ca915-8bb6-46bf-b29c-3e0eceeef064 10.6.40.0/22  |
+| d98bc495-ac30-4136-9690-6545a8436468 | net04_ext | 4590955a-f4ac-42fa-81bf-5c730efb62b9 10.6.148.0/22 |
++--------------------------------------+-----------+----------------------------------------------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Identify the private_subnet_id:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ neutron subnet-list
++--------------------------------------+-------------------+---------------+------------------------------------------------+
+| id                                   | name              | cidr          | allocation_pools                               |
++--------------------------------------+-------------------+---------------+------------------------------------------------+
+| 4590955a-f4ac-42fa-81bf-5c730efb62b9 | net04_ext__subnet | 10.6.148.0/22 | {&amp;quot;start&amp;quot;: &amp;quot;10.6.150.2&amp;quot;, &amp;quot;end&amp;quot;: &amp;quot;10.6.151.254&amp;quot;} |
+| 552ca915-8bb6-46bf-b29c-3e0eceeef064 | net04__subnet     | 10.6.40.0/22  | {&amp;quot;start&amp;quot;: &amp;quot;10.6.40.2&amp;quot;, &amp;quot;end&amp;quot;: &amp;quot;10.6.43.254&amp;quot;}   |
++--------------------------------------+-------------------+---------------+------------------------------------------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And make sure we have our heat template ready (download my copy &lt;a href=&quot;https://raw.github.com/benschw/puppet-txt.fliglio.com/master/demo.yml&quot;&gt;here&lt;/a&gt;)&lt;/p&gt;
+
+&lt;h3&gt;That&amp;#39;s all? you mean we&amp;#39;re ready?&lt;/h3&gt;
+
+&lt;p&gt;Let&amp;#39;s launch a stack:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;heat stack-create teststack \
+    -f ./demo.yml \
+    -P &amp;quot;key_name=bens;image=ubuntu-precise;flavor=m1.small;public_net_id=d98bc495-ac30-4136-9690-6545a8436468;private_net_id=1152a93b-d221-41a7-b5be-3428ed991eb2;private_subnet_id=552ca915-8bb6-46bf-b29c-3e0eceeef064;puppet_repo=https://github.com/benschw/puppet-txt.fliglio.com.git&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now you can figure out the public ip and navigate to it in your browser:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ nova list
++--------------------------------------+------------+---------+------------+-------------+-------------------------------+
+| ID                                   | Name       | Status  | Task State | Power State | Networks                      |
++--------------------------------------+------------+---------+------------+-------------+-------------------------------+
+| 773ba7bf-8aae-428b-a19c-2bce35d63db7 | Server1    | ACTIVE  | None       | Running     | net04=10.6.40.15, 10.6.150.16 |
+| 2e9e994c-d2f9-4232-82bd-752ccdff346c | ubuntuinst | SHUTOFF | None       | Shutdown    | net04=10.6.40.13              |
++--------------------------------------+------------+---------+------------+-------------+-------------------------------+
+
+$ chromium-browser 10.6.150.16
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Some notes...&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;When I ran through this example, there was no way to specify an admin_user with heat, so your ssh key will always be installed to &lt;code&gt;ec2-user&lt;/code&gt;. This option seems to be available now, so if you&amp;#39;re using a more recent version of Havana you may have better luck. &lt;/li&gt;
+&lt;li&gt;It takes a while to apply the user_data, so don&amp;#39;t expect everything to be ready yet. Shelling in and running &lt;code&gt;ps -ef&lt;/code&gt; should give you some idea of how far along things are.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Final Thoughts&lt;/h2&gt;
+
+&lt;p&gt;Heat is pretty cool (and pretty rough around the edges) and I&amp;#39;ve only scratched the surface. Everything done here could basically be accomplished with &lt;code&gt;nova&lt;/code&gt;; heat&amp;#39;s real power isn&amp;#39;t revealed until you start configuring multiple nodes with complex relationships.&lt;/p&gt;
+
+&lt;p&gt;Puppet makes Heat even cooler though. Puppet gives you a way to make sure your application and its requirements come on line in a repeatable way. When combined with Heat and Openstack, we have a solid set of tools to make building and deploying ephemeral and immutable vms easy.&lt;/p&gt;
+</description>
+				<pubDate>Tue, 21 Jan 2014 08:21:55 -0600</pubDate>
+				<link>txt.fliglio.com//2014/01/openstack_with_puppet_and_heat/</link>
+				<guid isPermaLink="true">txt.fliglio.com//2014/01/openstack_with_puppet_and_heat/</guid>
+			</item>
+		
+			<item>
+				<title>Patching Openstack Base Image</title>
+				<description>&lt;h3&gt;Import Ubuntu Cloud Image&lt;/h3&gt;
+
+&lt;p&gt;First things first: import one of Ubuntu&amp;#39;s cloud image into OpenStack. You can find some &lt;a href=&quot;http://cloud-images.ubuntu.com/&quot;&gt;here&lt;/a&gt; or just use the same &lt;a href=&quot;http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img&quot;&gt;January 2014 Precise build&lt;/a&gt; I&amp;#39;m using.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;glance image-create \
+    --name ubuntu-precise \
+    --disk-format ami \
+    --container-format bare \
+    --is-public True \
+    --copy-from \
+    http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It will probably take a few minutes to load; make sure it&amp;#39;s &amp;quot;ACTIVE&amp;quot; before continuing (you can check the status with &lt;code&gt;nova image-list&lt;/code&gt;)&lt;/p&gt;
+
+&lt;h3&gt;heat-cfntools&lt;/h3&gt;
+
+&lt;p&gt;Why does Heat use &lt;a href=&quot;https://github.com/openstack/heat-cfntools&quot;&gt;heat-cfntools&lt;/a&gt; instead of &lt;a href=&quot;https://help.ubuntu.com/community/CloudInit&quot;&gt;CloutInit&lt;/a&gt; to apply &lt;a href=&quot;http://docs.openstack.org/user-guide/content/user-data.html&quot;&gt;user-data&lt;/a&gt;? I couldn&amp;#39;t tell you. But it does, and it doesn&amp;#39;t come with Ubuntu&amp;#39;s cloud images, so we need to add it. There are different tools for building your own base images (which you could use to include &lt;code&gt;heat-cfntools&lt;/code&gt;) but for this tutorial I&amp;#39;m going to go take the quick and dirty route: install them with CloudInit and take a snapshot to use as my base for my Heat stack.&lt;/p&gt;
+
+&lt;p&gt;So how do we install heat-cfntools with CloudInit? With &lt;a href=&quot;http://docs.openstack.org/developer/nova/&quot;&gt;nova.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To boot our instance, we first need to figure out a network to boot it into. You can get this with &lt;code&gt;neutron&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;neutron net-list
+
++--------------------------------------+-----------+----------------------------------------------------+
+| id                                   | name      | subnets                                            |
++--------------------------------------+-----------+----------------------------------------------------+
+| 1152a93b-d221-41a7-b5be-3428ed991eb2 | net04     | 552ca915-8bb6-46bf-b29c-3e0eceeef064 10.6.40.0/22  |
+| d98bc495-ac30-4136-9690-6545a8436468 | net04_ext | 4590955a-f4ac-42fa-81bf-5c730efb62b9 10.6.148.0/22 |
++--------------------------------------+-----------+----------------------------------------------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We want the internal network, so we&amp;#39;ll use the id which corresponds to &amp;quot;net04.&amp;quot;&lt;/p&gt;
+
+&lt;p&gt;Next we need to supply the &lt;code&gt;heat-cfntools&lt;/code&gt; install instructions to CloudInit via user data. There are a few different &lt;a href=&quot;https://help.ubuntu.com/community/CloudInit&quot;&gt;user data input formats&lt;/a&gt; available, but I&amp;#39;m going to use the &amp;quot;Cloud Config Data&amp;quot; format, which is specified by beginning your user-data with &lt;code&gt;#cloud-config&lt;/code&gt;. Here&amp;#39;s the file I made to pass to &lt;code&gt;nova boot&lt;/code&gt; later:&lt;/p&gt;
+
+&lt;p&gt;cfntools-cloud-config.txt&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#cloud-config&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssh_import_id&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;steve-stevebaker&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;apt_sources&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+ &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;ppa:steve-stevebaker/heat-cfntools&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+ &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;heat-cfntools&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Armed with our net id and cloud config, we can now add &lt;code&gt;heat-cfntools&lt;/code&gt; to our base image:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;nova boot --flavor m1.tiny --image ubuntu-precise --user-data ./cfntools-cloud-config.txt --nic net-id=1152a93b-d221-41a7-b5be-3428ed991eb2 ubuntuinst
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;After waiting a sufficient amount of time that we are sure the instance is provisioned, we can shut it down and take a &lt;a href=&quot;http://docs.openstack.org/user-guide/content/nova_manage_images.html&quot;&gt;snapshot&lt;/a&gt; to use as our Heat base image:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;nova stop ubuntuinst
+nova image-create ubuntuinst ubuntu-heat
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+				<pubDate>Fri, 17 Jan 2014 08:57:35 -0600</pubDate>
+				<link>txt.fliglio.com//2014/01/patching-openstack-base-image/</link>
+				<guid isPermaLink="true">txt.fliglio.com//2014/01/patching-openstack-base-image/</guid>
+			</item>
+		
+			<item>
+				<title>Concurrent Protractor Tests with Selenium Grid in Docker</title>
+				<description>&lt;p&gt;Have you ever wished your front end testing could be sped up? Has it ever seemed like Selenium was a royal pain in the ass? Though I agree, this isn&amp;#39;t the post that will relieve those problems. What it is, is a way to make testing your Angular app &lt;em&gt;slightly&lt;/em&gt; less painful by providing light weight &lt;a href=&quot;https://code.google.com/p/selenium/wiki/Grid2&quot;&gt;Selenium grid&lt;/a&gt; node parallelization with &lt;a href=&quot;https://github.com/angular/protractor&quot;&gt;Protractor&lt;/a&gt; and &lt;a href=&quot;https://www.docker.io/&quot;&gt;Docker&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Specifically, this post will... &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Show you how to run a tunable and scalable Selenium grid cluster in a single &lt;a href=&quot;http://www.vagrantup.com/&quot;&gt;Vagrant&lt;/a&gt; vm with &lt;a href=&quot;https://www.docker.io/&quot;&gt;Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Introduce &lt;a href=&quot;https://github.com/angular/protractor&quot;&gt;Protractor&lt;/a&gt; (and &lt;a href=&quot;https://github.com/teerapap/grunt-protractor-runner&quot;&gt;grunt-protractor-runner&lt;/a&gt;) 
+into a stock &lt;a href=&quot;http://http://yeoman.io/&quot;&gt;Yeoman&lt;/a&gt; generated Angular app&lt;/li&gt;
+&lt;li&gt;And configure the &lt;a href=&quot;http://http://gruntjs.com/&quot;&gt;Grunt&lt;/a&gt; build to run some example tests concurrently using the cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Interested in skipping to the end?&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/benschw/docker-selenium-grid&quot;&gt;docker-selenium-grid&lt;/a&gt; - Docker containers and a simple orchestration script to run your grid cluster&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/benschw/vagrant-selenium-grid&quot;&gt;vagrant-selenium-grid&lt;/a&gt; - Provisioning package to turn selenium grid setup into &lt;code&gt;vagrant up&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/benschw/protractor-demo&quot;&gt;protractor-demo&lt;/a&gt; - The demo angular app with all the crap I&amp;#39;m going to add in this post&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One last note before I get started... &lt;a href=&quot;https://github.com/FMartinez4&quot;&gt;Francisco Martinez&lt;/a&gt; deserves all of the credit for figuring out how to integrate Protractor and concurrency in Grunt; I&amp;#39;m just writing up his work and cramming &lt;a href=&quot;http://txt.fliglio.com/2013/09/protyping-web-stuff-with-docker/&quot;&gt;another Docker prototype&lt;/a&gt; into a blog bost. Thanks Francisco.&lt;/p&gt;
+
+&lt;h2&gt;Get started with Selenium Grid &lt;small&gt;(in a single vagrant vm)&lt;/small&gt;&lt;/h2&gt;
+
+&lt;p&gt;I&amp;#39;ve put together two projects to supply the Selenium Grid functionality. The &lt;a href=&quot;https://github.com/benschw/docker-selenium-grid&quot;&gt;docker-selenium-grid&lt;/a&gt; project supplies Dockerfiles for two Docker containers: a hub and a Firefox node; and comes with a script to help you add start and stop the cluster or new nodes. The &lt;a href=&quot;https://github.com/benschw/vagrant-selenium-grid&quot;&gt;vagrant-selenium-grid&lt;/a&gt; project is a Vagrant wrapper for the first project which further simplifies starting a cluster to simply running &lt;code&gt;vagrant up&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To boot your cluster, simply run the following commands&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone https://github.com/benschw/vagrant-selenium-grid
+cd vagrant-selenium-grid
+vagrant up
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This VM defaults to using 2gb of ram, but this can easily be tuned by tweaking the &lt;code&gt;Vagrantfile&lt;/code&gt; before running &lt;code&gt;vagrant up&lt;/code&gt;. It will run three firefox nodes by default, but you can tweak this by shelling into the Vagrant vm and interacting with the cluster via &lt;code&gt;~/docker-selenium-grid/grid.sh&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;If you want to make sure it works, install &lt;a href=&quot;https://github.com/angular/protractor&quot;&gt;protractor&lt;/a&gt; and run &lt;code&gt;./test.sh&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;npm install -g protractor
+./test.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;Why Docker?&lt;/h4&gt;
+
+&lt;p&gt;Docker provide&amp;#39;s lighweight virtualization. In other words, your laptop is probably capable of driving a handfull of browsers at once, but not a handfull of VMs. Docker gives you to encapsulation of a VM with (almost) none of the overhead. It does require a Linux kernel however, which is why i&amp;#39;ve recommended running your grid inside a Vagrant vm.&lt;/p&gt;
+
+&lt;p&gt;Running Linux? Skip the VM and run &lt;a href=&quot;https://github.com/benschw/docker-selenium-grid&quot;&gt;docker-selenium-grid&lt;/a&gt; on your host (you&amp;#39;ll just have to &lt;a href=&quot;http://docs.docker.io/en/latest/installation/ubuntulinux/&quot;&gt;install Docker&lt;/a&gt; first.)&lt;/p&gt;
+
+&lt;h2&gt;Concurrent Protractor Testing&lt;/h2&gt;
+
+&lt;h3&gt;Yo Angular!&lt;/h3&gt;
+
+&lt;p&gt;I&amp;#39;ll assume you&amp;#39;ve used Yeoman before, but just in case - here&amp;#39;s how to get it:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo npm install -g yo
+sudo npm install -g grunt-cli
+sudo npm install -g bower
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now that you have the basics, lets use our new tools to generate an angular app:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir protractor-demo
+cd protractor-demo
+
+npm install generator-angular
+
+yo angular # go ahead and &amp;quot;Y&amp;quot; everything
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This sets up &lt;a href=&quot;http://http://yeoman.io/&quot;&gt;Yeoman&amp;#39;s&lt;/a&gt; opinionated default angular app. Deps are installed with &lt;a href=&quot;http://bower.io/&quot;&gt;bower&lt;/a&gt; and a build script is provided that can be run with &lt;a href=&quot;http://gruntjs.com/&quot;&gt;grunt&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3&gt;Introducing Protractor&lt;/h3&gt;
+
+&lt;p&gt;Now lets start adding in Protractor.&lt;/p&gt;
+
+&lt;p&gt;Install the npm deps:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo npm install -g protractor
+npm install protractor --save-dev
+npm install grunt-protractor-runner --save-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;Add some tests and Update your build&lt;/h4&gt;
+
+&lt;p&gt;At this point you can decide if you want to follow along and patch your &lt;code&gt;Gruntfile.js&lt;/code&gt; by hand, or just grab a copy from the &lt;a href=&quot;https://github.com/benschw/protractor-demo&quot;&gt;protractor-demo&lt;/a&gt; project. Additionally, I&amp;#39;ve included &lt;a href=&quot;https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2&quot;&gt;scenario.tar.bz2&lt;/a&gt; which holds the example tests we will be wiring up.&lt;/p&gt;
+
+&lt;p&gt;The quick way:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget -N https://raw.github.com/benschw/protractor-demo/master/Gruntfile.js
+wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2 | tar -C ./test/ -xjvf -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;What are the changes?&lt;/h4&gt;
+
+&lt;p&gt;Add in your Protractor test wiring after the &amp;quot;karma&amp;quot; section:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;protractor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//configFile: &amp;#39;node_modules/protractor/referenceConf.js&amp;#39;, // Default config file&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;keepAlive&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// If false, the grunt process stops when the test fails.&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;noColor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// If true, protractor will not use colors in its output.&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;baseUrl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;http://&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getIpAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;:&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;lt;%= connect.dist.options.port %&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//config for all protractor tasks&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;feature1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;configFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;test/scenario/conf/featureList1.js&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Target-specific config file&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;feature2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;configFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;test/scenario/conf/featureList2.js&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Target-specific config file&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Provide the &lt;code&gt;getIpAddress()&lt;/code&gt; function at the top of your file. Since your grid is running in a VM, we need to give it more than &lt;code&gt;localhost&lt;/code&gt; to target:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;   &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;os&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;os&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getIpAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ipAddress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ifaces&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;networkInterfaces&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+      &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;processDetails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;family&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;IPv4&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;address&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ipAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;ipAddress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;address&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dev&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ifaces&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;ifaces&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;processDetails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ipAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Reference our two test features in the &amp;quot;concurrent&amp;quot; section:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;      &lt;span class=&quot;nx&quot;&gt;protractor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&amp;#39;protractor:feature1&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&amp;#39;protractor:feature2&amp;#39;&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the &amp;quot;connect&amp;quot; section, update &amp;quot;connect.options&amp;quot; to use &lt;code&gt;hostname: &amp;#39;0.0.0.0&amp;#39;&lt;/code&gt;, and &amp;quot;connect.dist&amp;quot; to use &lt;code&gt;port: 9002&lt;/code&gt; &lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Change this to &amp;#39;0.0.0.0&amp;#39; to access the server from outside.&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;hostname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;0.0.0.0&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;livereload&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;35729&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;dist&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9002&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;lt;%= yeoman.dist %&amp;gt;&amp;#39;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And last but not least, add a new task at the bottom of the file so we can run these bad boys:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;   &lt;span class=&quot;nx&quot;&gt;grunt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;registerTask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ptr&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&amp;#39;clean:server&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&amp;#39;connect:dist&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&amp;#39;concurrent:protractor&amp;#39;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h4&gt;Run the tests... Fast!&lt;/h4&gt;
+
+&lt;p&gt;Assuming all our updates made it in and Yeoman&amp;#39;s Angular generator hasn&amp;#39;t changed, we should now be able to run tests for our two test features concurrently:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;grunt ptr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I hope it worked for you, and I hope this helped.&lt;/p&gt;
+</description>
+				<pubDate>Wed, 08 Jan 2014 09:27:27 -0600</pubDate>
+				<link>txt.fliglio.com//2014/01/protractor/</link>
+				<guid isPermaLink="true">txt.fliglio.com//2014/01/protractor/</guid>
+			</item>
+		
+			<item>
 				<title>Orchestrating docker with Go</title>
 				<description>&lt;h2&gt;dockit&lt;/h2&gt;
 
@@ -1053,29 +1453,6 @@ Did it work? http://bobloblaw.github.io should be hosting your angular app now..
 				<pubDate>Tue, 30 Apr 2013 03:10:53 +0000</pubDate>
 				<link>txt.fliglio.com//2013/04/publishing-a-yeoman-app-with-github-pages/</link>
 				<guid isPermaLink="true">txt.fliglio.com//2013/04/publishing-a-yeoman-app-with-github-pages/</guid>
-			</item>
-		
-			<item>
-				<title>Hello world!</title>
-				<description>&lt;p&gt;Welcome to WordPress. This is your first post. Edit or delete it, then start blogging!&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$thisWorks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;syntax highlighting!&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;!--more--&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;thisWorks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;   &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;syntax highlighting!&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-</description>
-				<pubDate>Sun, 28 Apr 2013 00:32:26 +0000</pubDate>
-				<link>txt.fliglio.com//2013/04/hello-world/</link>
-				<guid isPermaLink="true">txt.fliglio.com//2013/04/hello-world/</guid>
 			</item>
 		
 	</channel>
