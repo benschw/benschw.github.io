@@ -49,7 +49,7 @@ Go on the other hand tracks concurrent units of work in goroutines (a language l
 
 
 ## Brain Candy
-an algorithm is worth a thousand words...
+An example is worth a thousand words...
 
 ### Sieve of Eratosthenes (prime numbers)
 I got this example [here](http://scienceblogs.com/goodmath/2009/11/13/the-go-i-forgot-concurrency-an/)
