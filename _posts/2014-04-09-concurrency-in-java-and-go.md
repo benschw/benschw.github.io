@@ -3,6 +3,7 @@ layout: post
 title: Concurrency in Java and Go
 ---
 
+
 Here is an attempt to discuss the differences between concurrency and parallelism in Java and Go. In the process I discuss the importance of (without weighing in on) concurrency to the design of your application.
 
 <!--more-->
