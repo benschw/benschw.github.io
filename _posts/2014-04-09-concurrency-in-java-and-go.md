@@ -19,7 +19,7 @@ Parallelism is essentially capped to the number of cpus you have; so if you have
 
 ## Concurrency in Java and Go
 
-Four tools (by no means an exhaustive list) for managing concurrency are processes, threads, green threads, and go routines.
+Four tools (by no means an exhaustive list) for managing concurrency are processes, threads, green threads, and goroutines.
 
 - *Processes:* Processes are OS managed and each is allocated it's own address space (or context).
 - *Threads:* Threads are OS managed but share an address space (or context) with other threads running in the same process.
