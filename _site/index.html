@@ -26,6 +26,17 @@
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
 		<title>txt.fliglio.com</title>
+
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-46191138-1', 'fliglio.com');
+			ga('send', 'pageview');
+
+		</script>
 	</head>
 
 	<body>
@@ -59,9 +70,11 @@
 	<ul class="post-excerpts">
 		
 			<li>
-				<h1><a href="/2014/04/2014-05-09-concurrency-in-java-and-go/">Concurrency in Java and Go</a></h1>
-				<h4>09 Apr 2014</h4>
-				<p><p>Here is my attempt to discuss the differences between concurrency and parallelism in Java and Go. In the process I discuss the importance of (without weighing in on) concurrency to the design of your application.</p>
+				<h1><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></h1>
+				<h4>21 May 2014</h4>
+				<p><p>In a landscape where software infrastructure is getting more and more dynamic, dynamic communication of services with other services as well as with their environments is increasingly important.</p>
+
+<p>Using REST to communicate between services is basically a no-brainer, but locating a service or replacing config files with a REST API isn&#39;t as obvious of a decision. Of course wiring a domain name to an IP with the GoDaddy GUI, or maintaining config files on dozens of servers doesn&#39;t seem right either.</p>
 </p>
 			</li>
 		
@@ -121,6 +134,13 @@ nova image-create ubuntuinst ubuntu-heat
 			</li>
 		
 			<li>
+				<h1><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></h1>
+				<h4>09 Apr 2014</h4>
+				<p><p>Here is an attempt to discuss the differences between concurrency and parallelism in Java and Go. In the process, I discuss (without weighing in on) the importance of concurrency to the design of your application.</p>
+</p>
+			</li>
+		
+			<li>
 				<h1><a href="/2014/01/concurrent-protractor-testing/">Concurrent Protractor Tests with Selenium Grid in Docker</a></h1>
 				<h4>24 Jan 2014</h4>
 				<p><p>Have you ever wished your front end testing could be sped up? Has it ever seemed like Selenium was a royal pain in the ass? Though I agree, this isn&#39;t the post that will relieve those problems. What it is, is a way to make testing your Angular app <em>slightly</em> less painful by providing light weight <a href="https://code.google.com/p/selenium/wiki/Grid2">Selenium grid</a> node parallelization with <a href="https://github.com/angular/protractor">Protractor</a> and <a href="https://www.docker.io/">Docker</a>.</p>
@@ -147,24 +167,6 @@ into a stock <a href="http://http://yeoman.io/">Yeoman</a> generated Angular app
 </p>
 			</li>
 		
-			<li>
-				<h1><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></h1>
-				<h4>18 Dec 2013</h4>
-				<p><h2>dockit</h2>
-
-<p>I hacked together an app named <a href="https://github.com/benschw/dockit" target="_blank">dockit</a> using <a href="http://golang.org/" target="_blank">Go</a> in order to manage a simple environment; one with webapps and a reverse proxy to route traffic to them.</p>
-
-<p>This is not supposed to be a general-purpose tool, but rather an example of how wiring up Docker environments using Go is...</p>
-
-<ul>
-<li>Testable: a testing framework is built in</li>
-<li>Easy to read: idiomatic style that is almost universally followed, making for a terse, highly readable ecosystem</li>
-<li>Easy to maintain: I'm assuming you were doing this work in bash before</li>
-<li>Portable: really, we're only talking about Linux with Docker, so a single statically linked binary is as portable as you can get</li>
-</ul>
-</p>
-			</li>
-		
 		<li><h1><a href="/all-posts">more...</a></h1></li>
 
 	</ul>
@@ -185,9 +187,11 @@ into a stock <a href="http://http://yeoman.io/">Yeoman</a> generated Angular app
 					<h3 class="small">Recent Posts</h3>
 					<ul id="posts-nav">
 					
-						<li><a href="/2014/04/2014-05-09-concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
+						<li><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></li>
 					
 						<li><a href="/2014/04/patching-openstack-base-image/">Patching Openstack Base Image</a></li>
+					
+						<li><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
 					
 						<li><a href="/2014/01/concurrent-protractor-testing/">Concurrent Protractor Tests with Selenium Grid in Docker</a></li>
 					
@@ -202,8 +206,6 @@ into a stock <a href="http://http://yeoman.io/">Yeoman</a> generated Angular app
 						<li><a href="/2013/09/oauth-2-grant-types-demystified/">OAuth 2 Grant Types Demystified</a></li>
 					
 						<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
-					
-						<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
 					
 						<li><a href="/all-posts">more...</a></li>
 					</ul>
@@ -222,21 +224,12 @@ into a stock <a href="http://http://yeoman.io/">Yeoman</a> generated Angular app
 					<img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/80x15.png" />
 				</a>
 				<br />
-				This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+				This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+				by <a href="https://plus.google.com/106367727355341421523?rel=author">Ben Schwartz</a>
 			</footer>
 		</div>
 
 
-		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-			ga('create', 'UA-46191138-1', 'fliglio.com');
-			ga('send', 'pageview');
-
-		</script>
 
 		<script>
 		$(document).ready(function() {

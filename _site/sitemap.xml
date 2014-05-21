@@ -2,15 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://txt.fliglio.com/</loc>
-    <lastmod>2014-04-09T15:37:39-05:00</lastmod>
+    <lastmod>2014-05-21T13:34:19-05:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
     <url>
-      <loc>http://txt.fliglio.com/2014/04/2014-05-09-concurrency-in-java-and-go/</loc>
+      <loc>http://txt.fliglio.com/2014/05/encapsulated-services-with-consul-and-confd/</loc>
       
-        <lastmod>2014-04-09T15:37:35-05:00</lastmod>
+        <lastmod>2014-05-21T13:34:19-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -19,7 +19,16 @@
     <url>
       <loc>http://txt.fliglio.com/2014/04/patching-openstack-base-image/</loc>
       
-        <lastmod>2014-04-09T15:14:44-05:00</lastmod>
+        <lastmod>2014-04-09T15:53:03-05:00</lastmod>
+      
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
+  
+    <url>
+      <loc>http://txt.fliglio.com/2014/04/concurrency-in-java-and-go/</loc>
+      
+        <lastmod>2014-04-09T00:00:00-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -119,7 +128,7 @@
   <url>
     <loc>http://txt.fliglio.com/sitemap.xml</loc>
     
-      <lastmod>2014-04-09</lastmod>
+      <lastmod>2014-05-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -132,7 +141,7 @@
   <url>
     <loc>http://txt.fliglio.com/feed.xml</loc>
     
-      <lastmod>2014-04-09</lastmod>
+      <lastmod>2014-05-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -145,7 +154,7 @@
   <url>
     <loc>http://txt.fliglio.com/about/index.html</loc>
     
-      <lastmod>2014-04-09</lastmod>
+      <lastmod>2014-05-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -158,7 +167,7 @@
   <url>
     <loc>http://txt.fliglio.com/all-posts/index.html</loc>
     
-      <lastmod>2014-04-09</lastmod>
+      <lastmod>2014-05-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -171,7 +180,7 @@
   <url>
     <loc>http://txt.fliglio.com/index.html</loc>
     
-      <lastmod>2014-04-09</lastmod>
+      <lastmod>2014-05-21</lastmod>
     
     
       <changefreq>monthly</changefreq>
