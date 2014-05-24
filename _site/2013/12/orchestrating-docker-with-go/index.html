@@ -128,8 +128,7 @@
     <span class="nt">&quot;Env&quot;</span> <span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;HOST&quot;</span> <span class="p">:</span> <span class="s2">&quot;webapp.local&quot;</span>
     <span class="p">}</span>
-<span class="p">}}</span>
-</code></pre></div>
+<span class="p">}}</span></code></pre></div>
 
 <p>(the image <em>benschw/go-webapp</em> was built from the contents of the <a href="https://github.com/benschw/dockit/tree/master/webapp-ex" target="_blank">webapp-ex directory</a>)</p>
 
@@ -138,14 +137,12 @@
 <p>Pull the example containers:</p>
 
 <div class="highlight"><pre><code class="bash">sudo docker pull stackbrew/hipache
-sudo docker pull benschw/go-webapp
-</code></pre></div>
+sudo docker pull benschw/go-webapp</code></pre></div>
 
 <p>Start the Services:</p>
 
 <div class="highlight"><pre><code class="bash">sudo ./dockit -service Hipache -start
-sudo ./dockit -service WebApp -start
-</code></pre></div>
+sudo ./dockit -service WebApp -start</code></pre></div>
 
 <p>This will start up the <em>Hipache</em> service and then the <em>WebApp</em> service, and it will register the private ip:port of  the <em>WebApp</em> container with Hipache (see <a href="https://github.com/benschw/dockit/blob/master/webapp-ex/start.sh" target="_blank">webapp-ex/start.sh</a>) under the name <em>webapp.local</em>.</p>
 
@@ -153,13 +150,11 @@ sudo ./dockit -service WebApp -start
 
 <h4>Stop the example</h4>
 
-<div class="highlight"><pre><code class="bash">sudo ./dockit -service WebApp -stop
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">sudo ./dockit -service WebApp -stop</code></pre></div>
 
 <p>This will only stop the <em>WebApp</em> container (and deregister from Hipache); Hipache is still running. To stop it too, run:</p>
 
-<div class="highlight"><pre><code class="bash">sudo ./dockit -service Hipache -stop
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">sudo ./dockit -service Hipache -stop</code></pre></div>
 
 <p>Note the containers are still there in a "stopped" state, and a subsequent <em>-start</em> will run new instances.</p>
 
@@ -177,22 +172,9 @@ sudo ./dockit -service WebApp -start
 
 <div id="social-tools">
 
-	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/" data-via="benhschwartz">Tweet</a>
-	
-	<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
-
-	<div class="g-plus" data-action="share"></div>
-
-	<!-- google -->
-	<script type="text/javascript">
-		(function() {
-			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-			po.src = 'http://apis.google.com/js/platform.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-		})();
-	</script>
-
 	<!-- twitter -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/" data-via="benhschwartz" data-show-count="true">Tweet</a>
+	
 	<script>
 		!function(d,s,id){
 			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -202,43 +184,45 @@ sudo ./dockit -service WebApp -start
 		}(document, 'script', 'twitter-wjs');
 	</script>
 
+
 	<br /><br />
 	
+	<!-- Disqus -->	
 	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+		/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+		var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
+		var disqus_url = 'http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/';
+
+		//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
+		//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
+		var disqus_container_id = 'disqus_thread';
+		var disqus_domain = 'disqus.com';
+		var disqus_shortname = 'fligliotxt';
+		var disqus_title = "Orchestrating docker with Go";
+
+		/* * * DON'T EDIT BELOW THIS LINE * * */
+		(function() {
+			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		})();
+
+		    /* * * DON'T EDIT BELOW THIS LINE * * */
+	(function () {
+	    var s = document.createElement('script'); s.async = true;
+	    s.type = 'text/javascript';
+	    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+	}());
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 </div>
 
 
-<script type="text/javascript">
-	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-	var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
-	var disqus_url = 'http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/';
-
-	//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
-	//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
-	var disqus_container_id = 'disqus_thread';
-	var disqus_domain = 'disqus.com';
-	var disqus_shortname = 'fligliotxt';
-	var disqus_title = "Orchestrating docker with Go";
-
-	/* * * DON'T EDIT BELOW THIS LINE * * */
-	(function() {
-		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-	})();
-
-	    /* * * DON'T EDIT BELOW THIS LINE * * */
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 	
 					
 				</div>
@@ -250,15 +234,12 @@ sudo ./dockit -service WebApp -start
 						<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
 						<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
 						<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
-						<li><a class="share-icon bitly" target="_blank" href="https://bitly.com/u/o_28dsjkv7t4"><img src="/images/bitly-32.png" alt="bitly"/></a></li>
 					</ul>
 					<br />
 					<h3 class="small">Recent Posts</h3>
 					<ul id="posts-nav">
 					
 						<li><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></li>
-					
-						<li><a href="/2014/04/patching-openstack-base-image/">Patching Openstack Base Image</a></li>
 					
 						<li><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
 					
@@ -276,12 +257,35 @@ sudo ./dockit -service WebApp -start
 					
 						<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
 					
+						<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
+					
 						<li><a href="/all-posts">more...</a></li>
 					</ul>
 
+					<br />
+
+					<!-- Twitter -->
 					<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="false">Follow @benhschwartz</a>
 					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-				
+
+					<br /><br />
+
+					<!-- Github -->
+					<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+
+					<br /><br />
+					
+					<!-- Adsense -->
+					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+					<!-- txt.fliglio-2 -->
+					<ins class="adsbygoogle"
+					     style="display:inline-block;width:250px;height:250px"
+					     data-ad-client="ca-pub-6571676266096984"
+					     data-ad-slot="5166098950"></ins>
+					<script>
+						(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>					
+
 				</div><!--/span-->
 			</div>
 

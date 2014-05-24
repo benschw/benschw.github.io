@@ -70,7 +70,7 @@
 	<h1>Publishing a Yeoman app with GitHub Pages</h1>
 </div>
 
-<p class="meta">30 Apr 2013</p>
+<p class="meta">29 Apr 2013</p>
 <p class="meta"><a href="#disqus_thread">comments</a></p>
 
 <p>There comes a time in every Github user&#39;s life, when they begin to assume that other people might give a damn about the code they have written. While this assumption is by and large wrong, every so often someone produces something worth wrapping a marketing homepage around. Or they might want to dress up their GitHub page enough that their coworkers are willing to treat their reinvention of the wheel as a first class framework.</p>
@@ -93,8 +93,7 @@ Follow along here, or get more details on setting up your user pages on github f
 <ul>
     <li>Create a new repository using the convention:</p>
 
-<div class="highlight"><pre><code class="bash">github.com/username/username.github.io
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">github.com/username/username.github.io</code></pre></div>
 
 <p></li>
 </ul>
@@ -111,8 +110,7 @@ If i leave something out, yeoman talks a little about this step here: <a href="
 <span class="nv">$ </span>git checkout src
 <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;#github pages src branch&quot;</span> <span class="p">&amp;</span>gt<span class="p">;</span> README.md
 <span class="nv">$ </span>git commit -am <span class="s2">&quot;adding a readme so i can add this branch to my repo on github&quot;</span>
-<span class="nv">$ </span>git push -u origin src
-</code></pre></div>
+<span class="nv">$ </span>git push -u origin src</code></pre></div>
 
 <p></li>
 </ul>
@@ -122,8 +120,7 @@ At this point,  we need to get our Yeoman on so we have something to publish. E
     <li><span style="line-height: 13px;">from your checkout of the src branch, scaffold out your application with Yeoman</span></p>
 
 <div class="highlight"><pre><code class="bash"><span class="nv">$ </span>npm install generator-angular generator-karma
-<span class="nv">$ </span>yo angular
-</code></pre></div>
+<span class="nv">$ </span>yo angular</code></pre></div>
 
 <p></li>
 </ul>
@@ -131,21 +128,18 @@ Now you&#39;ve got  a brand spankin new angular app thats just itching to be bu
 <ul>
     <li><span style="line-height: 13px;">build your project</span></p>
 
-<div class="highlight"><pre><code class="bash"><span class="nv">$ </span>grunt build
-</code></pre></div>
+<div class="highlight"><pre><code class="bash"><span class="nv">$ </span>grunt build</code></pre></div>
 
 <p></li>
     <li>tweak your .gitignore file to allow committing the dist folder we just built (remove &quot;dist&quot; from the file)</p>
 
-<div class="highlight"><pre><code class="bash"><span class="nv">$ </span>nano .gitignore
-</code></pre></div>
+<div class="highlight"><pre><code class="bash"><span class="nv">$ </span>nano .gitignore</code></pre></div>
 
 <p></li>
     <li>commit stuff and push!</p>
 
 <div class="highlight"><pre><code class="bash"><span class="nv">$ </span>git commit -am <span class="s2">&quot;bob loblaw&#39;s github account is about to get snazzy&quot;</span>
-<span class="nv">$ </span>git push origin src
-</code></pre></div>
+<span class="nv">$ </span>git push origin src</code></pre></div>
 
 <p></li>
 </ul>
@@ -158,8 +152,7 @@ If you&#39;re running port on OS x,  give this a try:</p>
 <div class="highlight"><pre><code class="bash"><span class="nv">$ </span>git clone https://github.com/git/git.git
 <span class="nv">$ </span><span class="nb">cd </span>git/contrib/subtree/
 <span class="nv">$ </span>make
-<span class="nv">$ </span>sudo cp git-subtree /opt/local/libexec/git-core/
-</code></pre></div>
+<span class="nv">$ </span>sudo cp git-subtree /opt/local/libexec/git-core/</code></pre></div>
 
 <h3>No Really, Get it in the interwebs!</h3>
 
@@ -181,22 +174,9 @@ Did it work? http://bobloblaw.github.io should be hosting your angular app now..
 
 <div id="social-tools">
 
-	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/" data-via="benhschwartz">Tweet</a>
-	
-	<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
-
-	<div class="g-plus" data-action="share"></div>
-
-	<!-- google -->
-	<script type="text/javascript">
-		(function() {
-			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-			po.src = 'http://apis.google.com/js/platform.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-		})();
-	</script>
-
 	<!-- twitter -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/" data-via="benhschwartz" data-show-count="true">Tweet</a>
+	
 	<script>
 		!function(d,s,id){
 			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -206,43 +186,45 @@ Did it work? http://bobloblaw.github.io should be hosting your angular app now..
 		}(document, 'script', 'twitter-wjs');
 	</script>
 
+
 	<br /><br />
 	
+	<!-- Disqus -->	
 	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+		/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+		var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
+		var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
+
+		//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
+		//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
+		var disqus_container_id = 'disqus_thread';
+		var disqus_domain = 'disqus.com';
+		var disqus_shortname = 'fligliotxt';
+		var disqus_title = "Publishing a Yeoman app with GitHub Pages";
+
+		/* * * DON'T EDIT BELOW THIS LINE * * */
+		(function() {
+			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		})();
+
+		    /* * * DON'T EDIT BELOW THIS LINE * * */
+	(function () {
+	    var s = document.createElement('script'); s.async = true;
+	    s.type = 'text/javascript';
+	    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+	}());
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 </div>
 
 
-<script type="text/javascript">
-	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-	var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
-	var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
-
-	//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
-	//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
-	var disqus_container_id = 'disqus_thread';
-	var disqus_domain = 'disqus.com';
-	var disqus_shortname = 'fligliotxt';
-	var disqus_title = "Publishing a Yeoman app with GitHub Pages";
-
-	/* * * DON'T EDIT BELOW THIS LINE * * */
-	(function() {
-		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-	})();
-
-	    /* * * DON'T EDIT BELOW THIS LINE * * */
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 	
 					
 				</div>
@@ -254,15 +236,12 @@ Did it work? http://bobloblaw.github.io should be hosting your angular app now..
 						<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
 						<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
 						<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
-						<li><a class="share-icon bitly" target="_blank" href="https://bitly.com/u/o_28dsjkv7t4"><img src="/images/bitly-32.png" alt="bitly"/></a></li>
 					</ul>
 					<br />
 					<h3 class="small">Recent Posts</h3>
 					<ul id="posts-nav">
 					
 						<li><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></li>
-					
-						<li><a href="/2014/04/patching-openstack-base-image/">Patching Openstack Base Image</a></li>
 					
 						<li><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
 					
@@ -280,12 +259,35 @@ Did it work? http://bobloblaw.github.io should be hosting your angular app now..
 					
 						<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
 					
+						<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
+					
 						<li><a href="/all-posts">more...</a></li>
 					</ul>
 
+					<br />
+
+					<!-- Twitter -->
 					<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="false">Follow @benhschwartz</a>
 					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-				
+
+					<br /><br />
+
+					<!-- Github -->
+					<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+
+					<br /><br />
+					
+					<!-- Adsense -->
+					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+					<!-- txt.fliglio-2 -->
+					<ins class="adsbygoogle"
+					     style="display:inline-block;width:250px;height:250px"
+					     data-ad-client="ca-pub-6571676266096984"
+					     data-ad-slot="5166098950"></ins>
+					<script>
+						(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>					
+
 				</div><!--/span-->
 			</div>
 

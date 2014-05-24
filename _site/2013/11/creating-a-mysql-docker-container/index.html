@@ -98,18 +98,15 @@ RUN apt-get -y install mysql-server
 
 EXPOSE 3306
 
-CMD <span class="o">[</span><span class="s2">&quot;/usr/bin/mysqld_safe&quot;</span><span class="o">]</span>
-</code></pre></div>
+CMD <span class="o">[</span><span class="s2">&quot;/usr/bin/mysqld_safe&quot;</span><span class="o">]</span></code></pre></div>
 
 <p>then build and tag it:</p>
 
-<div class="highlight"><pre><code class="bash">docker build -t mysql .
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">docker build -t mysql .</code></pre></div>
 
 <p>Now we have a fully functioning container that we can run like so:</p>
 
-<div class="highlight"><pre><code class="bash">docker run -d -p 3306:3306 mysql
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">docker run -d -p 3306:3306 mysql</code></pre></div>
 
 <p>This would work, but it wouldn&#39;t be very useful.
 <ul>
@@ -126,13 +123,11 @@ CMD <span class="o">[</span><span class="s2">&quot;/usr/bin/mysqld_safe&quot;</s
 
 <p>We could just start maintaining the <code>/etc/mysql/my.cnf</code> file and add it to our container with our Dockerfile: </p>
 
-<div class="highlight"><pre><code class="bash">ADD ./my.cnf /etc/mysql/my.cnf
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">ADD ./my.cnf /etc/mysql/my.cnf</code></pre></div>
 
 <p>Or we could update that one property. I prefer this way so that I know that I am getting the most up to date config from my install, and just updating what I need to. We can add the appropriate <code>sed</code> command to our Dockerfile after we&#39;ve installed mysql-server.</p>
 
-<div class="highlight"><pre><code class="bash">RUN sed -i -e<span class="s2">&quot;s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/&quot;</span> /etc/mysql/my.cnf
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">RUN sed -i -e<span class="s2">&quot;s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/&quot;</span> /etc/mysql/my.cnf</code></pre></div>
 
 <p>(Technically we could just delete the line for the same effect, but this is more explicit.)</p>
 
@@ -148,21 +143,18 @@ CMD <span class="o">[</span><span class="s2">&quot;/usr/bin/mysqld_safe&quot;</s
     
 EXPOSE 3306
     
-CMD <span class="o">[</span><span class="s2">&quot;/usr/bin/mysqld_safe&quot;</span><span class="o">]</span>
-</code></pre></div>
+CMD <span class="o">[</span><span class="s2">&quot;/usr/bin/mysqld_safe&quot;</span><span class="o">]</span></code></pre></div>
 
 <p>Let&#39;s build and run it!</p>
 
 <div class="highlight"><pre><code class="bash">docker build -t mysql .
-docker run -d -p 3306:3306 mysql
-</code></pre></div>
+docker run -d -p 3306:3306 mysql</code></pre></div>
 
 <p>And now to try connecting. In order to do this, we need to figure out the container&#39;s ip, and to find that, we need our container&#39;s id. This is easy enough to do by hand with <code>docker ps</code> and <code>docker inspect</code>, but you could also script it:</p>
 
 <div class="highlight"><pre><code class="bash"><span class="nv">CONTAINER_ID</span><span class="o">=</span><span class="k">$(</span>docker ps <span class="p">|</span> grep mysql <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="nv">IP</span><span class="o">=</span><span class="k">$(</span>docker inspect <span class="nv">$CONTAINER_ID</span> <span class="p">|</span> python -c <span class="s1">&#39;import json,sys;obj=json.load(sys.stdin);print obj[0][&quot;NetworkSettings&quot;][&quot;IPAddress&quot;]&#39;</span><span class="k">)</span>
-mysql -u admin -p -h <span class="nv">$IP</span>
-</code></pre></div>
+mysql -u admin -p -h <span class="nv">$IP</span></code></pre></div>
 
 <p>Now we have a fully functional mysql container! That&#39;s great and all, but we&#39;re putting a lot of trust into this container by relying on it to keep track of our databases, not to mention we&#39;re screwed if we ever want to upgrade or update anything.</p>
 
@@ -172,8 +164,7 @@ mysql -u admin -p -h <span class="nv">$IP</span>
 
 <p>So to persist databases from our container in <code>/data/mysql</code> on our host machine, we update our run command to be:</p>
 
-<div class="highlight"><pre><code class="bash">docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql
-</code></pre></div>
+<div class="highlight"><pre><code class="bash">docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql</code></pre></div>
 
 <p>The problem is, we just nuked our system tables when we replaced <code>/var/lib/mysql</code> with our empty directory. This also means we lost our admin user. This is tricky to account for because we can&#39;t initialize the directory (or add our admin user) until the data directory is visible to the container (at run time) but we don&#39;t want to initialize the directory every time we start up either. The whole point of externalizing the data directory is so that the container can come and go without loss of data.</p>
 
@@ -187,16 +178,14 @@ mysql -u admin -p -h <span class="nv">$IP</span>
 <span class="k">    </span>mysql_install_db
 <span class="k">fi</span>
 
-/usr/bin/mysqld_safe
-</code></pre></div>
+/usr/bin/mysqld_safe</code></pre></div>
 
 <p>This will look for the file &quot;ibdata1&quot; in our data dir as a cheap way to determine if we need to initialize the directory or not. After the data directory has been initialized (or determined already initialized) we can continue on to start up the server.</p>
 
 <p>And now we will update the Dockerfile to add <code>startup.sh</code> to the container and to call it instead of <code>mysqld_safe</code>:</p>
 
 <div class="highlight"><pre><code class="bash">ADD ./startup.sh /opt/startup.sh
-CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span class="s2">&quot;/opt/startup.sh&quot;</span><span class="o">]</span>
-</code></pre></div>
+CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span class="s2">&quot;/opt/startup.sh&quot;</span><span class="o">]</span></code></pre></div>
 
 <p>We can also add in our admin user with the <code>startup.sh</code> script:</p>
 
@@ -214,8 +203,7 @@ CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span
     sleep 10s
 <span class="k">fi</span>
 
-/usr/bin/mysqld_safe
-</code></pre></div>
+/usr/bin/mysqld_safe</code></pre></div>
 
 <p>And of course we should also remove the <code>RUN</code> line from the Dockerfile that was doing the same thing but getting undone as soon as we externalized the data directory.</p>
 
@@ -244,8 +232,7 @@ ADD ./startup.sh /opt/startup.sh
 
 EXPOSE 3306
 
-CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span class="s2">&quot;/opt/startup.sh&quot;</span><span class="o">]</span>
-</code></pre></div>
+CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span class="s2">&quot;/opt/startup.sh&quot;</span><span class="o">]</span></code></pre></div>
 
 <h4>startup.sh</h4>
 
@@ -264,8 +251,7 @@ CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span
     sleep 10s
 <span class="k">fi</span>
 
-/usr/bin/mysqld_safe
-</code></pre></div>
+/usr/bin/mysqld_safe</code></pre></div>
 
 <h3>and some helpful scripts to do all our tasks</h3>
 
@@ -273,15 +259,13 @@ CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span
 
 <div class="highlight"><pre><code class="bash"><span class="c">#!/bin/sh</span>
 
-docker build -t mysql .
-</code></pre></div>
+docker build -t mysql .</code></pre></div>
 
 <h4>run-server.sh</h4>
 
 <div class="highlight"><pre><code class="bash"><span class="c">#!/bin/sh</span>
 
-docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql
-</code></pre></div>
+docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql</code></pre></div>
 
 <h4>run-client.sh</h4>
 
@@ -293,29 +277,15 @@ docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql
 
 <span class="nv">IP</span><span class="o">=</span><span class="k">$(</span>docker inspect <span class="nv">$CONTAINER_ID</span> <span class="p">|</span> python -c <span class="s1">&#39;import json,sys;obj=json.load(sys.stdin);print obj[0][&quot;NetworkSettings&quot;][&quot;IPAddress&quot;]&#39;</span><span class="k">)</span>
 
-mysql -u admin -p -h <span class="nv">$IP</span>
-</code></pre></div>
+mysql -u admin -p -h <span class="nv">$IP</span></code></pre></div>
 
 
 
 <div id="social-tools">
 
-	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/11/creating-a-mysql-docker-container/" data-via="benhschwartz">Tweet</a>
-	
-	<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
-
-	<div class="g-plus" data-action="share"></div>
-
-	<!-- google -->
-	<script type="text/javascript">
-		(function() {
-			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-			po.src = 'http://apis.google.com/js/platform.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-		})();
-	</script>
-
 	<!-- twitter -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/11/creating-a-mysql-docker-container/" data-via="benhschwartz" data-show-count="true">Tweet</a>
+	
 	<script>
 		!function(d,s,id){
 			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -325,43 +295,45 @@ mysql -u admin -p -h <span class="nv">$IP</span>
 		}(document, 'script', 'twitter-wjs');
 	</script>
 
+
 	<br /><br />
 	
+	<!-- Disqus -->	
 	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+		/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+		var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
+		var disqus_url = 'http://txt.fliglio.com/2013/11/creating-a-mysql-docker-container/';
+
+		//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
+		//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
+		var disqus_container_id = 'disqus_thread';
+		var disqus_domain = 'disqus.com';
+		var disqus_shortname = 'fligliotxt';
+		var disqus_title = "Creating a MySQL Docker Container";
+
+		/* * * DON'T EDIT BELOW THIS LINE * * */
+		(function() {
+			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		})();
+
+		    /* * * DON'T EDIT BELOW THIS LINE * * */
+	(function () {
+	    var s = document.createElement('script'); s.async = true;
+	    s.type = 'text/javascript';
+	    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+	}());
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 </div>
 
 
-<script type="text/javascript">
-	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-	var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
-	var disqus_url = 'http://txt.fliglio.com/2013/11/creating-a-mysql-docker-container/';
-
-	//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
-	//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
-	var disqus_container_id = 'disqus_thread';
-	var disqus_domain = 'disqus.com';
-	var disqus_shortname = 'fligliotxt';
-	var disqus_title = "Creating a MySQL Docker Container";
-
-	/* * * DON'T EDIT BELOW THIS LINE * * */
-	(function() {
-		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-	})();
-
-	    /* * * DON'T EDIT BELOW THIS LINE * * */
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 	
 					
 				</div>
@@ -373,15 +345,12 @@ mysql -u admin -p -h <span class="nv">$IP</span>
 						<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
 						<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
 						<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
-						<li><a class="share-icon bitly" target="_blank" href="https://bitly.com/u/o_28dsjkv7t4"><img src="/images/bitly-32.png" alt="bitly"/></a></li>
 					</ul>
 					<br />
 					<h3 class="small">Recent Posts</h3>
 					<ul id="posts-nav">
 					
 						<li><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></li>
-					
-						<li><a href="/2014/04/patching-openstack-base-image/">Patching Openstack Base Image</a></li>
 					
 						<li><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
 					
@@ -399,12 +368,35 @@ mysql -u admin -p -h <span class="nv">$IP</span>
 					
 						<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
 					
+						<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
+					
 						<li><a href="/all-posts">more...</a></li>
 					</ul>
 
+					<br />
+
+					<!-- Twitter -->
 					<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="false">Follow @benhschwartz</a>
 					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-				
+
+					<br /><br />
+
+					<!-- Github -->
+					<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+
+					<br /><br />
+					
+					<!-- Adsense -->
+					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+					<!-- txt.fliglio-2 -->
+					<ins class="adsbygoogle"
+					     style="display:inline-block;width:250px;height:250px"
+					     data-ad-client="ca-pub-6571676266096984"
+					     data-ad-slot="5166098950"></ins>
+					<script>
+						(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>					
+
 				</div><!--/span-->
 			</div>
 

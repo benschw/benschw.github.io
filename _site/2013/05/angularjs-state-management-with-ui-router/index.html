@@ -109,8 +109,7 @@ Lets start with a simple example:</p>
 <div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;body</span> <span class="na">ng-app=</span><span class="s">&quot;myApp&quot;</span><span class="nt">&gt;</span>
 <span class="lineno">2</span>     <span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
 <span class="lineno">3</span>     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="lineno">4</span> <span class="nt">&lt;/body&gt;</span>
-</code></pre></div>
+<span class="lineno">4</span> <span class="nt">&lt;/body&gt;</span></code></pre></div>
 
 <p>app.js </p>
 
@@ -127,8 +126,7 @@ Lets start with a simple example:</p>
 <span class="lineno">11</span>         <span class="p">};</span>
 <span class="lineno">12</span> 
 <span class="lineno">13</span>         <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">home</span><span class="p">);</span>
-<span class="lineno">14</span>     <span class="p">}])</span>
-</code></pre></div>
+<span class="lineno">14</span>     <span class="p">}])</span></code></pre></div>
 
 <p>Not much is going on here, but basically this is how you&#39;d implement a conventional route with the state manager. </p>
 
@@ -156,8 +154,7 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">14</span>     <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.quotes&#39;</span><span class="p">,</span>
 <span class="lineno">15</span>     <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
 <span class="lineno">16</span>     <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/quotes&#39;</span>
-<span class="lineno">17</span> <span class="p">};</span>
-</code></pre></div>
+<span class="lineno">17</span> <span class="p">};</span></code></pre></div>
 
 <p>Though incomplete, this is the gist of how you define states with ui-router. Right off the bat, you can see that urls are built through state inheritance: to edit quotes, we&#39;ll navigate to &quot;settings/quotes&quot; since the quotes state declares settings as its parent and thus inherits its url among other things.</p>
 
@@ -205,16 +202,14 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">36</span>             <span class="nx">password</span><span class="o">:</span> <span class="s1">&#39;semi-secret&#39;</span><span class="p">,</span>
 <span class="lineno">37</span>             <span class="nx">quotes</span><span class="o">:</span> <span class="s2">&quot;Lorem ipsum dolor sic amet&quot;</span>
 <span class="lineno">38</span>         <span class="p">};</span>
-<span class="lineno">39</span>     <span class="p">}])</span>
-</code></pre></div>
+<span class="lineno">39</span>     <span class="p">}])</span></code></pre></div>
 
 <p>index.html</p>
 
 <div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;body</span> <span class="na">ng-app=</span><span class="s">&quot;accountSettings&quot;</span><span class="nt">&gt;</span>
 <span class="lineno">2</span>     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
 <span class="lineno">3</span>     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="lineno">4</span> <span class="nt">&lt;/body&gt;</span>
-</code></pre></div>
+<span class="lineno">4</span> <span class="nt">&lt;/body&gt;</span></code></pre></div>
 
 <p>settings.html</p>
 
@@ -230,8 +225,7 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">10</span>     <span class="nt">&lt;/div&gt;</span>
 <span class="lineno">11</span>   <span class="nt">&lt;/div&gt;</span>
 <span class="lineno">12</span>   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span9&quot;</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
-<span class="lineno">13</span> <span class="nt">&lt;/div&gt;</span>
-</code></pre></div>
+<span class="lineno">13</span> <span class="nt">&lt;/div&gt;</span></code></pre></div>
 
 <p>settings.details.html</p>
 
@@ -240,8 +234,7 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">3</span> <span class="nt">&lt;div&gt;&lt;label&gt;</span>Name<span class="nt">&lt;/label&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;user.name&quot;</span> <span class="nt">/&gt;&lt;/div&gt;</span>
 <span class="lineno">4</span> <span class="nt">&lt;div&gt;&lt;label&gt;</span>Email<span class="nt">&lt;/label&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;user.email&quot;</span> <span class="nt">/&gt;&lt;/div&gt;</span>
 <span class="lineno">5</span> 
-<span class="lineno">6</span> <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">&quot;btn&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;done()&quot;</span><span class="nt">&gt;</span>Save<span class="nt">&lt;/button&gt;</span>
-</code></pre></div>
+<span class="lineno">6</span> <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">&quot;btn&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;done()&quot;</span><span class="nt">&gt;</span>Save<span class="nt">&lt;/button&gt;</span></code></pre></div>
 
 <p>settings.quotes.html</p>
 
@@ -249,8 +242,7 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">2</span> <span class="nt">&lt;hr&gt;</span>
 <span class="lineno">3</span> <span class="nt">&lt;div&gt;&lt;label&gt;</span>Quotes<span class="nt">&lt;/label&gt;&lt;textarea</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;user.quotes&quot;</span><span class="nt">&gt;&lt;/textarea&gt;&lt;/div&gt;</span>
 <span class="lineno">4</span> 
-<span class="lineno">5</span> <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">&quot;btn&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;done()&quot;</span><span class="nt">&gt;</span>Save<span class="nt">&lt;/button&gt;</span>
-</code></pre></div>
+<span class="lineno">5</span> <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">&quot;btn&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;done()&quot;</span><span class="nt">&gt;</span>Save<span class="nt">&lt;/button&gt;</span></code></pre></div>
 
 <p>We&#39;re Done!</p>
 
@@ -283,8 +275,7 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">3</span>     static nonsense
 <span class="lineno">4</span>     <span class="nt">&lt;div</span> <span class="na">ui-view=</span><span class="s">&quot;foo&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
 <span class="lineno">5</span>     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="lineno">6</span> <span class="nt">&lt;/body&gt;</span>
-</code></pre></div>
+<span class="lineno">6</span> <span class="nt">&lt;/body&gt;</span></code></pre></div>
 
 <p>app.js </p>
 
@@ -307,8 +298,7 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">17</span>         <span class="p">};</span>
 <span class="lineno">18</span> 
 <span class="lineno">19</span>         <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">home</span><span class="p">);</span>
-<span class="lineno">20</span>     <span class="p">}])</span>
-</code></pre></div>
+<span class="lineno">20</span>     <span class="p">}])</span></code></pre></div>
 
 <p>There you have it. One state updating two views. The default view (represented by &#39;&#39;) and the &#39;foo&#39; view.</p>
 
@@ -331,12 +321,11 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">11</span>     <span class="nt">&lt;/div&gt;</span>
 <span class="lineno">12</span>   <span class="nt">&lt;/div&gt;</span>
 <span class="lineno">13</span>   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span9&quot;</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
-<span class="lineno">14</span> <span class="nt">&lt;/div&gt;</span>
-</code></pre></div>
+<span class="lineno">14</span> <span class="nt">&lt;/div&gt;</span></code></pre></div>
 
 <p>state definitions from app.js</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span>         <span class="kd">var</span> <span class="nx">details</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span> <span class="kd">var</span> <span class="nx">details</span> <span class="o">=</span> <span class="p">{</span>
 <span class="lineno"> 2</span>             <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;settings.details&#39;</span><span class="p">,</span>
 <span class="lineno"> 3</span>             <span class="nx">parent</span><span class="o">:</span> <span class="nx">settings</span><span class="p">,</span>
 <span class="lineno"> 4</span>             <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -360,8 +349,7 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 <span class="lineno">22</span>                 <span class="s1">&#39;hint&#39;</span><span class="o">:</span> <span class="p">{</span>
 <span class="lineno">23</span>                     <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;edit your quotes!&#39;</span>
 <span class="lineno">24</span>                 <span class="p">}</span>
-<span class="lineno">25</span>         <span class="p">};</span>
-</code></pre></div>
+<span class="lineno">25</span>         <span class="p">};</span></code></pre></div>
 
 <h2>Conclusion</h2>
 
@@ -375,22 +363,9 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 
 <div id="social-tools">
 
-	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/" data-via="benhschwartz">Tweet</a>
-	
-	<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
-
-	<div class="g-plus" data-action="share"></div>
-
-	<!-- google -->
-	<script type="text/javascript">
-		(function() {
-			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-			po.src = 'http://apis.google.com/js/platform.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-		})();
-	</script>
-
 	<!-- twitter -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/" data-via="benhschwartz" data-show-count="true">Tweet</a>
+	
 	<script>
 		!function(d,s,id){
 			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -400,43 +375,45 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 		}(document, 'script', 'twitter-wjs');
 	</script>
 
+
 	<br /><br />
 	
+	<!-- Disqus -->	
 	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+		/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+		var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
+		var disqus_url = 'http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/';
+
+		//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
+		//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
+		var disqus_container_id = 'disqus_thread';
+		var disqus_domain = 'disqus.com';
+		var disqus_shortname = 'fligliotxt';
+		var disqus_title = "AngularJS State Management with ui-router";
+
+		/* * * DON'T EDIT BELOW THIS LINE * * */
+		(function() {
+			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		})();
+
+		    /* * * DON'T EDIT BELOW THIS LINE * * */
+	(function () {
+	    var s = document.createElement('script'); s.async = true;
+	    s.type = 'text/javascript';
+	    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+	}());
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 </div>
 
 
-<script type="text/javascript">
-	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-	var disqus_shortname = 'fligliotxt'; // required: replace example with your forum shortname
-	var disqus_url = 'http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/';
-
-	//var disqus_url = 'http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/';
-	//var disqus_identifier = '23 http://txt.fliglio.com/?p=23';
-	var disqus_container_id = 'disqus_thread';
-	var disqus_domain = 'disqus.com';
-	var disqus_shortname = 'fligliotxt';
-	var disqus_title = "AngularJS State Management with ui-router";
-
-	/* * * DON'T EDIT BELOW THIS LINE * * */
-	(function() {
-		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-	})();
-
-	    /* * * DON'T EDIT BELOW THIS LINE * * */
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 	
 					
 				</div>
@@ -448,15 +425,12 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 						<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
 						<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
 						<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
-						<li><a class="share-icon bitly" target="_blank" href="https://bitly.com/u/o_28dsjkv7t4"><img src="/images/bitly-32.png" alt="bitly"/></a></li>
 					</ul>
 					<br />
 					<h3 class="small">Recent Posts</h3>
 					<ul id="posts-nav">
 					
 						<li><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></li>
-					
-						<li><a href="/2014/04/patching-openstack-base-image/">Patching Openstack Base Image</a></li>
 					
 						<li><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
 					
@@ -474,12 +448,35 @@ Lets start by decomposing our pages (edit details and edit quotes) into states. 
 					
 						<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
 					
+						<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
+					
 						<li><a href="/all-posts">more...</a></li>
 					</ul>
 
+					<br />
+
+					<!-- Twitter -->
 					<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="false">Follow @benhschwartz</a>
 					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-				
+
+					<br /><br />
+
+					<!-- Github -->
+					<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+
+					<br /><br />
+					
+					<!-- Adsense -->
+					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+					<!-- txt.fliglio-2 -->
+					<ins class="adsbygoogle"
+					     style="display:inline-block;width:250px;height:250px"
+					     data-ad-client="ca-pub-6571676266096984"
+					     data-ad-slot="5166098950"></ins>
+					<script>
+						(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>					
+
 				</div><!--/span-->
 			</div>
 

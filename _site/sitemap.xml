@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://txt.fliglio.com/</loc>
-    <lastmod>2014-05-21T13:34:19-05:00</lastmod>
+    <lastmod>2014-05-24T13:52:50-05:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -10,16 +10,7 @@
     <url>
       <loc>http://txt.fliglio.com/2014/05/encapsulated-services-with-consul-and-confd/</loc>
       
-        <lastmod>2014-05-21T13:34:19-05:00</lastmod>
-      
-      <changefreq>monthly</changefreq>
-      <priority>0.5</priority>
-    </url>
-  
-    <url>
-      <loc>http://txt.fliglio.com/2014/04/patching-openstack-base-image/</loc>
-      
-        <lastmod>2014-04-09T15:53:03-05:00</lastmod>
+        <lastmod>2014-05-21T00:00:00-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -55,7 +46,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/</loc>
       
-        <lastmod>2013-12-18T12:22:05Z</lastmod>
+        <lastmod>2013-12-18T06:22:05-06:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -64,7 +55,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/12/service-discovery-with-docker-docker-links-and-beyond/</loc>
       
-        <lastmod>2013-12-02T22:59:16Z</lastmod>
+        <lastmod>2013-12-02T16:59:16-06:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -73,7 +64,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/11/creating-a-mysql-docker-container/</loc>
       
-        <lastmod>2013-11-10T06:31:25Z</lastmod>
+        <lastmod>2013-11-10T00:31:25-06:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -82,7 +73,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/09/oauth-2-grant-types-demystified/</loc>
       
-        <lastmod>2013-09-28T02:30:42Z</lastmod>
+        <lastmod>2013-09-27T21:30:42-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -91,7 +82,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/09/protyping-web-stuff-with-docker/</loc>
       
-        <lastmod>2013-09-18T06:23:09Z</lastmod>
+        <lastmod>2013-09-18T01:23:09-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -100,7 +91,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/</loc>
       
-        <lastmod>2013-05-03T18:45:54Z</lastmod>
+        <lastmod>2013-05-03T13:45:54-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -109,7 +100,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/04/publishing-a-yeoman-app-with-github-pages/</loc>
       
-        <lastmod>2013-04-30T03:10:53Z</lastmod>
+        <lastmod>2013-04-29T22:10:53-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -118,7 +109,7 @@
     <url>
       <loc>http://txt.fliglio.com/2013/04/hello-world/</loc>
       
-        <lastmod>2013-04-28T00:32:26Z</lastmod>
+        <lastmod>2013-04-27T19:32:26-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -126,35 +117,9 @@
   
   
   <url>
-    <loc>http://txt.fliglio.com/sitemap.xml</loc>
-    
-      <lastmod>2014-05-21</lastmod>
-    
-    
-      <changefreq>monthly</changefreq>
-    
-    
-      <priority>0.3</priority>
-    
-  </url>
-  
-  <url>
     <loc>http://txt.fliglio.com/feed.xml</loc>
     
-      <lastmod>2014-05-21</lastmod>
-    
-    
-      <changefreq>monthly</changefreq>
-    
-    
-      <priority>0.3</priority>
-    
-  </url>
-  
-  <url>
-    <loc>http://txt.fliglio.com/about/index.html</loc>
-    
-      <lastmod>2014-05-21</lastmod>
+      <lastmod>2014-05-24</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -167,7 +132,20 @@
   <url>
     <loc>http://txt.fliglio.com/all-posts/index.html</loc>
     
-      <lastmod>2014-05-21</lastmod>
+      <lastmod>2014-05-24</lastmod>
+    
+    
+      <changefreq>monthly</changefreq>
+    
+    
+      <priority>0.3</priority>
+    
+  </url>
+  
+  <url>
+    <loc>http://txt.fliglio.com/about/index.html</loc>
+    
+      <lastmod>2014-05-24</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -180,7 +158,20 @@
   <url>
     <loc>http://txt.fliglio.com/index.html</loc>
     
-      <lastmod>2014-05-21</lastmod>
+      <lastmod>2014-05-24</lastmod>
+    
+    
+      <changefreq>monthly</changefreq>
+    
+    
+      <priority>0.3</priority>
+    
+  </url>
+  
+  <url>
+    <loc>http://txt.fliglio.com/sitemap.xml</loc>
+    
+      <lastmod>2014-05-24</lastmod>
     
     
       <changefreq>monthly</changefreq>

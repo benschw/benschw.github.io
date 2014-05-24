@@ -27,7 +27,7 @@
 &lt;li&gt;1 consul agent hosting a &amp;quot;status&amp;quot; web gui&lt;/li&gt;
 &lt;li&gt;2 example service nodes&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;1 demo web-app that will interact with the service&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ git clone git@github.com:benschw/consul-cluster-vagrant.git
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git clone git@github.com:benschw/consul-cluster-vagrant.git
 $ cd consul-cluster-vagrant
 $ vagrant up
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
@@ -54,7 +54,7 @@ $ vagrant up
 &lt;h3&gt;CLI Tool&lt;/h3&gt;
 
 &lt;p&gt;To try out the cli tool, you need to get onto one of the cluster nodes. From there you can can find out more about whats going on.&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
 $ consul members
 demo      172.20.20.15:8301  alive  role=node,dc=dc1,vsn=1,vsn_min=1,vsn_max=1
 status    172.20.20.12:8301  alive  role=node,dc=dc1,vsn=1,vsn_min=1,vsn_max=1
@@ -74,7 +74,7 @@ service1  172.20.20.13:8301  alive  role=node,dc=dc1,vsn=1,vsn_min=1,vsn_max=1
 &lt;h3&gt;REST API&lt;/h3&gt;
 
 &lt;p&gt;You can do everything through the REST API. Including managing your cluster, registering services, working with key/values... everything.&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
 $ curl http://localhost:8500/v1/catalog/service/my-svc
 [{&amp;quot;Node&amp;quot;:&amp;quot;service2&amp;quot;,&amp;quot;Address&amp;quot;:&amp;quot;172.20.20.14&amp;quot;,&amp;quot;ServiceID&amp;quot;:&amp;quot;my-svc&amp;quot;,&amp;quot;ServiceName&amp;quot;:&amp;quot;my-svc&amp;quot;,&amp;quot;ServiceTags&amp;quot;:[&amp;quot;microservice&amp;quot;],&amp;quot;ServicePort&amp;quot;:8076},{&amp;quot;Node&amp;quot;:&amp;quot;service1&amp;quot;,&amp;quot;Address&amp;quot;:&amp;quot;172.20.20.13&amp;quot;,&amp;quot;ServiceID&amp;quot;:&amp;quot;my-svc&amp;quot;,&amp;quot;ServiceName&amp;quot;:&amp;quot;my-svc&amp;quot;,&amp;quot;ServiceTags&amp;quot;:[&amp;quot;microservice&amp;quot;],&amp;quot;ServicePort&amp;quot;:8045}]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -83,7 +83,7 @@ $ curl http://localhost:8500/v1/catalog/service/my-svc
 &lt;h3&gt;DNS&lt;/h3&gt;
 
 &lt;p&gt;One of the most powerful features of consul, is its custom DNS server. If you want to keep your application decoupled from consul, then you probably don&amp;#39;t want to leverage the REST API. That&amp;#39;s what DNS is for.&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
 $ dig @127.0.0.1 -p 8600 my-svc.service.consul SRV
 ...
 
@@ -112,7 +112,7 @@ service1.node.dc1.consul. 0 IN  A   172.20.20.13
 &lt;ol&gt;
 &lt;li&gt;Navigate to &lt;a href=&quot;http://172.20.20.12:8500/ui/#/dc1/kv/&quot;&gt;http://172.20.20.12:8500/ui/#/dc1/kv/&lt;/a&gt; and create the key &lt;code&gt;foo&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Use the REST API&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh demo
 $ curl -X PUT -d &amp;#39;bar&amp;#39; http://localhost:8500/v1/kv/foo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;/ol&gt;
@@ -142,13 +142,13 @@ $ curl -X PUT -d &amp;#39;bar&amp;#39; http://localhost:8500/v1/kv/foo
 &lt;li&gt;Verify that our status endpoint is currently &amp;quot;OK&amp;quot;: &lt;a href=&quot;http://172.20.20.13:8045/status&quot;&gt;http://172.20.20.13:8045/status&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Watch the webapp load balance randomly between our two instances: &lt;a href=&quot;http://172.20.20.15/demo&quot;&gt;http://172.20.20.15/demo&lt;/a&gt; (click refresh a bunch)&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;See what the healthy DNS for &amp;quot;my-svc&amp;quot; looks like:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ ssh vagrant svc1
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ ssh vagrant svc1
 $ dig @127.0.0.1 -p 8600 my-svc.service.consul SRV
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;OK! Now lets make &amp;quot;my-svc&amp;quot; fail on &amp;quot;svc1&amp;quot;:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh svc1
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh svc1
 $ touch /tmp/fail-healthcheck
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Run back through the punch list to see how everything changed. We&amp;#39;ve got &amp;quot;critical&amp;#39;s&amp;quot; in our status ui, &amp;quot;FAIL&amp;quot; in our endpoint, the demo app is only using &amp;quot;svc2&amp;quot; now, and we can see why by inspecting DNS.&lt;/p&gt;
@@ -158,7 +158,7 @@ $ touch /tmp/fail-healthcheck
 &lt;h4&gt;Why&amp;#39;d we &lt;code&gt;exit 2&lt;/code&gt;?&lt;/h4&gt;
 
 &lt;p&gt;If you paid attention to the &lt;a href=&quot;https://github.com/benschw/consul-cluster-vagrant/blob/master/config/svc1.mysvc.json&quot;&gt;consul config&lt;/a&gt; for &amp;quot;svc1,&amp;quot; you might have noticed that our health check is exiting with a &lt;code&gt;2&lt;/code&gt; instead of the more traditional &lt;code&gt;1&lt;/code&gt;. This is another pretty cool feature of consul. &lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl localhost:8045/status | grep OK || exit 2
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;curl localhost:8045/status | grep OK || exit 2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Consul uses &lt;a href=&quot;http://nagios.sourceforge.net/docs/3_0/servicechecks.html&quot;&gt;nagios style checks&lt;/a&gt; for its health checks. This meens that exiting with a &lt;code&gt;0&lt;/code&gt; means everything is passing. Exiting with a &lt;code&gt;1&lt;/code&gt; is just a warning: things will turn red, but the service will not be taken out of load balance. Exit with anything greater than 1 will result in a &amp;quot;critical&amp;quot; state and the service will not be returned in a DNS lookup etc.&lt;/p&gt;
 
@@ -171,70 +171,13 @@ $ touch /tmp/fail-healthcheck
 &lt;h3&gt;One last thing to do with your cluster&lt;/h3&gt;
 
 &lt;p&gt;Technically speaking, although we needed the &lt;code&gt;-bootstrap&lt;/code&gt; flag for the &lt;code&gt;consul1&lt;/code&gt; node when we started the cluster, we don&amp;#39;t need it anymore (and if we ever needed to restart it, we would need to get rid of it.) So to be a little more production like, you can do the following to kill that consul agent and then restart it, re-joining via &lt;code&gt;consul2&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh consul1
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant ssh consul1
 $ sudo killall daemon
 $ sudo daemon -X &amp;quot;consul agent -server -data-dir /tmp/consul -node=consul1 -bind 172.20.20.10 -join 172.20.20.11&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-				<pubDate>Wed, 21 May 2014 13:34:19 -0500</pubDate>
+				<pubDate>Wed, 21 May 2014 00:00:00 -0500</pubDate>
 				<link>txt.fliglio.com//2014/05/encapsulated-services-with-consul-and-confd/</link>
 				<guid isPermaLink="true">txt.fliglio.com//2014/05/encapsulated-services-with-consul-and-confd/</guid>
-			</item>
-		
-			<item>
-				<title>Patching Openstack Base Image</title>
-				<description>&lt;h3&gt;Import Ubuntu Cloud Image&lt;/h3&gt;
-
-&lt;p&gt;First things first: import one of Ubuntu&amp;#39;s cloud image into OpenStack. You can find some &lt;a href=&quot;http://cloud-images.ubuntu.com/&quot;&gt;here&lt;/a&gt; or just use the same &lt;a href=&quot;http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img&quot;&gt;January 2014 Precise build&lt;/a&gt; I&amp;#39;m using.&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;glance image-create \
-    --name ubuntu-precise \
-    --disk-format ami \
-    --container-format bare \
-    --is-public True \
-    --copy-from \
-    http://cloud-images.ubuntu.com/precise/20140116/precise-server-cloudimg-amd64-disk1.img
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;It will probably take a few minutes to load; make sure it&amp;#39;s &amp;quot;ACTIVE&amp;quot; before continuing (you can check the status with &lt;code&gt;nova image-list&lt;/code&gt;)&lt;/p&gt;
-
-&lt;h3&gt;heat-cfntools&lt;/h3&gt;
-
-&lt;p&gt;Why does Heat use &lt;a href=&quot;https://github.com/openstack/heat-cfntools&quot;&gt;heat-cfntools&lt;/a&gt; instead of &lt;a href=&quot;https://help.ubuntu.com/community/CloudInit&quot;&gt;CloutInit&lt;/a&gt; to apply &lt;a href=&quot;http://docs.openstack.org/user-guide/content/user-data.html&quot;&gt;user-data&lt;/a&gt;? I couldn&amp;#39;t tell you. But it does, and it doesn&amp;#39;t come with Ubuntu&amp;#39;s cloud images, so we need to add it. There are different tools for building your own base images (which you could use to include &lt;code&gt;heat-cfntools&lt;/code&gt;) but for this tutorial I&amp;#39;m going to go take the quick and dirty route: install them with CloudInit and take a snapshot to use as my base for my Heat stack.&lt;/p&gt;
-
-&lt;p&gt;So how do we install heat-cfntools with CloudInit? With &lt;a href=&quot;http://docs.openstack.org/developer/nova/&quot;&gt;nova.&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;To boot our instance, we first need to figure out a network to boot it into. You can get this with &lt;code&gt;neutron&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;neutron net-list
-
-+--------------------------------------+-----------+----------------------------------------------------+
-| id                                   | name      | subnets                                            |
-+--------------------------------------+-----------+----------------------------------------------------+
-| 1152a93b-d221-41a7-b5be-3428ed991eb2 | net04     | 552ca915-8bb6-46bf-b29c-3e0eceeef064 10.6.40.0/22  |
-| d98bc495-ac30-4136-9690-6545a8436468 | net04_ext | 4590955a-f4ac-42fa-81bf-5c730efb62b9 10.6.148.0/22 |
-+--------------------------------------+-----------+----------------------------------------------------+
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;We want the internal network, so we&amp;#39;ll use the id which corresponds to &amp;quot;net04.&amp;quot;&lt;/p&gt;
-
-&lt;p&gt;Next we need to supply the &lt;code&gt;heat-cfntools&lt;/code&gt; install instructions to CloudInit via user data. There are a few different &lt;a href=&quot;https://help.ubuntu.com/community/CloudInit&quot;&gt;user data input formats&lt;/a&gt; available, but I&amp;#39;m going to use the &amp;quot;Cloud Config Data&amp;quot; format, which is specified by beginning your user-data with &lt;code&gt;#cloud-config&lt;/code&gt;. Here&amp;#39;s the file I made to pass to &lt;code&gt;nova boot&lt;/code&gt; later:&lt;/p&gt;
-
-&lt;p&gt;cfntools-cloud-config.txt&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#cloud-config&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssh_import_id&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;steve-stevebaker&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;apt_sources&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
- &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;ppa:steve-stevebaker/heat-cfntools&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
- &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;heat-cfntools&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Armed with our net id and cloud config, we can now add &lt;code&gt;heat-cfntools&lt;/code&gt; to our base image:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;nova boot --flavor m1.tiny --image ubuntu-precise --user-data ./cfntools-cloud-config.txt --nic net-id=1152a93b-d221-41a7-b5be-3428ed991eb2 ubuntuinst
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;After waiting a sufficient amount of time that we are sure the instance is provisioned, we can shut it down and take a &lt;a href=&quot;http://docs.openstack.org/user-guide/content/nova_manage_images.html&quot;&gt;snapshot&lt;/a&gt; to use as our Heat base image:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;nova stop ubuntuinst
-nova image-create ubuntuinst ubuntu-heat
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-				<pubDate>Wed, 09 Apr 2014 15:53:03 -0500</pubDate>
-				<link>txt.fliglio.com//2014/04/patching-openstack-base-image/</link>
-				<guid isPermaLink="true">txt.fliglio.com//2014/04/patching-openstack-base-image/</guid>
 			</item>
 		
 			<item>
@@ -293,7 +236,7 @@ Parallelism is about leveraging the &lt;em&gt;simultaneous&lt;/em&gt; execution 
 &lt;h3&gt;Sieve of Eratosthenes (prime numbers)&lt;/h3&gt;
 
 &lt;p&gt;I got this example &lt;a href=&quot;http://scienceblogs.com/goodmath/2009/11/13/the-go-i-forgot-concurrency-an/&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;package main
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;package main
 
 import (
     &amp;quot;flag&amp;quot;
@@ -347,7 +290,7 @@ func Filter(in &amp;lt;-chan int, out chan&amp;lt;- int, prime int) {
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;Gregory-Leibniz series (π)&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;package main
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;package main
 
 import (
     &amp;quot;flag&amp;quot;
@@ -392,7 +335,7 @@ func term(ch chan float64, termIdx int, terms int) {
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;Fibonacci Series&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;package main
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;package main
 
 import (
     &amp;quot;flag&amp;quot;
@@ -462,14 +405,14 @@ into a stock &lt;a href=&quot;http://http://yeoman.io/&quot;&gt;Yeoman&lt;/a&gt;
 &lt;p&gt;I&amp;#39;ve put together two projects to supply the Selenium Grid functionality. The &lt;a href=&quot;https://github.com/benschw/docker-selenium-grid&quot;&gt;docker-selenium-grid&lt;/a&gt; project supplies Dockerfiles for two Docker containers: a hub and a Firefox node; and comes with a script to help you add start and stop the cluster or new nodes. The &lt;a href=&quot;https://github.com/benschw/vagrant-selenium-grid&quot;&gt;vagrant-selenium-grid&lt;/a&gt; project is a Vagrant wrapper for the first project which further simplifies starting a cluster to simply running &lt;code&gt;vagrant up&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;To boot your cluster, simply run the following commands&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone https://github.com/benschw/vagrant-selenium-grid
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;git clone https://github.com/benschw/vagrant-selenium-grid
 cd vagrant-selenium-grid
 vagrant up
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;This VM defaults to using 2gb of ram, but this can easily be tuned by tweaking the &lt;code&gt;Vagrantfile&lt;/code&gt; before running &lt;code&gt;vagrant up&lt;/code&gt;. It will run three firefox nodes by default, but you can tweak this by shelling into the Vagrant vm and interacting with the cluster via &lt;code&gt;~/docker-selenium-grid/grid.sh&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;If you want to make sure it works, install &lt;a href=&quot;https://github.com/angular/protractor&quot;&gt;protractor&lt;/a&gt; and run &lt;code&gt;./test.sh&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;npm install -g protractor
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;npm install -g protractor
 ./test.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h4&gt;Why Docker?&lt;/h4&gt;
@@ -483,12 +426,12 @@ vagrant up
 &lt;h3&gt;Yo Angular!&lt;/h3&gt;
 
 &lt;p&gt;I&amp;#39;ll assume you&amp;#39;ve used Yeoman before, but just in case - here&amp;#39;s how to get it:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo npm install -g yo
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;sudo npm install -g yo
 sudo npm install -g grunt-cli
 sudo npm install -g bower
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now that you have the basics, lets use our new tools to generate an angular app:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir protractor-demo
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mkdir protractor-demo
 cd protractor-demo
 
 npm install generator-angular
@@ -502,7 +445,7 @@ yo angular # go ahead and &amp;quot;Y&amp;quot; everything
 &lt;p&gt;Now lets start adding in Protractor.&lt;/p&gt;
 
 &lt;p&gt;Install the npm deps:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo npm install -g protractor
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;sudo npm install -g protractor
 npm install protractor --save-dev
 npm install grunt-protractor-runner --save-dev
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -511,14 +454,14 @@ npm install grunt-protractor-runner --save-dev
 &lt;p&gt;At this point you can decide if you want to follow along and patch your &lt;code&gt;Gruntfile.js&lt;/code&gt; by hand, or just grab a copy from the &lt;a href=&quot;https://github.com/benschw/protractor-demo&quot;&gt;protractor-demo&lt;/a&gt; project. Additionally, I&amp;#39;ve included &lt;a href=&quot;https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2&quot;&gt;scenario.tar.bz2&lt;/a&gt; which holds the example tests we will be wiring up.&lt;/p&gt;
 
 &lt;p&gt;The quick way:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget -N https://raw.github.com/benschw/protractor-demo/master/Gruntfile.js
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;wget -N https://raw.github.com/benschw/protractor-demo/master/Gruntfile.js
 wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2 | tar -C ./test/ -xjvf -
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h4&gt;What are the changes?&lt;/h4&gt;
 
 &lt;p&gt;Add in your Protractor test wiring after the &amp;quot;karma&amp;quot; section:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;protractor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;protractor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
       &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;c1&quot;&gt;//configFile: &amp;#39;node_modules/protractor/referenceConf.js&amp;#39;, // Default config file&lt;/span&gt;
         &lt;span class=&quot;nx&quot;&gt;keepAlive&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// If false, the grunt process stops when the test fails.&lt;/span&gt;
@@ -537,12 +480,11 @@ wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2
           &lt;span class=&quot;nx&quot;&gt;configFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;test/scenario/conf/featureList2.js&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Target-specific config file&lt;/span&gt;
         &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Provide the &lt;code&gt;getIpAddress()&lt;/code&gt; function at the top of your file. Since your grid is running in a VM, we need to give it more than &lt;code&gt;localhost&lt;/code&gt; to target:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;   &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;os&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;os&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;os&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;os&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
     &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getIpAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
       &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ipAddress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
@@ -558,20 +500,18 @@ wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2
         &lt;span class=&quot;nx&quot;&gt;ifaces&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;processDetails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ipAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Reference our two test features in the &amp;quot;concurrent&amp;quot; section:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;      &lt;span class=&quot;nx&quot;&gt;protractor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;protractor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
         &lt;span class=&quot;s1&quot;&gt;&amp;#39;protractor:feature1&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
         &lt;span class=&quot;s1&quot;&gt;&amp;#39;protractor:feature2&amp;#39;&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In the &amp;quot;connect&amp;quot; section, update &amp;quot;connect.options&amp;quot; to use &lt;code&gt;hostname: &amp;#39;0.0.0.0&amp;#39;&lt;/code&gt;, and &amp;quot;connect.dist&amp;quot; to use &lt;code&gt;port: 9002&lt;/code&gt; &lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
       &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;nx&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
         &lt;span class=&quot;c1&quot;&gt;// Change this to &amp;#39;0.0.0.0&amp;#39; to access the server from outside.&lt;/span&gt;
@@ -586,22 +526,20 @@ wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2
         &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And last but not least, add a new task at the bottom of the file so we can run these bad boys:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;   &lt;span class=&quot;nx&quot;&gt;grunt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;registerTask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ptr&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;grunt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;registerTask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ptr&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
         &lt;span class=&quot;s1&quot;&gt;&amp;#39;clean:server&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
         &lt;span class=&quot;s1&quot;&gt;&amp;#39;connect:dist&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
         &lt;span class=&quot;s1&quot;&gt;&amp;#39;concurrent:protractor&amp;#39;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;Run the tests... Fast!&lt;/h4&gt;
 
 &lt;p&gt;Assuming all our updates made it in and Yeoman&amp;#39;s Angular generator hasn&amp;#39;t changed, we should now be able to run tests for our two test features concurrently:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;grunt ptr
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;grunt ptr
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;I hope it worked for you, and I hope this helped.&lt;/p&gt;
 </description>
@@ -623,7 +561,7 @@ wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2
 &lt;h2&gt;Get a Base Image Ready&lt;/h2&gt;
 
 &lt;p&gt;First thing&amp;#39;s first: get a base image ready to work from. I&amp;#39;m going to use one of &lt;a href=&quot;http://cloud-images.ubuntu.com/&quot;&gt;Ubuntu&amp;#39;s cloud images&lt;/a&gt;.&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;glance image-create \
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;glance image-create \
     --name ubuntu-precise \
     --disk-format ami \
     --container-format bare \
@@ -709,18 +647,17 @@ wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2
           &lt;span class=&quot;l-Scalar-Plain&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
             &lt;span class=&quot;l-Scalar-Plain&quot;&gt;$PUPPET_REPO&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;get_param&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;puppet_repo&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}&lt;/span&gt;
 
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;   &lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;nn&quot;&gt;...&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Getting ready to launch...&lt;/h3&gt;
 
 &lt;p&gt;The last steps before we can provision our stack are...&lt;/p&gt;
 
 &lt;p&gt;Add in an ssh key (only if you need to shell into the box):&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;nova keypair-add --pub_key ~/.ssh/id_rsa.pub bens
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;nova keypair-add --pub_key ~/.ssh/id_rsa.pub bens
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Identify the public and private net_id values. You can get this with &lt;code&gt;neutron&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ neutron net-list
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ neutron net-list
 +--------------------------------------+-----------+----------------------------------------------------+
 | id                                   | name      | subnets                                            |
 +--------------------------------------+-----------+----------------------------------------------------+
@@ -729,7 +666,7 @@ wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2
 +--------------------------------------+-----------+----------------------------------------------------+
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Identify the private_subnet_id:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ neutron subnet-list
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ neutron subnet-list
 +--------------------------------------+-------------------+---------------+------------------------------------------------+
 | id                                   | name              | cidr          | allocation_pools                               |
 +--------------------------------------+-------------------+---------------+------------------------------------------------+
@@ -742,12 +679,12 @@ wget -qO- https://github.com/benschw/protractor-demo/raw/master/scenario.tar.bz2
 &lt;h3&gt;That&amp;#39;s all? you mean we&amp;#39;re ready?&lt;/h3&gt;
 
 &lt;p&gt;Let&amp;#39;s launch a stack:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;heat stack-create teststack \
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;heat stack-create teststack \
     -f ./demo.yml \
     -P &amp;quot;key_name=bens;image=ubuntu-precise;flavor=m1.small;public_net_id=d98bc495-ac30-4136-9690-6545a8436468;private_net_id=1152a93b-d221-41a7-b5be-3428ed991eb2;private_subnet_id=552ca915-8bb6-46bf-b29c-3e0eceeef064;puppet_repo=https://github.com/benschw/puppet-txt.fliglio.com.git&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now you can figure out the public ip and navigate to it in your browser:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ nova list
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ nova list
 +--------------------------------------+------------+---------+------------+-------------+-------------------------------+
 | ID                                   | Name       | Status  | Task State | Power State | Networks                      |
 +--------------------------------------+------------+---------+------------+-------------+-------------------------------+
@@ -832,8 +769,7 @@ $ chromium-browser 10.6.150.16
     &lt;span class=&quot;nt&quot;&gt;&amp;quot;Env&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;quot;HOST&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;webapp.local&amp;quot;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;(the image &lt;em&gt;benschw/go-webapp&lt;/em&gt; was built from the contents of the &lt;a href=&quot;https://github.com/benschw/dockit/tree/master/webapp-ex&quot; target=&quot;_blank&quot;&gt;webapp-ex directory&lt;/a&gt;)&lt;/p&gt;
 
@@ -842,14 +778,12 @@ $ chromium-browser 10.6.150.16
 &lt;p&gt;Pull the example containers:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker pull stackbrew/hipache
-sudo docker pull benschw/go-webapp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+sudo docker pull benschw/go-webapp&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Start the Services:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo ./dockit -service Hipache -start
-sudo ./dockit -service WebApp -start
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+sudo ./dockit -service WebApp -start&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This will start up the &lt;em&gt;Hipache&lt;/em&gt; service and then the &lt;em&gt;WebApp&lt;/em&gt; service, and it will register the private ip:port of  the &lt;em&gt;WebApp&lt;/em&gt; container with Hipache (see &lt;a href=&quot;https://github.com/benschw/dockit/blob/master/webapp-ex/start.sh&quot; target=&quot;_blank&quot;&gt;webapp-ex/start.sh&lt;/a&gt;) under the name &lt;em&gt;webapp.local&lt;/em&gt;.&lt;/p&gt;
 
@@ -857,13 +791,11 @@ sudo ./dockit -service WebApp -start
 
 &lt;h4&gt;Stop the example&lt;/h4&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo ./dockit -service WebApp -stop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo ./dockit -service WebApp -stop&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This will only stop the &lt;em&gt;WebApp&lt;/em&gt; container (and deregister from Hipache); Hipache is still running. To stop it too, run:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo ./dockit -service Hipache -stop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo ./dockit -service Hipache -stop&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Note the containers are still there in a &quot;stopped&quot; state, and a subsequent &lt;em&gt;-start&lt;/em&gt; will run new instances.&lt;/p&gt;
 
@@ -877,7 +809,7 @@ sudo ./dockit -service WebApp -start
 
 &lt;p&gt;If (like me) this is your first foray into Go, here's &lt;a href=&quot;https://gist.github.com/benschw/7873555&quot; target=&quot;_blank&quot;&gt;a gist&lt;/a&gt; to help you build the examples.&lt;/p&gt;
 </description>
-				<pubDate>Wed, 18 Dec 2013 12:22:05 +0000</pubDate>
+				<pubDate>Wed, 18 Dec 2013 06:22:05 -0600</pubDate>
 				<link>txt.fliglio.com//2013/12/orchestrating-docker-with-go/</link>
 				<guid isPermaLink="true">txt.fliglio.com//2013/12/orchestrating-docker-with-go/</guid>
 			</item>
@@ -921,29 +853,24 @@ Jump over to the &lt;a href=&quot;http://docs.docker.io/en/latest/use/working_wi
 
 &lt;p&gt;Get the &lt;a href=&quot;https://github.com/benschw/docker-service-discovery-with-links&quot; target=&quot;_blank&quot;&gt;poc on GitHub&lt;/a&gt;.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;git clone https://github.com/benschw/docker-service-discovery-with-links.git
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;git clone https://github.com/benschw/docker-service-discovery-with-links.git&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To run the test, add a name to your &lt;code&gt;/etc/hosts&lt;/code&gt; file&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;127.0.0.1 client.local
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;127.0.0.1 client.local&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Build the project&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;docker-service-discovery-with-links
-./gradlew shadow
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+./gradlew shadow&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Build the container image&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker build -t app .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker build -t app .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Deploy the test environment&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo ./run.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo ./run.sh&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we can exercise the test environment from end to end by navigating your browser to &amp;quot;http://client.local/demo.&amp;quot; (Click refresh a few times to see the list of random numbers grow.)&lt;/p&gt;
 
@@ -965,8 +892,7 @@ Using links for discovery leaves a couple things to be desired. First of all, li
 
 &lt;p&gt;Give it a go, and don&amp;#39;t forget to stop the previous setup if you haven&amp;#39;t already:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker ps &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; xargs sudo docker stop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker ps &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; xargs sudo docker stop&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Make sure you still have the name (&lt;code&gt;127.0.0.1 client.local&lt;/code&gt;) in your &lt;code&gt;/etc/hosts&lt;/code&gt; file, and...&lt;/p&gt;
 
@@ -974,8 +900,7 @@ Using links for discovery leaves a couple things to be desired. First of all, li
 &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;docker-service-discovery-with-links
 ./gradlew shadow
 sudo docker build -t app .
-sudo ./run.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+sudo ./run.sh&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and finally, the demo address (&amp;quot;http://client.local/demo&amp;quot;) is the same here.&lt;/p&gt;
 
@@ -1007,7 +932,7 @@ Despite a desire to go into this deeper and relay more of my thoughts on service
 &lt;li&gt;&lt;a href=&quot;https://github.com/benschw/etcdedge&quot; target=&quot;_blank&quot;&gt;etcdedge&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-				<pubDate>Mon, 02 Dec 2013 22:59:16 +0000</pubDate>
+				<pubDate>Mon, 02 Dec 2013 16:59:16 -0600</pubDate>
 				<link>txt.fliglio.com//2013/12/service-discovery-with-docker-docker-links-and-beyond/</link>
 				<guid isPermaLink="true">txt.fliglio.com//2013/12/service-discovery-with-docker-docker-links-and-beyond/</guid>
 			</item>
@@ -1039,18 +964,15 @@ RUN apt-get -y install mysql-server
 
 EXPOSE 3306
 
-CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/usr/bin/mysqld_safe&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/usr/bin/mysqld_safe&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then build and tag it:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;docker build -t mysql .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;docker build -t mysql .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we have a fully functioning container that we can run like so:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;docker run -d -p 3306:3306 mysql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;docker run -d -p 3306:3306 mysql&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This would work, but it wouldn&amp;#39;t be very useful.
 &lt;ul&gt;
@@ -1067,13 +989,11 @@ CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&
 
 &lt;p&gt;We could just start maintaining the &lt;code&gt;/etc/mysql/my.cnf&lt;/code&gt; file and add it to our container with our Dockerfile: &lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;ADD ./my.cnf /etc/mysql/my.cnf
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;ADD ./my.cnf /etc/mysql/my.cnf&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Or we could update that one property. I prefer this way so that I know that I am getting the most up to date config from my install, and just updating what I need to. We can add the appropriate &lt;code&gt;sed&lt;/code&gt; command to our Dockerfile after we&amp;#39;ve installed mysql-server.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;RUN sed -i -e&lt;span class=&quot;s2&quot;&gt;&amp;quot;s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/&amp;quot;&lt;/span&gt; /etc/mysql/my.cnf
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;RUN sed -i -e&lt;span class=&quot;s2&quot;&gt;&amp;quot;s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/&amp;quot;&lt;/span&gt; /etc/mysql/my.cnf&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;(Technically we could just delete the line for the same effect, but this is more explicit.)&lt;/p&gt;
 
@@ -1089,21 +1009,18 @@ CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&
     
 EXPOSE 3306
     
-CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/usr/bin/mysqld_safe&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/usr/bin/mysqld_safe&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Let&amp;#39;s build and run it!&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;docker build -t mysql .
-docker run -d -p 3306:3306 mysql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+docker run -d -p 3306:3306 mysql&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And now to try connecting. In order to do this, we need to figure out the container&amp;#39;s ip, and to find that, we need our container&amp;#39;s id. This is easy enough to do by hand with &lt;code&gt;docker ps&lt;/code&gt; and &lt;code&gt;docker inspect&lt;/code&gt;, but you could also script it:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;CONTAINER_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker ps &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep mysql &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;IP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker inspect &lt;span class=&quot;nv&quot;&gt;$CONTAINER_ID&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; python -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;import json,sys;obj=json.load(sys.stdin);print obj[0][&amp;quot;NetworkSettings&amp;quot;][&amp;quot;IPAddress&amp;quot;]&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we have a fully functional mysql container! That&amp;#39;s great and all, but we&amp;#39;re putting a lot of trust into this container by relying on it to keep track of our databases, not to mention we&amp;#39;re screwed if we ever want to upgrade or update anything.&lt;/p&gt;
 
@@ -1113,8 +1030,7 @@ mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;
 
 &lt;p&gt;So to persist databases from our container in &lt;code&gt;/data/mysql&lt;/code&gt; on our host machine, we update our run command to be:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The problem is, we just nuked our system tables when we replaced &lt;code&gt;/var/lib/mysql&lt;/code&gt; with our empty directory. This also means we lost our admin user. This is tricky to account for because we can&amp;#39;t initialize the directory (or add our admin user) until the data directory is visible to the container (at run time) but we don&amp;#39;t want to initialize the directory every time we start up either. The whole point of externalizing the data directory is so that the container can come and go without loss of data.&lt;/p&gt;
 
@@ -1128,16 +1044,14 @@ mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;    &lt;/span&gt;mysql_install_db
 &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-/usr/bin/mysqld_safe
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+/usr/bin/mysqld_safe&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This will look for the file &amp;quot;ibdata1&amp;quot; in our data dir as a cheap way to determine if we need to initialize the directory or not. After the data directory has been initialized (or determined already initialized) we can continue on to start up the server.&lt;/p&gt;
 
 &lt;p&gt;And now we will update the Dockerfile to add &lt;code&gt;startup.sh&lt;/code&gt; to the container and to call it instead of &lt;code&gt;mysqld_safe&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;ADD ./startup.sh /opt/startup.sh
-CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/bin/bash&amp;quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&amp;quot;/opt/startup.sh&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/bin/bash&amp;quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&amp;quot;/opt/startup.sh&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We can also add in our admin user with the &lt;code&gt;startup.sh&lt;/code&gt; script:&lt;/p&gt;
 
@@ -1155,8 +1069,7 @@ CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&
     sleep 10s
 &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-/usr/bin/mysqld_safe
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+/usr/bin/mysqld_safe&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And of course we should also remove the &lt;code&gt;RUN&lt;/code&gt; line from the Dockerfile that was doing the same thing but getting undone as soon as we externalized the data directory.&lt;/p&gt;
 
@@ -1185,8 +1098,7 @@ ADD ./startup.sh /opt/startup.sh
 
 EXPOSE 3306
 
-CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/bin/bash&amp;quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&amp;quot;/opt/startup.sh&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/bin/bash&amp;quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&amp;quot;/opt/startup.sh&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;startup.sh&lt;/h4&gt;
 
@@ -1205,8 +1117,7 @@ CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&
     sleep 10s
 &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-/usr/bin/mysqld_safe
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+/usr/bin/mysqld_safe&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;and some helpful scripts to do all our tasks&lt;/h3&gt;
 
@@ -1214,15 +1125,13 @@ CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
-docker build -t mysql .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+docker build -t mysql .&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;run-server.sh&lt;/h4&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
-docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;run-client.sh&lt;/h4&gt;
 
@@ -1234,10 +1143,9 @@ docker run -d -p 3306:3306 -v /data/mysql:/var/lib/mysql mysql
 
 &lt;span class=&quot;nv&quot;&gt;IP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker inspect &lt;span class=&quot;nv&quot;&gt;$CONTAINER_ID&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; python -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;import json,sys;obj=json.load(sys.stdin);print obj[0][&amp;quot;NetworkSettings&amp;quot;][&amp;quot;IPAddress&amp;quot;]&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
 
-mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 </description>
-				<pubDate>Sun, 10 Nov 2013 06:31:25 +0000</pubDate>
+				<pubDate>Sun, 10 Nov 2013 00:31:25 -0600</pubDate>
 				<link>txt.fliglio.com//2013/11/creating-a-mysql-docker-container/</link>
 				<guid isPermaLink="true">txt.fliglio.com//2013/11/creating-a-mysql-docker-container/</guid>
 			</item>
@@ -1256,7 +1164,7 @@ mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://benschw.github.io/oauth2-grants&quot; target=&quot;_blank&quot;&gt;http://benschw.github.io/oauth2-grants&lt;/a&gt;&lt;/p&gt;
 </description>
-				<pubDate>Sat, 28 Sep 2013 02:30:42 +0000</pubDate>
+				<pubDate>Fri, 27 Sep 2013 21:30:42 -0500</pubDate>
 				<link>txt.fliglio.com//2013/09/oauth-2-grant-types-demystified/</link>
 				<guid isPermaLink="true">txt.fliglio.com//2013/09/oauth-2-grant-types-demystified/</guid>
 			</item>
@@ -1285,8 +1193,7 @@ mysql -u admin -p -h &lt;span class=&quot;nv&quot;&gt;$IP&lt;/span&gt;
 
 &lt;p&gt;You can now shell into your vm with something like the following:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;ssh -i ~/.ssh/aws-key-benschw.pem ubuntu@54.244.120.37
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;ssh -i ~/.ssh/aws-key-benschw.pem ubuntu@54.244.120.37&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I like to create myself an account separate from the ubuntu one too (so I don&amp;#39;t have to look up ssh&amp;#39;s &lt;code&gt;-i&lt;/code&gt; flag mostly). Just make sure to install your own ssh-key and add yourself to the sudoers group.&lt;/p&gt;
 
@@ -1295,8 +1202,7 @@ adduser ben
 usermod -G sudo ben
 su ben
 &lt;span class=&quot;c&quot;&gt;# paste your key into ~/.ssh/authorized_keys&lt;/span&gt;
-chmod 600 ~/.ssh/authorized_keys
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+chmod 600 ~/.ssh/authorized_keys&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Install docker&lt;/h2&gt;
 
@@ -1309,13 +1215,11 @@ chmod 600 ~/.ssh/authorized_keys
 &lt;p&gt;Now lets install a copy of wordpress on port 80 just to confirm everything is right so far. Normally, we&amp;#39;d just let docker assign us a port, but for now lets ask for 80 since we&amp;#39;ve only punched a limited number of holes in our EC2 instance&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker pull jbfink/wordpress
-sudo docker run -d -p 80:80 jbfink/wordpress:latest
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+sudo docker run -d -p 80:80 jbfink/wordpress:latest&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Navigate to your elastic IP and confirm the install screen comes up. Since it did, we&amp;#39;re all good to go and now it&amp;#39;s time to tear it down and reclaim our precious port 80.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker stop f26d90158382
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker stop f26d90158382&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you forgot your id, &lt;code&gt;sudo docker ps -a&lt;/code&gt; should give you what you&amp;#39;re looking for.&lt;/p&gt;
 
@@ -1344,8 +1248,7 @@ sudo docker inspect e40c90158472 &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; 
 
 /sbin/ifconfig  docker0 &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; sed -n &lt;span class=&quot;s1&quot;&gt;&amp;#39;2 p&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; cut -d&lt;span class=&quot;s2&quot;&gt;&amp;quot;:&amp;quot;&lt;/span&gt; -f2
 &lt;span class=&quot;c&quot;&gt;# more black magic to get our bridge&amp;#39;s ip (which doubles as our redis &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# host): for me it&amp;#39;s 172.17.42.1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;c&quot;&gt;# host): for me it&amp;#39;s 172.17.42.1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Recap: Hipache is running and we know some stuff about it. Since we specified port 80 &amp;amp; 6379, we also know Hipache is running on port 80 and redis is running on port 6379. (By the way, redis is a database and provides configuration for Hipache.)&lt;/p&gt;
 
@@ -1353,13 +1256,11 @@ sudo docker inspect e40c90158472 &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; 
 
 &lt;p&gt;The last piece of prep work is to get a redis client installed on the host machine so we can configure Hipache.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo apt-get install redis-server
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo apt-get install redis-server&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The downside of this, is we just installed the client and the server, and Ubuntu has started up a redis server on our host machine... go ahead and kill it: &lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo /etc/init.d/redis-server stop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo /etc/init.d/redis-server stop&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Thats all there is to it, we&amp;#39;re ready to roll! ...or maybe you&amp;#39;re thinking that was a lot of work and you&amp;#39;re ready to go back to ips...&lt;/p&gt;
 
@@ -1367,20 +1268,17 @@ sudo docker inspect e40c90158472 &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; 
 
 &lt;p&gt;Back to the ol&amp;#39; wordpress standby. This time we aren&amp;#39;t going to specify a port, but are instead going to let Docker assign it an obnoxious random one.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker run -d -p 80 jbfink/wordpress:latest
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker run -d -p 80 jbfink/wordpress:latest&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;code&gt;sudo docker ps -a&lt;/code&gt; will tell us the port mapping, or we can use the container id to find what got mapped to port 80.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo docker port d6077ac8b6e8 80
-&lt;span class=&quot;c&quot;&gt;# 49154&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;c&quot;&gt;# 49154&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The last step is to configure Hipache to route traffic sent to the domain we decided on (I&amp;#39;m using wp.io.fliglio.com) to the bridge ip our wordpress container is running on (the same as the one we figured out earlier for Hipache in this single host scenario) with the port docker is exposing the wordpress container&amp;#39;s port 80 through (49154)&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;redis-cli -h 172.17.42.1 -p 6379 rpush frontend:wp.io.fliglio.com wpdemo
-redis-cli -h 172.17.42.1 -p 6379 rpush frontend:wp.io.fliglio.com http://172.17.42.1:49154
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+redis-cli -h 172.17.42.1 -p 6379 rpush frontend:wp.io.fliglio.com http://172.17.42.1:49154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Thats it! &lt;code&gt;wp.io.fliglio.com&lt;/code&gt; should take you to a fresh wordpress installer that will generate even less traffic than this blog!&lt;/p&gt;
 
@@ -1392,20 +1290,311 @@ redis-cli -h 172.17.42.1 -p 6379 rpush frontend:wp.io.fliglio.com http://172.17.
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;sudo docker run -d -p 80 jbfink/wordpress:latest&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;sudo docker port &lt;span class=&quot;nv&quot;&gt;$ID&lt;/span&gt; 80&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-redis-cli -h 172.17.42.1 -p 6379 rpush frontend:wp.io.fliglio.com http://172.17.42.1:&lt;span class=&quot;nv&quot;&gt;$PORT&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+redis-cli -h 172.17.42.1 -p 6379 rpush frontend:wp.io.fliglio.com http://172.17.42.1:&lt;span class=&quot;nv&quot;&gt;$PORT&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;since i&amp;#39;m not providing a good way to test that that worked, just look at your config and trust me:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;redis-cli -h 172.17.42.1 -p 6379 lrange frontend:wp.io.fliglio.com 0 -1
 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;wpdemo&amp;quot;&lt;/span&gt;
 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;http://172.17.42.1:49154&amp;quot;&lt;/span&gt;
-3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;http://172.17.42.1:49156&amp;quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;http://172.17.42.1:49156&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 </description>
-				<pubDate>Wed, 18 Sep 2013 06:23:09 +0000</pubDate>
+				<pubDate>Wed, 18 Sep 2013 01:23:09 -0500</pubDate>
 				<link>txt.fliglio.com//2013/09/protyping-web-stuff-with-docker/</link>
 				<guid isPermaLink="true">txt.fliglio.com//2013/09/protyping-web-stuff-with-docker/</guid>
+			</item>
+		
+			<item>
+				<title>AngularJS State Management with ui-router</title>
+				<description>&lt;p&gt;Managing state with AngularJS&amp;#39;s ui-router (&lt;a href=&quot;https://github.com/angular-ui/ui-router&quot;&gt;https://github.com/angular-ui/ui-router&lt;/a&gt;) is down right elegant. How is it different from a traditional router you might ask? Well I&amp;#39;ll tell you, but first...&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2&gt;A little history about routers&lt;/h2&gt;
+
+&lt;p&gt;Routers provide an abstraction between a url and a request that an application knows how to satisfy. With traditional web service applications, this is straight forward:
+&lt;ul&gt;
+    &lt;li&gt;A url is routed to a request.&lt;/li&gt;
+    &lt;li&gt;A request is used to look up some driver code that knows how to build a response.&lt;/li&gt;
+&lt;/ul&gt;
+When a service is rendering a page or retrieving data, this separation of responsibilities makes sense.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;But what happens when the concept of a &amp;quot;page&amp;quot; becomes more ambiguous?&lt;/strong&gt; What happens when only parts of a page need to be updated, or the end user is given the option to perform their own curation of a page? &lt;strong&gt;What happens when modularity is needed in a request?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;If page composition is fluid, but we still need urls to discretely (for the most part) represent the various permutations of content, how do we effectively route requests? No matter how much we decouple our page components, we&amp;#39;re still left with convoluted logic evaluating how to organize them into a specific page.&lt;/p&gt;
+
+&lt;p&gt;Sure something like a router is necessary to translate between a url and a request, but how can you include modularity in a request when you are declaratively mapping it to a url?
+&lt;h2&gt;AngularJS State Manager&lt;/h2&gt;
+You Don&amp;#39;t!&lt;/p&gt;
+
+&lt;p&gt;The most interesting thing about AngularJS&amp;#39;s new router, isn&amp;#39;t the router itself, but the state manager that comes with it. Instead of targeting a controller/view to render for a given url, you target a state. States are managed in a heirarchy providing inheritance of parent states and complex composition of page components, all the while remaining declarative in nature.&lt;/p&gt;
+
+&lt;p&gt;Without further ado, start fiddling: &lt;a title=&quot;angular state demo&quot; href=&quot;http://jsfiddle.net/benschwartz/LhydD/&quot;&gt;http://jsfiddle.net/benschwartz/LhydD/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;or digging into angular&amp;#39;s own docs: &lt;a title=&quot;ui-router wiki&quot; href=&quot;https://github.com/angular-ui/ui-router/wiki&quot;&gt;https://github.com/angular-ui/ui-router/wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;... or stick around for an explanation.
+&lt;h2&gt; What can State do for me?&lt;/h2&gt;
+Lets start with a simple example:&lt;/p&gt;
+
+&lt;p&gt;index.html&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;myApp&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ui-view&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;app.js&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;app.js &lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myApp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ui.state&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$stateProvider&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$stateProvider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;         &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;home&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;home&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Hello {{name}}&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$scope&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;                 &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;World&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;             &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;         &lt;span class=&quot;nx&quot;&gt;$stateProvider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;}])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Not much is going on here, but basically this is how you&amp;#39;d implement a conventional route with the state manager. &lt;/p&gt;
+
+&lt;p&gt;Lets build a simplified version of the settings section from the  &lt;a href=&quot;http://jsfiddle.net/benschwartz/LhydD/&quot;&gt;JSFiddle example&lt;/a&gt;.
+&lt;/a&gt;
+&lt;h2&gt;Settings&lt;/h2&gt;
+&lt;a href=&quot;/images/settings-comp2.png&quot;&gt;&lt;img src=&quot;/images/settings-comp2.png&quot; alt=&quot;settings-comp2&quot; width=&quot;523&quot; height=&quot;266&quot; class=&quot;alignnone size-full wp-image-107&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;So how do we build it?
+Lets start by decomposing our pages (edit details and edit quotes) into states. To represent these two pages, we need three states: an abstract base state (settings) and two concrete child states (details and quotes.)&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;     &lt;span class=&quot;kr&quot;&gt;abstract&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/settings&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.details&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;quotes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.quotes&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/quotes&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Though incomplete, this is the gist of how you define states with ui-router. Right off the bat, you can see that urls are built through state inheritance: to edit quotes, we&amp;#39;ll navigate to &amp;quot;settings/quotes&amp;quot; since the quotes state declares settings as its parent and thus inherits its url among other things.&lt;/p&gt;
+
+&lt;p&gt;Next lets fill in the gaps and wire this up into an Angular module.&lt;/p&gt;
+
+&lt;h3&gt;accountSettings Module&lt;/h3&gt;
+
+&lt;p&gt;app.js&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;accountSettings&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ui.state&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$stateProvider&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$stateProvider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;         &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/settings&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;             &lt;span class=&quot;kr&quot;&gt;abstract&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.html&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;SettingsController&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;         &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.details&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.details.html&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;         &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;quotes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.quotes&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/quotes&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.quotes.html&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt;         &lt;span class=&quot;nx&quot;&gt;$stateProvider&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt;             &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt;             &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;             &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;quotes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;}])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;32&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;SettingsController&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$scope&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;33&lt;/span&gt;         &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;34&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Bob Loblaw&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;35&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;bobloblaw@lawblog.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;36&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;semi-secret&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;37&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;quotes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Lorem ipsum dolor sic amet&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;38&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;39&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;}])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;index.html&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;accountSettings&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;container&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ui-view&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;app.js&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;settings.html&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;row&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;span3&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;pa-sidebar well well-small&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;       &lt;span class=&quot;nt&quot;&gt;&amp;lt;ul&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;nav nav-list&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;         &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;nav-header&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Settings&lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;         &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{ active: $state.includes(\&amp;#39;settings.user.default\&amp;#39;)}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;#/settings&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;User Details&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;         &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{ active: $state.includes(\&amp;#39;settings.quotes\&amp;#39;)}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;#/settings/quotes&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;User Quotes&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;       &lt;span class=&quot;nt&quot;&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;       &lt;span class=&quot;nt&quot;&gt;&amp;lt;hr&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;span9&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ui-view&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;settings.details.html&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;h3&amp;gt;&lt;/span&gt;{{user.name}}\&amp;#39;s Details&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h3&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;hr&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&amp;gt;&amp;lt;label&amp;gt;&lt;/span&gt;Name&lt;span class=&quot;nt&quot;&gt;&amp;lt;/label&amp;gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-model=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;user.name&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&amp;gt;&amp;lt;label&amp;gt;&lt;/span&gt;Email&lt;span class=&quot;nt&quot;&gt;&amp;lt;/label&amp;gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-model=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;user.email&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;button&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;btn&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-click=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;done()&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Save&lt;span class=&quot;nt&quot;&gt;&amp;lt;/button&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;settings.quotes.html&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;h3&amp;gt;&lt;/span&gt;{{user.name}}\&amp;#39;s Quotes&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h3&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;hr&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&amp;gt;&amp;lt;label&amp;gt;&lt;/span&gt;Quotes&lt;span class=&quot;nt&quot;&gt;&amp;lt;/label&amp;gt;&amp;lt;textarea&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-model=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;user.quotes&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/textarea&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;button&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;btn&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-click=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;done()&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Save&lt;span class=&quot;nt&quot;&gt;&amp;lt;/button&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We&amp;#39;re Done!&lt;/p&gt;
+
+&lt;h3&gt;Wait, what happened?&lt;/h3&gt;
+
+&lt;p&gt;Ok ok, we can take a look at the code before we call it done.&lt;/p&gt;
+
+&lt;p&gt;The first thing you might notice, is that settings has a url but details doesn&amp;#39;t. Since it doesn&amp;#39;t make sense to go to the settings state (if for no other reason then that it&amp;#39;s abstract) we have assigned the concrete state &amp;quot;details&amp;quot; to have a url of &amp;#39;&amp;#39; so that traffic to &amp;#39;/settings&amp;#39; will route to it. We could have done this the other way around, but as we add new pages to our accountSettings module (and children to our settings state) it makes sense for the parent state to declare the url namespace.&lt;/p&gt;
+
+&lt;p&gt;The other interesting thing (and this is where we really start realizing the power of states) is that there is only one controller and it&amp;#39;s only wired up against the settings state! How are the &amp;#39;details&amp;#39; and &amp;#39;quotes&amp;#39; states getting populated with data only accessible by &amp;#39;settings&amp;#39; state you ask? Controller inheritance! Sorry if I&amp;#39;m getting excited here, but think about what we just did: without any convoluted registry/cache scheme, we were able to remove the one-to-one relationship that is typical between server requests and building a page. All of a sudden, we can start thinking about what data we need for a feature and how to present that data to the user as not intrinsically linked!&lt;/p&gt;
+
+&lt;h3&gt;Scope Creep!&lt;/h3&gt;
+
+&lt;p&gt;No, not $scope creep. Scope creep like what Marketing throws at you after you&amp;#39;re 90% done with their initial request.&lt;/p&gt;
+
+&lt;p&gt;Now we&amp;#39;re being asked to create a status bar in the settings section that will always display a description of what the user is supposed to be doing. (Don&amp;#39;t ask me why marketing would want this... but it does help to illustrate another feature of ui-router)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/images/settings-comp3.png&quot;&gt;&lt;img src=&quot;/images/settings-comp3.png&quot; alt=&quot;settings-comp3&quot; width=&quot;528&quot; height=&quot;387&quot; class=&quot;alignnone size-full wp-image-145&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;Multiple (named) Views&lt;/h3&gt;
+
+&lt;p&gt;We&amp;#39;ve already seen multiple views per page in the form of hierarchical states, each with their own view, but what about a single state that needs to display multiple views? Our new requirement, displaying a description of what the user is supposed to be doing, relies on just that.&lt;/p&gt;
+
+&lt;p&gt;So maybe you&amp;#39;ve guessed by now that ui-router supports declaring multiple named views per state. If so, you&amp;#39;re right; and here&amp;#39;s an update to our hello world example illustrating how:&lt;/p&gt;
+
+&lt;p&gt;index.html&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;myApp&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ui-view&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;     static nonsense
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ui-view=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;foo&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;app.js&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;app.js &lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myApp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ui.state&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$stateProvider&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$stateProvider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;         &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;home&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;home&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;                 &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;                     &lt;span class=&quot;nx&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Hello {{name}}&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;                     &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$scope&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;                         &lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;World&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;                     &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;                 &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;                 &lt;span class=&quot;s1&quot;&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;                     &lt;span class=&quot;nx&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;bar&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;                 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;         &lt;span class=&quot;nx&quot;&gt;$stateProvider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;}])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;There you have it. One state updating two views. The default view (represented by &amp;#39;&amp;#39;) and the &amp;#39;foo&amp;#39; view.&lt;/p&gt;
+
+&lt;h3&gt;accountSettings Module Updates&lt;/h3&gt;
+
+&lt;p&gt;Since this is such an easy feature to add on, we&amp;#39;ll let marketing slide it in (even though we were already done.) All we need to do is add a named view to the settings.html partial and convert our &amp;#39;details&amp;#39; and &amp;#39;quotes&amp;#39; states to update both views.&lt;/p&gt;
+
+&lt;p&gt;settings.html&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;alert&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ui-view=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;hint&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;row&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;span3&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;pa-sidebar well well-small&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;       &lt;span class=&quot;nt&quot;&gt;&amp;lt;ul&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;nav nav-list&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;         &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;nav-header&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Settings&lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;         &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{ active: $state.includes(\&amp;#39;settings.user.default\&amp;#39;)}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;#/settings&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;User Details&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;         &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{ active: $state.includes(\&amp;#39;settings.quotes\&amp;#39;)}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;#/settings/quotes&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;User Quotes&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;       &lt;span class=&quot;nt&quot;&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;       &lt;span class=&quot;nt&quot;&gt;&amp;lt;hr&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;     &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;span9&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ui-view&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;state definitions from app.js&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;details&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.details&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;                 &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;                     &lt;span class=&quot;nx&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.details.html&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;                 &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;                 &lt;span class=&quot;s1&quot;&gt;&amp;#39;hint&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;                     &lt;span class=&quot;nx&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;edit your details!&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;                 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;         &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;quotes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.quotes&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/quotes&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt;             &lt;span class=&quot;nx&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;                 &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;                     &lt;span class=&quot;nx&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;settings.quotes.html&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt;                 &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;                 &lt;span class=&quot;s1&quot;&gt;&amp;#39;hint&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;                     &lt;span class=&quot;nx&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;edit your quotes!&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;                 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In a perfect world, the &lt;a href=&quot;http://en.wikipedia.org/wiki/Design_Patterns&quot; title=&quot;Design Patterns&quot;&gt;GOF&lt;/a&gt; would come along and explain in simple terms the &amp;quot;right&amp;quot; way to route urls to requests in single page Javascript applications, and this way would soon become ubiquitous.&lt;/p&gt;
+
+&lt;p&gt;In lieu of this, we&amp;#39;ll just have to keep trying things out and seeing what works. Maybe one day we&amp;#39;ll be back to that comfort zone which Routing provided for web service application architecture.&lt;/p&gt;
+
+&lt;p&gt;Since I only scratched the surface, go check out &lt;a href=&quot;https://github.com/angular-ui/ui-router&quot; title=&quot;ui-router&quot;&gt;ui-router on GitHub&lt;/a&gt;. There&amp;#39;s a more complete example there as well as some documentation on the wiki. &lt;/p&gt;
+</description>
+				<pubDate>Fri, 03 May 2013 13:45:54 -0500</pubDate>
+				<link>txt.fliglio.com//2013/05/angularjs-state-management-with-ui-router/</link>
+				<guid isPermaLink="true">txt.fliglio.com//2013/05/angularjs-state-management-with-ui-router/</guid>
 			</item>
 		
 	</channel>
