@@ -82,7 +82,8 @@ footer {
 	border-bottom: 1px solid #B9BFC1;
 }
 
-
+#sidebar .share-icons {
+}
 #sidebar .share-icons li a:hover {
 	background-color: #B9BFC1;
 }
@@ -100,7 +101,7 @@ footer {
 .share-icon.github {
 	background-color: #4183C4;
 }
-.share-icon.bitly {
+.share-icon.email {
 	background-color: #FF4500;
 }
 
