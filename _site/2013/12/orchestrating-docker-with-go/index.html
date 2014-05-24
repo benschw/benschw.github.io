@@ -40,6 +40,19 @@
 	</head>
 
 	<body>
+		<div id="banner">
+			<div class="banner-inner">
+				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+				<!-- txt.fliglio-banner -->
+				<ins class="adsbygoogle"
+				     style="display:inline-block;width:728px;height:90px"
+				     data-ad-client="ca-pub-6571676266096984"
+				     data-ad-slot="1065473358"></ins>
+				<script>
+					(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+			</div>
+		</div>
 
 		<!-- HEADER -->
 		<div class="navbar navbar-inverse navbar-top" role="navigation">
@@ -72,6 +85,20 @@
 
 <p class="meta">18 Dec 2013</p>
 <p class="meta"><a href="#disqus_thread">comments</a></p>
+
+<!-- twitter -->
+<p class="meta">
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://txt.fliglio.com/2013/12/orchestrating-docker-with-go/" data-via="benhschwartz" data-show-count="true">Tweet</a>
+	
+	<script>
+		!function(d,s,id){
+			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+			if(!d.getElementById(id)){
+				js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);
+			}
+		}(document, 'script', 'twitter-wjs');
+	</script>
+</p>
 
 <h2>dockit</h2>
 
@@ -229,65 +256,72 @@ sudo ./dockit -service WebApp -start</code></pre></div>
 
 				<!-- MAIN NAV -->
 				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
-					<ul class="nav navbar-nav navbar-left share-icons">
+
+					<div class="sidebar-module">
+
 						<!-- icons: https://github.com/danleech/simpleicons -->
-						<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
-						<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
-						<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
-						<li><a class="share-icon email" target="_blank" href="mailto:benschw@gmail.com"><img src="/images/email-32.png" alt="email"/></a></li>
-					</ul>
+						<ul class="share-icons">
+							<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
+							<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
+							<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
+							<li><a class="share-icon email" href="mailto:benschw@gmail.com"><img src="/images/email-32.png" alt="email"/></a></li>
+						</ul>
+						<div style="clear:both"></div>
+					</div>
 
-					<ul id="posts-nav">
-						
-							<li><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></li>
-						
-							<li><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
-						
-							<li><a href="/2014/01/concurrent-protractor-testing/">Concurrent Protractor Tests with Selenium Grid in Docker</a></li>
-						
-							<li><a href="/2014/01/openstack_with_puppet_and_heat/">Provisioning a Jekyll Site in Openstack with Heat and Puppet</a></li>
-						
-							<li><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></li>
-						
-							<li><a href="/2013/12/service-discovery-with-docker-docker-links-and-beyond/">Service Discovery with Docker: Docker links and beyond</a></li>
-						
-							<li><a href="/2013/11/creating-a-mysql-docker-container/">Creating a MySQL Docker Container</a></li>
-						
-							<li><a href="/2013/09/oauth-2-grant-types-demystified/">OAuth 2 Grant Types Demystified</a></li>
-						
-							<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
-						
-							<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
-						
-							<li><a href="/all-posts">more...</a></li>
-					</ul>
+					<div class="sidebar-module sidebar-module-inset">
+						<ul id="posts-nav">
+							
+								<li><a href="/2014/05/encapsulated-services-with-consul-and-confd/">Encapsulated Services with Consul and Confd</a></li>
+							
+								<li><a href="/2014/04/concurrency-in-java-and-go/">Concurrency in Java and Go</a></li>
+							
+								<li><a href="/2014/01/concurrent-protractor-testing/">Concurrent Protractor Tests with Selenium Grid in Docker</a></li>
+							
+								<li><a href="/2014/01/openstack_with_puppet_and_heat/">Provisioning a Jekyll Site in Openstack with Heat and Puppet</a></li>
+							
+								<li><a href="/2013/12/orchestrating-docker-with-go/">Orchestrating docker with Go</a></li>
+							
+								<li><a href="/2013/12/service-discovery-with-docker-docker-links-and-beyond/">Service Discovery with Docker: Docker links and beyond</a></li>
+							
+								<li><a href="/2013/11/creating-a-mysql-docker-container/">Creating a MySQL Docker Container</a></li>
+							
+								<li><a href="/2013/09/oauth-2-grant-types-demystified/">OAuth 2 Grant Types Demystified</a></li>
+							
+								<li><a href="/2013/09/protyping-web-stuff-with-docker/">Protyping web stuff with Docker</a></li>
+							
+								<li><a href="/2013/05/angularjs-state-management-with-ui-router/">AngularJS State Management with ui-router</a></li>
+							
+								<li><a href="/all-posts">more...</a></li>
+						</ul>
+					</div>
 
-					<br />
 
-					<!-- Twitter -->
-					<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="false">Follow @benhschwartz</a>
-					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+					<div class="sidebar-module">
 
-					<br /><br />
+						<!-- Twitter -->
+						<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="true">Follow</a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
-					<!-- Github -->
-					<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+						<br /><br />
 
-					<br /><br />
-					
-					<a href="mailto:benschw@gmail.com">benschw@gmail.com</a>
-					<br /><br />
+						<!-- Github -->
+						<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+					</div>
 
-					<!-- Adsense -->
-					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-					<!-- txt.fliglio-2 -->
-					<ins class="adsbygoogle"
-					     style="display:inline-block;width:250px;height:250px"
-					     data-ad-client="ca-pub-6571676266096984"
-					     data-ad-slot="5166098950"></ins>
-					<script>
-						(adsbygoogle = window.adsbygoogle || []).push({});
-					</script>					
+					<div class="sidebar-module">
+
+						<!-- Adsense -->
+						<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+						<!-- txt.fliglio-2 -->
+						<ins class="adsbygoogle"
+						     style="display:inline-block;width:250px;height:250px"
+						     data-ad-client="ca-pub-6571676266096984"
+						     data-ad-slot="5166098950"></ins>
+						<script>
+							(adsbygoogle = window.adsbygoogle || []).push({});
+						</script>					
+					</div>
 
 				</div><!--/span-->
 			</div>
