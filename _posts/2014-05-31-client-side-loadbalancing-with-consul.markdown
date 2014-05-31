@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Service Discovery for Golang with Consul
+title: Service Discovery for Golang with DNS
 ---
 
 In [a blog post](http://txt.fliglio.com/2014/05/encapsulated-services-with-consul-and-confd/) from a couple weeks ago, I walked through a demo illustrating the power of using [Confd](https://github.com/kelseyhightower/confd) and DNS to keep your applications decoupled from the specifics of [Consul](http://www.consul.io/) when implementing service discovery and configuration management for your applications.
@@ -10,7 +10,7 @@ In this post I am going to introduce [dns-clb-go](https://github.com/benschw/dns
 <!--more-->
 
 
-# Service Discovery with DNS
+# Service Discovery with DNS; Consul, SkyDNS...
 
 DNS SRV records are a great mechanism for sharing service location in a dynamic way, but you still need something to interpret them. [dns-clb-go](https://github.com/benschw/dns-clb-go) is a library written in Go which does just that.
 
@@ -88,6 +88,6 @@ Querying for "my-svc" from the consul example above. No caching is used, and loa
 
 While researching my [previous post](http://txt.fliglio.com/2014/05/encapsulated-services-with-consul-and-confd/), I was amazed to find that there didn't seem to be any well established patterns or solutions for working with SRV records. Since I'm still fairly certain that this is due to my poor use of _Google_, I'm going to imploy [Cunningham's Law](http://meta.wikimedia.org/wiki/Cunningham's_Law) to get some answers. If this isn't the case, and the people working with SRV records really are keeping their solutions to themselves, then maybe this library can be of some use to people.
 
-If this is useful to anyone, let me know. If I'm off-base, let me know. In the interest of putting more information out there, I'd like to make available any resources or experiences people have found/had online to improve this library and more importantly, make this problem easier to solve.
+If this is useful to anyone, let me know. If I'm off-base, let me know. And especially, if you'd like to contribute _pull requests are welcome and appreciated_! In the interest of putting more information out there, I'd like to make available any resources or experiences people have found/had online to improve this library and more importantly, make this problem easier to solve.
 
 Comment below, or just shoot me an email: [benschw@gmail.com](mailto:benschw@gmail.com)
