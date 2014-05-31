@@ -2,15 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://txt.fliglio.com/</loc>
-    <lastmod>2014-05-24T20:13:40-05:00</lastmod>
+    <lastmod>2014-05-31T12:20:43-05:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
     <url>
+      <loc>http://txt.fliglio.com/2014/05/Client%20Side%20Loadbalancing%20with%20Consul/</loc>
+      
+        <lastmod>2014-05-31T12:20:33-05:00</lastmod>
+      
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
+  
+    <url>
       <loc>http://txt.fliglio.com/2014/05/encapsulated-services-with-consul-and-confd/</loc>
       
         <lastmod>2014-05-21T00:00:00-05:00</lastmod>
+      
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
+  
+    <url>
+      <loc>http://txt.fliglio.com/2014/05/patching-openstack-base-image/</loc>
+      
+        <lastmod>2014-05-18T23:05:30-05:00</lastmod>
       
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -119,7 +137,7 @@
   <url>
     <loc>http://txt.fliglio.com/feed.xml</loc>
     
-      <lastmod>2014-05-24</lastmod>
+      <lastmod>2014-05-31</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -132,7 +150,7 @@
   <url>
     <loc>http://txt.fliglio.com/all-posts/index.html</loc>
     
-      <lastmod>2014-05-24</lastmod>
+      <lastmod>2014-05-31</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -145,7 +163,7 @@
   <url>
     <loc>http://txt.fliglio.com/about/index.html</loc>
     
-      <lastmod>2014-05-24</lastmod>
+      <lastmod>2014-05-31</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -158,7 +176,7 @@
   <url>
     <loc>http://txt.fliglio.com/index.html</loc>
     
-      <lastmod>2014-05-24</lastmod>
+      <lastmod>2014-05-31</lastmod>
     
     
       <changefreq>monthly</changefreq>
@@ -171,7 +189,7 @@
   <url>
     <loc>http://txt.fliglio.com/sitemap.xml</loc>
     
-      <lastmod>2014-05-24</lastmod>
+      <lastmod>2014-05-31</lastmod>
     
     
       <changefreq>monthly</changefreq>
