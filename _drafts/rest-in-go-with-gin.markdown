@@ -301,4 +301,14 @@ With the server running, you can also try out the example _todo_ cli app include
 
 ### Some Things To Look At...
 
-Also included is a [Makefile](https://github.com/benschw/go-todo/blob/master/Makefile) that takes care of running the server for the tests as well as building both the server binary and an example "todo" cli app that leverages the client (these can be found the the [cmd](https://github.com/benschw/go-todo/tree/master/cmd) directory).
+#### Makefile
+One update in [the github repo](https://github.com/benschw/go-todo), is the addition of a [Makefile](https://github.com/benschw/go-todo/blob/master/Makefile).  It takes care of running the server for the tests as well as building both the server binary and an example "todo" cli app that leverages the client (these can be found the the [cmd](https://github.com/benschw/go-todo/tree/master/cmd) directory).
+
+#### CLI API
+To support the cli interface with flags and subcommands, I included [codegangsta/cli](https://github.com/codegangsta/cli).  In addition, I've leveraged Canonical's [goyaml](https://gopkg.in/yaml.v1) to externalize the configuration into a yaml config.
+
+These components aren't by any means necessary for a solid microservice platform, but are a nice start. ([Consul](http://www.consul.io/) integration might be a nice alternative ;))
+
+#### GORM
+
+[GORM](https://github.com/jinzhu/gorm) is by no means the ubiquitous choice for database abstraction, but for this simple example it suited my needs. One nice thing about microservices is that one size need not fit all, and we could use something completely different if we had a different problem to solve.
