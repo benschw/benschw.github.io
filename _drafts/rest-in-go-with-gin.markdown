@@ -2,9 +2,9 @@
 layout: post
 title: REST Microservices in Go with Gin
 ---
-[Microservices](http://martinfowler.com/articles/microservices.html) are cool. Simply described, they're a way to take encapsulation to the next level. This design pattern allows for components of your system to be developed in isolation (even in different languages), keep internal business logic truly internal (no more well intentioned hacks that break encapsulation), and allow for each component to be deployed in isolation. These three characteristics go a long way towards making development and deployment easier.
+[Microservices](http://martinfowler.com/articles/microservices.html) are cool. Simply described, they're a way to take encapsulation to the next level. This design pattern allows for components of your system to be developed in isolation (even in different languages), keep internal business logic truly internal (no more well intentioned hacks that break encapsulation), and allow for each component to be deployed in isolation. These three characteristics go a long way toward making development and deployment easier.
 
-Here's a walk through of how I designed a simple _Todo_ microservice in Go (with some help from [Gin](http://gin-gonic.github.io/gin/), [Gorm](https://github.com/jinzhu/gorm), and [codegangsta/cli](https://github.com/codegangsta/cli)).
+Here's a walk-through of how I designed a simple _Todo_ microservice in Go (with some help from [Gin](http://gin-gonic.github.io/gin/), [Gorm](https://github.com/jinzhu/gorm), and [codegangsta/cli](https://github.com/codegangsta/cli)).
 
 <!--more-->
 
@@ -19,7 +19,7 @@ First step is to wire up a foundation. For starters, we'll need:
 - *_todo_ api model*: A data model shared by the server and the client (and the database) to communicate with.
 - *_todo_ resource*: A grouping of handlers to manage api requests made regarding todos. 
 - *_todo_ http client*: An http client library that can be imported by any applications wishing to use our microservice.
-- *integration tests*: By leveraging the client, we can very easily write symmetrical integration tests which fully exercise our service's REST api. 
+- *integration tests*: By leveraging the client, we can very easily write symmetrical integration tests that fully exercise our service's REST api. 
 
 
 ### Server CLI
@@ -59,7 +59,7 @@ This is the front controller for our service. We can construct our dependencies 
 	}
 
 ### Todo API Model
-This structure can be leveraged by both the service to decode requests and integrate with the database, and by the client to build and process requests of the service. Later we will put it in its own package so a client implementation can import "api" and "client" and the server only needs "api" and "service"
+This structure can be leveraged by both the service, to decode requests and integrate with the database, and by the client, to build and process requests of the service. Later we will put it in its own package so a client implementation can import "api" and "client" and the server only needs "api" and "service"
 
 	type Todo struct {
 		Id          int32  `json:"id"`
@@ -70,7 +70,7 @@ This structure can be leveraged by both the service to decode requests and integ
 	}
 
 ### Todo Resource
-This is a very rudimentary first pass at the resource. There is little error handling and there are obvious omissions (like the ability to update a _todo_,) but it illustrates how to group the _todo_ resource's controller functionality and abstract it from the details of bootstrapping the app.
+This is a very rudimentary first pass at the resource. There is little error handling and there are obvious omissions (like the ability to update a _todo_), but it illustrates how to group the _todo_ resource's controller functionality and abstract it from the details of bootstrapping the app.
 
 	type TodoResource struct {
 		db gorm.DB
@@ -121,9 +121,9 @@ This is a very rudimentary first pass at the resource. There is little error han
 	}
 
 ### Todo HTTP Client
-This enables our other go apps to leverage our service without knowing the details of what the REST API looks like. A client application need only import the client and api to be able to treat the service like a local library.
+This enables our other go apps to leverage our service without knowing the details of what the REST API look like. A client application need only import the client and api to be able to treat the service like a local library.
 
-Even if we don't have any go applications lined up to use our service, building the client implementation in conjunction with the service is very helpful for testing the API; more on that later.
+Even if we don't have any go applications lined up to use our service, building the client implementation in conjunction with the service is very helpful for testing the API -- more on that later.
 
 	type TodoClient struct {
 		Host string
@@ -264,8 +264,10 @@ I've published a [complete example](https://github.com/benschw/go-todo) on githu
 	   --version, -v                print the version
 	   --help, -h                   show help
 	   
-#### Bootstraping the database
-Create an empty database, fill in the supplied config: `config.yaml` and then run the following to initialize the _todo_ table.
+#### Bootstrapping the database
+Create an empty database, fill in the supplied config: `config.yaml` and then run `migratedb` to initialize the _todo_ table.
+
+	mysql -u root -p -e 'Create Database Todo;'
 
 	./cmd/server/server --config config.yaml migratedb
 
@@ -296,12 +298,12 @@ With the server running, you can also try out the example _todo_ cli app include
 	{Id:18 Created:1405039324 Status:done Title:hello Description:world}
 	{Id:17 Created:1405039312 Status:todo Title:foo Description:bar}
 
-(not the prettiest output, is it...)
+(not the prettiest output, I know...)
 
 ### Some Things To Look At...
 
 #### Makefile
-One update in [the github repo](https://github.com/benschw/go-todo), is the addition of a [Makefile](https://github.com/benschw/go-todo/blob/master/Makefile).  It takes care of running the server for the tests as well as building both the server binary and an example "todo" cli app that leverages the client (these can be found the the [cmd](https://github.com/benschw/go-todo/tree/master/cmd) directory).
+One update in [the github repo](https://github.com/benschw/go-todo) is the addition of a [Makefile](https://github.com/benschw/go-todo/blob/master/Makefile).  It takes care of running the server for the tests as well as building both the server binary and an example "todo" cli app that leverages the client (these can be found in the [cmd](https://github.com/benschw/go-todo/tree/master/cmd) directory).
 
 #### CLI API
 To support the cli interface with flags and subcommands, I included [codegangsta/cli](https://github.com/codegangsta/cli).  In addition, I've leveraged Canonical's [goyaml](https://gopkg.in/yaml.v1) to externalize the configuration into a yaml config.
@@ -314,6 +316,6 @@ These components aren't by any means necessary for a solid microservice platform
 
 ## TL;DR
 
-Microservices are cool and they might be more than a fad. With new technologies like Docker and OpenStack popping up, composing your applications into microservices which can be scaled and refactored individually makes increasingly more sense.
+Microservices are cool, and they might be more than a fad. With new technologies like Docker and OpenStack popping up, composing your applications into microservices, which can be scaled and refactored individually, makes increasingly more sense.
 
 [(This example on github.)](https://github.com/benschw/go-todo)
