@@ -94,9 +94,7 @@ This is a very rudimentary first pass at the resource. There is little error han
 
 		var todo api.Todo
 
-		tr.db.First(&todo, id)
-
-		if todo.Id == 0 {
+		if tr.db.First(&todo, id).RecordNotFound() {
 			c.JSON(404, gin.H{"error": "not found"})
 		} else {
 			c.JSON(200, todo)
@@ -110,9 +108,7 @@ This is a very rudimentary first pass at the resource. There is little error han
 
 		var todo api.Todo
 
-		tr.db.First(&todo, id)
-
-		if todo.Id == 0 {
+		if tr.db.First(&todo, id).RecordNotFound() {
 			c.JSON(404, gin.H{"error": "not found"})
 		} else {
 			tr.db.Delete(&todo)
