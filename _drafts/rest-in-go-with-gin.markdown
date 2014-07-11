@@ -2,28 +2,28 @@
 layout: post
 title: REST Microservices in Go with Gin
 ---
-[Microservices](http://martinfowler.com/articles/microservices.html) are cool. Simply described, they're a way to take encapsulation to the next level. This design pattern allows for components of your system to be developed in isolation (even in different languages), keep internal business logic truely internal (no more well intentioned hacks that break encapsulation), and allow for each component to be deployed in isolation. These three characteristics go a long way towards making development and deployment easier.
+[Microservices](http://martinfowler.com/articles/microservices.html) are cool. Simply described, they're a way to take encapsulation to the next level. This design pattern allows for components of your system to be developed in isolation (even in different languages), keep internal business logic truly internal (no more well intentioned hacks that break encapsulation), and allow for each component to be deployed in isolation. These three characteristics go a long way towards making development and deployment easier.
 
-Here's a walk through of how I designed a simple _Todo_ migroservice in Go (with some help from [Gin](http://gin-gonic.github.io/gin/), [Gorm](https://github.com/jinzhu/gorm), and [codegangsta/cli](https://github.com/codegangsta/cli)).
+Here's a walk through of how I designed a simple _Todo_ microservice in Go (with some help from [Gin](http://gin-gonic.github.io/gin/), [Gorm](https://github.com/jinzhu/gorm), and [codegangsta/cli](https://github.com/codegangsta/cli)).
 
 <!--more-->
 
-_n.b. I'll be walking through the process of building the microservice, but you can get the finished project [on github](https://github.com/benschw/go-todo)_
+_n.b. I'll be walking through the process of building the microservice, but you can get the finished project [on github](https://github.com/benschw/go-todo)._
 
 ## Getting Started
 
-First step is the wire up a foundation. For starters, we'll need:
+First step is to wire up a foundation. For starters, we'll need:
 
-- server cli: This is what we'll run to start up our server
-- service controller: This is where we'll manage our service; wiring up routes and injecting dependencies etc.
-- _todo_ api model: A data model shared by the server and the client (and the database) to communicate with
-- _todo_ resource: A grouping of handlers to manage api requests made regarding todos 
-- _todo_ http client: An http client library that can be imported by any applications wishing to use our microservice
-- an integration test: By leveraging the client, we can very easily write symmetrical integration tests which fully exercises our service's REST api. 
+- *server cli*: This is what we'll run to start up our server.
+- *service controller*: This is where we'll manage our service; wiring up routes and injecting dependencies etc.
+- *_todo_ api model*: A data model shared by the server and the client (and the database) to communicate with.
+- *_todo_ resource*: A grouping of handlers to manage api requests made regarding todos. 
+- *_todo_ http client*: An http client library that can be imported by any applications wishing to use our microservice.
+- *integration tests*: By leveraging the client, we can very easily write symmetrical integration tests which fully exercise our service's REST api. 
 
 
 ### Server CLI
-This is the entry point to our app. Right now it's pretty simple because configuration etc is hard coded in the _Service Controller_. Eventually it will be in charge or parsing a config and running different aspects of our application (e.g. performing database migrations)
+This is the entry point to our app. Right now it's pretty simple because configuration etc. is hard coded in the _Service Controller_. Eventually it will be in charge of parsing a config and running different aspects of our application (e.g. performing database migrations)
 
 	func main() {
 
@@ -33,17 +33,14 @@ This is the entry point to our app. Right now it's pretty simple because configu
 	}
 
 ### Service Controller
-This is the front controller for our service. We can construct our dependencies to inject into various resources, and wire up the routes to different resource functions.
+This is the front controller for our service. We can construct our dependencies to inject into various resources and wire up the routes to different resource functions.
 
 	type TodoService struct {
 	}
 
 	func (s *TodoService) Run() {
-		connectionString := cfg.DbUser + ":" + cfg.DbPassword + "@tcp(" + cfg.DbHost + ":3306)/" + cfg.DbName + "?charset=utf8&parseTime=True"
-
 		// we'll pass in configuration later
 		connectionString := "user:pass@tcp(localhost:3306)/Todo?charset=utf8&parseTime=True"
-
 
 		db, _ := gorm.Open("mysql", connectionString)
 
@@ -73,7 +70,7 @@ This structure can be leveraged by both the service to decode requests and integ
 	}
 
 ### Todo Resource
-This is a very rudimentary first pass at the resource. There is little error handling and there are obvious omissions (like the ability to update a _todo_)
+This is a very rudimentary first pass at the resource. There is little error handling and there are obvious omissions (like the ability to update a _todo_,) but it illustrates how to group the _todo_ resource's controller functionality and abstract it from the details of bootstrapping the app.
 
 	type TodoResource struct {
 		db gorm.DB
@@ -124,7 +121,7 @@ This is a very rudimentary first pass at the resource. There is little error han
 	}
 
 ### Todo HTTP Client
-This enables our other go apps to leverage our service without knowing the details of what the REST API looks like. A client application need only import the client and api, and they can treat the service like a local library.
+This enables our other go apps to leverage our service without knowing the details of what the REST API looks like. A client application need only import the client and api to be able to treat the service like a local library.
 
 Even if we don't have any go applications lined up to use our service, building the client implementation in conjunction with the service is very helpful for testing the API; more on that later.
 
@@ -239,7 +236,9 @@ Of course we need more testing, but here's a start to illustrate how to use the 
 
 ## Next Steps
 
-Hopefully this shows how easy it is to get starting building your own microservice infrastructure in go. In addition to building out missing functionality, we also need to externalize our configuration and provide a way to manage the database. We also need to organize the components of our app (api, client, and service) into separate packages so that a client application need not import the service code but the api can be shared.
+Hopefully this shows how easy it is to get started building your own microservice infrastructure in go. 
+
+In addition to building out missing functionality, we also need to externalize our configuration and provide a way to manage the database. We also need to organize the components of our app (api, client, and service) into separate packages so that a client application need not import the service code but the api can be shared.
 
 I've published a [complete example](https://github.com/benschw/go-todo) on github that takes care of these things:
 
@@ -270,7 +269,7 @@ Create an empty database, fill in the supplied config: `config.yaml` and then ru
 
 	./cmd/server/server --config config.yaml migratedb
 
-Since this command is separate from running your service, you can use a different config (with different database credentials.)
+Since this command is separate from running your service, you can use a different config (with different database credentials.) Additionally it can perform updates to the table if your todo model expands (just update the `todo` structure.)
 
 #### Starting The Server
 	
@@ -312,3 +311,9 @@ These components aren't by any means necessary for a solid microservice platform
 #### GORM
 
 [GORM](https://github.com/jinzhu/gorm) is by no means the ubiquitous choice for database abstraction, but for this simple example it suited my needs. One nice thing about microservices is that one size need not fit all, and we could use something completely different if we had a different problem to solve.
+
+## TL;DR
+
+Microservices are cool and they might be more than a fad. With new technologies like Docker and OpenStack popping up, composing your applications into microservices which can be scaled and refactored individually makes increasingly more sense.
+
+[(This example on github.)](https://github.com/benschw/go-todo)
