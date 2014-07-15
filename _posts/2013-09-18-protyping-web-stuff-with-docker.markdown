@@ -9,6 +9,9 @@ author_email: benschw@gmail.com
 wordpress_id: 158
 wordpress_url: http://txt.fliglio.com/?p=158
 date: 2013-09-18 01:23:09.000000000 -05:00
+categories:
+- Post
+tags: []
 ---
 
 This is "post 1" in a series of tutorials designed to stand up an Amazon ec2 instance which will provide the automated hosting of applications using docker. This first post starts with some base line provisioning and ends with a manual walk through of what we will automate in later posts.

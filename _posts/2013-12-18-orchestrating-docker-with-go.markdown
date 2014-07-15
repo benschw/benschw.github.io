@@ -10,9 +10,8 @@ wordpress_id: 302
 wordpress_url: http://txt.fliglio.com/?p=302
 date: 2013-12-18 06:22:05.000000000 -06:00
 categories:
-- Uncategorized
+- Post
 tags: []
-comments: []
 ---
 <h2>dockit</h2>
 

@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Concurrency in Java and Go
+categories:
+- Post
+tags: []
 ---
 
 

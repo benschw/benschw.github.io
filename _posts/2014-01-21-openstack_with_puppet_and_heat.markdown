@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Provisioning a Jekyll Site in Openstack with Heat and Puppet
+categories:
+- Post
+tags: []
 ---
 
 I apologize in advance, because this is more _"stream of consciousness in a terminal"_ than how to correctly use either Puppet or Heat with Openstack. But there is a noticeable void in terms of community Openstack documentation, so I figure putting something out there is better then nothing... and hopefully people will comment and tell me how I _should_ be doing things.

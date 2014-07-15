@@ -1,0 +1,30 @@
+---
+layout: post
+title: Links and a Gif - 7/15/14
+categories:
+- Links
+tags: []
+---
+
+I'm going to try something new: posting some links I find interesting in the style of Oreilly's [Nat Torkington](http://radar.oreilly.com/nat) and his "Four Short Links". How can I possibly differentiate myself? By not having exactly four links and by including a funny gif.
+
+<!--more-->
+
+## [Sysadmin Casts](http://sysadmincasts.com/)
+
+[Sysadmin Casts](http://sysadmincasts.com/) is a site which releases weekly "simple bite sized sysadmin screencasts." Some highlights include [working with LXC containers](http://sysadmincasts.com/episodes/24-introduction-to-containers-on-linux-using-lxc), [anatomy of a sql injection attack](http://sysadmincasts.com/episodes/21-anatomy-of-a-sql-injection-attack-leading-to-code-execution), and [managing Iptables with puppet](http://sysadmincasts.com/episodes/18-managing-iptables-with-puppet).
+
+## [libswarm](https://github.com/docker/libswarm)
+
+[libswarm](https://github.com/docker/libswarm) is a library for abstracting the composition of your Docker containers. It abstracts different orchestration and discovery tools like Fleet, Consul, Mesos... as well as the complexity of integrating multiple Docker hosts into one pool of containers.
+
+## [Creating a PHP development Docker container](http://blog.seedtech.io/post/91801062414/creating-a-docker-container-to-run-php-nginx-and-hip)
+
+[Creating a Docker Container to run PHP, NGINX and Hip Hop VM (HHVM)](http://blog.seedtech.io/post/91801062414/creating-a-docker-container-to-run-php-nginx-and-hip) walks through building a Docker container for doing PHP development. It steps through the creation of a Dockerfile, installing the packages, configuring your services, and wiring up supervisord to run it all.
+
+
+## Gabe the Bulldog
+
+<a href="http://imgur.com/gallery/RYq6rHl"><img alt="Gabe the Bulldog" src="/images/bulldog.gif" /></a>
+
+(http://imgur.com/gallery/RYq6rHl)

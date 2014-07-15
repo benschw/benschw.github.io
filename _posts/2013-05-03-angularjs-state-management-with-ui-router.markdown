@@ -9,6 +9,9 @@ author_email: benschw@gmail.com
 wordpress_id: 67
 wordpress_url: http://txt.fliglio.com/?p=67
 date: 2013-05-03 13:45:54.000000000 -05:00
+categories:
+- Post
+tags: []
 ---
 
 Managing state with AngularJS's ui-router (<a href="https://github.com/angular-ui/ui-router">https://github.com/angular-ui/ui-router</a>) is down right elegant. How is it different from a traditional router you might ask? Well I'll tell you, but first...

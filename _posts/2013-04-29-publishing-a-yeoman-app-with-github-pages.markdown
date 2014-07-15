@@ -10,6 +10,8 @@ wordpress_id: 23
 wordpress_url: http://txt.fliglio.com/?p=23
 date: 2013-04-29 22:10:53.000000000 -05:00
 categories:
+- Post
+tags: []
 ---
 
 There comes a time in every Github user's life, when they begin to assume that other people might give a damn about the code they have written. While this assumption is by and large wrong, every so often someone produces something worth wrapping a marketing homepage around. Or they might want to dress up their GitHub page enough that their coworkers are willing to treat their reinvention of the wheel as a first class framework.

@@ -10,9 +10,8 @@ wordpress_id: 219
 wordpress_url: http://txt.fliglio.com/?p=219
 date: 2013-09-27 21:30:42.000000000 -05:00
 categories:
-- Uncategorized
+- Post
 tags: []
-comments: []
 ---
 It seems like a couple times a year I need to work with Auth and realize that i've forgotten how grant types work. What is each grant type for? What does the workflow to use each look like? Which is the one I should be using for this problem?
 

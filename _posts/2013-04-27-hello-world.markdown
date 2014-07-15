@@ -10,7 +10,7 @@ wordpress_id: 1
 wordpress_url: http://txt.fliglio.com/?p=1
 date: 2013-04-27 19:32:26.000000000 -05:00
 categories:
-- Uncategorized
+- Post
 tags: []
 ---
 Welcome to WordPress. This is your first post. Edit or delete it, then start blogging!

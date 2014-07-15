@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Encapsulated Services with Consul and Confd
+categories:
+- Post
+tags: []
 ---
 
 In a landscape where software infrastructure is getting more and more dynamic, dynamic communication of services with other services as well as with their environments is increasingly important.

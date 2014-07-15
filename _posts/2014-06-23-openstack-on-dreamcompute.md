@@ -1,6 +1,9 @@
 ---
 layout: post
 title: My First OpenStack Instance on DreamCompute
+categories:
+- Post
+tags: []
 ---
 
 [DreamHost](http://www.dreamhost.com) has been active in the [OpenStack](http://www.openstack.org) arena for some time, and now they have added it to their hosted offerings (still in beta) under the name DreamCompute.

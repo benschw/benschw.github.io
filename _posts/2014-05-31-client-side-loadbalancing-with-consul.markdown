@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Service Discovery for Golang with DNS
+categories:
+- Post
+tags: []
 ---
 
 In [a blog post](http://txt.fliglio.com/2014/05/encapsulated-services-with-consul-and-confd/) from a couple weeks ago, I walked through a demo illustrating the power of using [Confd](https://github.com/kelseyhightower/confd) and DNS to keep your applications decoupled from the specifics of [Consul](http://www.consul.io/) when implementing service discovery and configuration management for your applications.

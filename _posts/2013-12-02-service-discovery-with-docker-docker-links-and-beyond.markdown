@@ -9,6 +9,9 @@ author_email: benschw@gmail.com
 wordpress_id: 261
 wordpress_url: http://txt.fliglio.com/?p=261
 date: 2013-12-02 16:59:16.000000000 -06:00
+categories:
+- Post
+tags: []
 ---
 
 To get a feel for wiring up an environment with Docker containers, I looked into a couple of options for service discovery - <a href="http://docs.docker.io/en/latest/use/working_with_links_names/" target="_blank">Docker Names and Links</a>, and <a href="https://github.com/coreos/etcd" target="_blank">Etcd</a> - and put together a couple of prototypes. In this article, I will talk a little about what service discovery is, how Docker containers fit in, and how (a couple) different techniques for wiring together your containers stack up.

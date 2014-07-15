@@ -9,6 +9,9 @@ author_email: benschw@gmail.com
 wordpress_id: 222
 wordpress_url: http://txt.fliglio.com/?p=222
 date: 2013-11-10 00:31:25.000000000 -06:00
+categories:
+- Post
+tags: []
 ---
 
 

@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Concurrent Protractor Tests with Selenium Grid in Docker
+categories:
+- Post
+tags: []
 ---
 
 Have you ever wished your front end testing could be sped up? Has it ever seemed like Selenium was a royal pain in the ass? Though I agree, this isn't the post that will relieve those problems. What it is, is a way to make testing your Angular app _slightly_ less painful by providing light weight [Selenium grid](https://code.google.com/p/selenium/wiki/Grid2) node parallelization with [Protractor](https://github.com/angular/protractor) and [Docker](https://www.docker.io/).

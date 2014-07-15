@@ -1,7 +1,11 @@
 ---
 layout: post
 title: REST Microservices in Go with Gin
+categories:
+- Post
+tags: []
 ---
+
 [Microservices](http://martinfowler.com/articles/microservices.html) are cool. Simply described, they're a way to take encapsulation to the next level. This design pattern allows for components of your system to be developed in isolation (even in different languages), keep internal business logic truly internal (no more well intentioned hacks that break encapsulation), and allow for each component to be deployed in isolation. These three characteristics go a long way toward making development and deployment easier.
 
 Here's a walk-through of how I designed a simple _Todo_ microservice in Go (with some help from [Gin](http://gin-gonic.github.io/gin/), [Gorm](https://github.com/jinzhu/gorm), and [codegangsta/cli](https://github.com/codegangsta/cli)).
