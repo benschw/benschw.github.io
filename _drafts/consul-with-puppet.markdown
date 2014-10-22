@@ -44,13 +44,13 @@ _p.p.s. If you want to play around with Consul some more, take a look at [this p
 
 ## Getting your Puppet on
 
-So what are we actually doing? We're doing as little as possible and trying to factor out any mutability into Hiera configs. There are existing puppet modules that can do the heavy lifting for us, and there are limited distinctions we require between different services and nodes whichs can be enumerated as properties rather than unique puppet code.
+There are limited distinctions required for different instances of our nodes, all of which can be enumerated as properties rather than included in our puppet code. We will leverage existing puppet modules to do the heavy lifting for us and factor out any node/app specific configuration into Hiera configs. 
 
 ### Modules
 All that we have to do is compose other people's work into a stack. 
 
 - [solarkennedy/puppet-consul](https://github.com/solarkennedy/puppet-consul) - provisions our Consul cluster and the Consul client agents registering/servicing our applications.
-- [puppet-dnsmasq](https://github.com/rlex/puppet-dnsmasq) - routes consul DNS lookups to the consul agent (I.e. If our app looks something up that ends in ".consul" it routes through localhost:8600 -- the consul agent.)
+- [rlex/puppet-dnsmasq](https://github.com/rlex/puppet-dnsmasq) - routes consul DNS lookups to the consul agent (I.e. If our app looks something up that ends in ".consul" it routes through localhost:8600 -- the consul agent.)
 
 ### Hiera
 
@@ -118,7 +118,9 @@ In addition to [common.yaml](https://github.com/benschw/consul-cluster-puppet/bl
 
 There's more to it then that, but including installing the demo jar and its init scripts for our example, it's pretty straight forward. Take a look at [the code](https://github.com/benschw/consul-cluster-puppet/tree/master/puppet).
 
-The three files `app.pp`, `server.pp`, and `webui.pp` represent the three roles our various nodes fulfill. The consul server agents are all "servers", the consul web ui is a "webui," and all of our spring apps (both the demo and the foo services) are "apps." Since our goal was to make the redundant copies (extra foos and server agents) first class citizens, it makes sense that there is no differences in how we provision them.
+The three files `app.pp`, `server.pp`, and `webui.pp` represent the three roles our various nodes fulfill. The consul server agents are all "servers", the consul web ui is a "webui," and all of our spring apps (both the demo and the foo services) are "apps." 
+
+Since our goal is to make the redundant copies (duplicate instances of "foo" and "server") as well as the details for discovering their addresses (the distinctions between "demo" and "foo" nodes) generic, it makes sense that there is no differences in how we provision them.
 
 ## Moving On
 

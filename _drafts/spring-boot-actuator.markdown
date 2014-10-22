@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Spring Boot, Actuator, and Codahale Metrics
+title: Consul, Spring Boot, Actuator, and Codahale Metrics
 categories:
 tags: []
 ---
@@ -15,7 +15,7 @@ You can read [my justification for writing these posts](/2014/10/consul-with-pup
 
 ## Getting Started
 
-I'm using the same [Vagrant stack and demo app hosted on Github](https://github.com/benschw/consul-cluster-puppet) so go get your copy now.
+I'm using the same [Vagrant stack and demo app hosted on Github](https://github.com/benschw/consul-cluster-puppet), so go get your copy now.
 
 The Stack consists of:
 
@@ -38,6 +38,7 @@ Same steps as before (same example as before...) but I'll point out a couple thi
 
 - [demo](https://github.com/benschw/consul-cluster-puppet/tree/master/demo) is the java app src root
 	- `build.sh` just runs "./gradlew" on this source root to build our app into a jar
+- Only one `demo.jar` is used for this example, but it exposes two endpoints: `/demo` and `/foo`. It was just easier to set things up this way, but you can pretend it is two different jars build from two source trees, each with one endpoint.
 - I'm using [spotify's "dns-java" lib](https://github.com/spotify/dns-java) to read SRV records. At the time of writing this, functionality I needed for metrics integration only existed in master, so I've included a build in "/demo/spotify/." They're building in [some additional goodness](https://github.com/spotify/dns-java/issues/5) before cutting a new release.
 
 ### The endpoints:
@@ -72,6 +73,7 @@ I've included a sample ["LoadBalancer" implementation](https://github.com/bensch
 
 	HostAndPort node = loadBalancer.getAddress("foo");
 
+	// http://foo1.node.dc1.consul:8080
 	String address = LoadBalancer.AddressString("http", node) +  "/foo";
 
     RestTemplate restTemplate = new RestTemplate();
@@ -93,7 +95,7 @@ The output of [http://172.20.20.20:8080/demo](http://172.20.20.20:8080/demo):
 	}
 
 - `fooResponse` shows the output from the `foo` service, which reports back its hostname
-- `selectedAddress` shows what the consul LoadBalancer gave us back when we asked for an address
+- `selectedAddress` shows what the consul LoadBalancer gave us back when we asked for an address in `demo`
 
 Our demo app uses the LoadBalancer library to look up the `SRV` addresses from the Consul DNS server (supplied by the local consul agent.) It then selects one based on our strategy (round robin by default.) Finally it forms the address (`A` record plus port) to complete its request (this address is also resolved through the Consul DNS server.)
 
@@ -199,6 +201,6 @@ we've run out of time... but here are some ideas...
 	- has a slew of community plugins for tracking the health of common components
 	- uses Nagios style checks just like Consul, so you can monitor your health endpoint with this too
 	- can serve as a metrics collector, passing on the data to something else (like graphite)
-- [Statsd](https://github.com/etsy/statsd/) collect your metrics with this, optionally with [codahale integration](https://github.com/jjagged/metrics-statsd/)
+- [Statsd](https://github.com/etsy/statsd/) collect your metrics with this, optionally with [codahale integration](https://github.com/jjagged/metrics-statsd/); also has Graphite integration
 - [Graphite](http://graphite.wikidot.com/) graph and expose your metrics once you have them
 - [Graphene](http://jondot.github.io/graphene/) integrate with graphite and protect your eyes from unnecessary bleeding.
