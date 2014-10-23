@@ -7,9 +7,15 @@ tags: []
 
 _AKA: How to know when stuff's fracked and how to do something about it._
 
-In my previous post, [Provisioning Consul with Puppet](/2014/10/consul-with-puppet/), I covered a first step towards ephemeral nirvana for your stack. In this post I'll talk a little about how the [Spring Boot](http://projects.spring.io/spring-boot/) framework (and especially [Actuator](http://spring.io/guides/gs/actuator-service/)) can help move you towards this goal... and how [Codahale Metrics](https://github.com/dropwizard/metrics) can help out even more. Additionally, I'll walk you through using [spotify's "dns-java" lib](https://github.com/spotify/dns-java) to leverage the [consul](http://www.consul.io/) DNS server for service discovery.
+In my previous post, [Provisioning Consul with Puppet](/2014/10/consul-with-puppet/), I covered a first step towards ephemeral nirvana for your stack. In this post I'll talk a little about integrating [Spring Boot](http://projects.spring.io/spring-boot/) to further this goal. 
 
 <!--more-->
+
+Specifically, I'll cover:
+
+- Leveraging [consul's](http://www.consul.io/) DNS server for service discovery by integrating [spotify's "dns-java" lib](https://github.com/spotify/dns-java) with [Spring Boot](http://projects.spring.io/spring-boot/) 
+- Using Spring Boot's [Actuator](http://spring.io/guides/gs/actuator-service/) to implement health checks and metrics reporting with our Spring Boot App.
+- Incorporating [Codahale Metrics](https://github.com/dropwizard/metrics) with [Actuator](http://spring.io/guides/gs/actuator-service/) to get more control and insight into your app.
 
 You can read [my justification for writing these posts](/2014/10/consul-with-puppet/) in part 1; here I'm going to jump right into the example.
 
@@ -36,9 +42,9 @@ The Stack consists of:
 
 Same steps as before (same example as before...) but I'll point out a couple things this time.
 
-- [demo](https://github.com/benschw/consul-cluster-puppet/tree/master/demo) is the java app src root
-	- `build.sh` just runs "./gradlew" on this source root to build our app into a jar
-- Only one `demo.jar` is used for this example, but it exposes two endpoints: `/demo` and `/foo`. It was just easier to set things up this way, but you can pretend it is two different jars build from two source trees, each with one endpoint.
+- [/demo](https://github.com/benschw/consul-cluster-puppet/tree/master/demo) is the java app src root
+- Only one `demo.jar` is used for this example, but it exposes two endpoints: `/demo` and `/foo`. (It was just easier to set things up this way, but you can pretend it is two different jars build from two source trees, each with one endpoint.)
+- `build.sh` just runs "./gradlew" on this source root to build our app into a jar
 - I'm using [spotify's "dns-java" lib](https://github.com/spotify/dns-java) to read SRV records. At the time of writing this, functionality I needed for metrics integration only existed in master, so I've included a build in "/demo/spotify/." They're building in [some additional goodness](https://github.com/spotify/dns-java/issues/5) before cutting a new release.
 
 ### The endpoints:
@@ -144,11 +150,13 @@ This is the way we have it implemented in the demo we're running, so if we shut 
 Notice that our copy of demo is only in a warn state (not critical), so if something tries to resolve it through consul, it will still be available.
 
 ### Metrics
+[Actuator](http://spring.io/guides/gs/actuator-service/) comes stock with some metrics being collected, but for additional insight like timers, we need to integrate something more. Like [Codahale Metrics](https://github.com/dropwizard/metrics).
+
 Wiring Codahale metrics into Spring boot isn't a big deal with the help of [ryantenney/metrics-spring](https://github.com/ryantenney/metrics-spring). My implementation for this example is nestled in [its own package](https://github.com/benschw/consul-cluster-puppet/tree/master/demo/src/main/java/com/github/benschw/springboot/metrics) and wired up in our application [config](https://github.com/benschw/consul-cluster-puppet/blob/master/demo/src/main/java/com/github/benschw/consuldemo/ApplicationConfiguration.java).
 
 This allows for the use of the `@timed` annotation on resource methods to time all endpoints by name.
 
-It also allows us to explicitly tap into the MetricRegistry:
+It also allows us to explicitly tap into the MetricRegistry and collect additional metrics:
 
 	lookups = metrics.timer(MetricRegistry.name(CodahaleSpringBootReporter.class, "srvlookup"));
 
@@ -188,12 +196,12 @@ It also allows us to explicitly tap into the MetricRegistry:
 
 Oh Yeah! I forgot to mention that we are [timing our SRV address lookups](https://github.com/benschw/consul-cluster-puppet/blob/master/demo/src/main/java/com/github/benschw/springboot/srvloadbalancer/CodahaleSpringBootReporter.java). There are also counters for lookup failures and occurrences of empty result sets (successful query, but no available services to connect to.)
 
-All this, timers on all the resource endoints, and counters on every status code served up.
+This stuff is crazy useful and gives you data you can aggregate without babysitting your nodes.
 
 ## Next steps
 So you've got Consul running and now you can make use of it (also see [Service Discovery for Golang with DNS](http://txt.fliglio.com/2014/05/client-side-loadbalancing-with-consul/) for my writeup on using Consul in Go).
 
-A glaring omission of this post is how to actually do anything with your health and metrics data. Consul will operate on your health checks, but how can you incorporate this feedback with other things... like low memory and disk space, nodes reaching cpu capacity, or whatever has traditionally been a pain in your ass? Additionally, we haven't really talked about how to capture or aggregate all those metrics we're providing now.
+A glaring omission of this post is how to actually do anything with your health and metrics data. Consul will operate on your health checks, but how can you incorporate this feedback with other things (like low memory and disk space, nodes reaching cpu capacity, or whatever else has traditionally been a pain in your ass?) Additionally, we haven't really talked about how to capture or aggregate all those metrics we're providing now.
 
 we've run out of time... but here are some ideas...
 
@@ -204,3 +212,5 @@ we've run out of time... but here are some ideas...
 - [Statsd](https://github.com/etsy/statsd/) collect your metrics with this, optionally with [codahale integration](https://github.com/jjagged/metrics-statsd/); also has Graphite integration
 - [Graphite](http://graphite.wikidot.com/) graph and expose your metrics once you have them
 - [Graphene](http://jondot.github.io/graphene/) integrate with graphite and protect your eyes from unnecessary bleeding.
+
+Pull my leg and I might show you how to build that out too.
