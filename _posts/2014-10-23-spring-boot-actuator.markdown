@@ -2,6 +2,7 @@
 layout: post
 title: Consul, Spring Boot, Actuator, and Codahale Metrics
 categories:
+- Post
 tags: []
 ---
 

@@ -2,6 +2,7 @@
 layout: post
 title: Provisioning Consul with Puppet
 categories:
+- Post
 tags: []
 ---
 
