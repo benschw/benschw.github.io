@@ -16,6 +16,7 @@ tags: []
 
 Managing state with AngularJS's ui-router (<a href="https://github.com/angular-ui/ui-router">https://github.com/angular-ui/ui-router</a>) is down right elegant. How is it different from a traditional router you might ask? Well I'll tell you, but first...
 
+Update!! I've written an [updated post](http://txt.fliglio.com/2014/11/2014-11-14-ui-router-revisited/) which includes a sample repository and walks through much of this example with up to date versions of angular and ui-router.
 <!--more-->
 
 <h2>A little history about routers</h2>
