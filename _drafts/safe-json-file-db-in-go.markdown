@@ -10,19 +10,19 @@ categories:
 tags: []
 ---
 
-There are definitely problems a json file as a database, but sometimes the simplicity
+There are definitely problems with a json file as a database, but sometimes the simplicity
 of no extra dependencies makes it an attractive option. The two biggest problems are performance 
 and managing concurrent reads and writes.
 
-We can't do much about performance, but with go, managing concurrent reads and writes is a breeze! 
+We can't do much about performance, but with go managing concurrent reads and writes is a breeze! 
 
 Below is a walk through of a method for managing file access so that a json file can safely be used as a database.
 
 <!--more-->
 
-The general pattern is: set up a channel and push read/write jobs onto it. Meanwhile, run a goroutine which will
+The general pattern I'll be implementing is: set up a channel and push read/write jobs onto it. Meanwhile, run a goroutine which will
 process those jobs ensuring exclusive access to the json file. (Remember, Go's philosophy towards concurrency is: 
-[Don't communicate by sharing memory; share memory by communicatingg](http://golang.org/doc/codewalk/sharemem/). This is why we're going to pipe requests to the component responsible for accessing the json db file rather then screwing around with lock files or synchronization.)
+[Don't communicate by sharing memory; share memory by communicating](http://golang.org/doc/codewalk/sharemem/). This is why we're going to pipe requests to the component responsible for accessing the json db file rather then screwing around with lock files or synchronization.)
 
 Follow along below where I put it all together, or jump [here](https://github.com/benschw/jsondb-go) 
 for the finished product: a full REST service for managing your todos, backed by a json file database.
@@ -50,7 +50,7 @@ And here's the api model we'll be marshalling / unmarshalling it with:
 
 ### main.go
 In the entry point, we set up our job channel, start our job processor so we're ready when the jobs
-start rolling in and then initialize a `TodoClient` which insulates us from the details of the job channel.
+start rolling in, and then initialize a `TodoClient` which insulates us from the details of the job channel.
 
 
 	db := "./db.json"
@@ -66,7 +66,7 @@ start rolling in and then initialize a `TodoClient` which insulates us from the 
 
 
 ### Job Processor
-Here's the the hub of our database. `ProcessJobs` is run as a goroutine so it just hangs out running in an infinite for loop waiting for work in the form of a `Job`.  A job's `Run` method is where the work happens: it takes in the database data (all of it! remember, this is never going to be performant, so lets just make things easy on our selves and only operate on our database in its entirety) and returns the updated database data. The Job Processor then writes the modified database model back to disc before moving on to the next job.
+This is the the hub of our database. `ProcessJobs` is run as a goroutine so it just hangs out running in an infinite for loop waiting for work in the form of a `Job`.  A job's `Run` method is where the work happens: it takes in the database data (all of it! remember, this is never going to be performant, so lets just make things easy on ourselves and only operate on our database in its entirety) and returns the updated database data. The Job Processor then writes the modified database model back to disc before moving on to the next job.
 
 	type Job interface {
 		ExitChan() chan error
@@ -96,8 +96,8 @@ Here's the the hub of our database. `ProcessJobs` is run as a goroutine so it ju
 		}
 	}
 
-### Read Todo Job
-Here's one of our jobs for interacting with the database. This job simply implements the interface and adds in a "todos" channel so we can also return data. Since the job processor is in charge of accessing the db file, all the `Run` function does is pass the todos map to the `todo` response channel.
+### Read Todos Job
+Here's one of our jobs for interacting with the database. This job simply implements the `Job` interface and adds in a "todos" channel so we can also return data. Since the job processor is in charge of accessing the db file, all the `Run` function does is pass the todos map to the `todo` response channel. Returning `nil` as the updated db model signals that no writes are necessary.
 
 	// Job to read all todos from the database
 	type ReadTodosJob struct {
@@ -121,7 +121,7 @@ Here's one of our jobs for interacting with the database. This job simply implem
 	}
 
 ### Todo Client
-This is the piece the rest of your application will interact with. It encapsulates the mess associated with pushing jobs and waiting for a response and signal to come through on the error channel.
+This is the piece which the rest of your application will interact with. It encapsulates the mess associated with pushing jobs and waiting for a response and signal to come through on the error channel. It also maps the raw database model into a more reasonable result (an array in this case.)
 
 	// client for submitting jobs and providing a repository-like interface
 	type TodoClient struct {
@@ -143,7 +143,7 @@ This is the piece the rest of your application will interact with. It encapsulat
 	}
 
 ## Exposing it to the web
-At this point, you might be thinking: "The only reason we have to worry about concurrent writes is because you put the dat read/write operations in a goroutine. A single routine would provide safe reads and writes too."
+At this point, you might be thinking: "The only reason we have to worry about concurrent writes is because you put the read/write operations in a goroutine. A single routine would provide safe reads and writes too."
 
 But as soon as we turn this into a web service, all bets are off. Below I layer in a http server (using the [Gin](http://gin-gonic.github.io/gin/) framework) to utilize our `TodoClient` and illustrate the example.
 
@@ -192,4 +192,4 @@ And last but not least, we leverage the `TodoClient` to get some data... safely!
 	}
 
 
-Thanks for following along!
+Thanks for following along! Check out the [full example](https://github.com/benschw/jsondb-go).
