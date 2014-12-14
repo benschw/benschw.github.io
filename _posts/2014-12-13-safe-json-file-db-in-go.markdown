@@ -20,6 +20,8 @@ Below is a walk through of a method for managing file access so that a json file
 
 <!--more-->
 
+## Building a "TODO" service backed by a json file database
+
 The general pattern I'll be implementing is: set up a channel and push read/write jobs onto it. Meanwhile, run a goroutine which will consume those jobs ensuring exclusive access to the json file. (Remember, Go's philosophy towards concurrency is: [Don't communicate by sharing memory; share memory by communicating](http://golang.org/doc/codewalk/sharemem/). This is why we're going to pipe requests to the component responsible for accessing the json db file rather then screwing around with lock files or synchronization.)
 
 Follow along below where I will put it all together, or jump [here](https://github.com/benschw/jsondb-go) 
