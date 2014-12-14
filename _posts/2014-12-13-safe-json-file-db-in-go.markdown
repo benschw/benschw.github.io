@@ -14,7 +14,7 @@ There are definitely problems with using a json file as a database, but sometime
 of no extra dependencies makes it an attractive option. The two biggest problems are performance 
 and managing concurrent reads and writes.
 
-We can't do much about performance, but with Go managing concurrent reads and writes is a breeze! 
+We can't do much about performance, but with Go, managing concurrent reads and writes is a breeze! 
 
 Below is a walk through of a method for managing file access so that a json file can safely be used as a database.
 
@@ -216,7 +216,7 @@ And last but not least, we leverage the `TodoClient` to get some data... safely!
 
 
 ## Final thoughts
-Why is this better than managing lock files, synchronizing access, and more generally sharing the database across goroutines? Because those techniques are limitations of your design. If instead you compose your app such that modifications to the shared resource are communicated to a single component (the `ProcessJobs` goroutine) responsible for modifying the resource, you've eliminated the need for sharing direct access to the database. Again, this is the Go concurrency philosophy: [Don't communicate by sharing memory; share memory by communicating](http://golang.org/doc/codewalk/sharemem/)
+Why is this better than managing lock files, synchronizing access, and more generally sharing the database across goroutines? Because those techniques impose limitations on your design. If instead you compose your app such that modifications to the shared resource are communicated to a single component (the `ProcessJobs` goroutine) responsible for modifying the resource, you've eliminated the need for sharing direct access to the database. Again, this is the Go concurrency philosophy: [Don't communicate by sharing memory; share memory by communicating](http://golang.org/doc/codewalk/sharemem/)
 
 Thanks for following along! Check out the [full example](https://github.com/benschw/jsondb-go).
 
