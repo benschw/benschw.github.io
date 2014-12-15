@@ -10,7 +10,7 @@ categories:
 tags: []
 ---
 
-_If my site design isn't to your liking, you can also read this post over at The [Gopher Academy](http://blog.gopheracademy.com/advent-2014/safe-json-file-db-in-go/) where it is included in their 2014 [Advent series](http://blog.gopheracademy.com/series/advent-2014/)._
+_If my site design isn't to your liking, you can also read this post over at The [Gopher Academy](http://blog.gopheracademy.com/advent-2014/safe-json-file-db-in-go/) where it is included in their [2014 Advent](http://blog.gopheracademy.com/series/advent-2014/) series._
 
 There are definitely problems with using a json file as a database, but sometimes the simplicity
 of no extra dependencies makes it an attractive option. The two biggest problems are performance 
