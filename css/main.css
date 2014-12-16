@@ -157,13 +157,10 @@ footer {
 }
 
 .share-icon {
-  display: block;
-  width: 65px;
-  height: 65px;
   float: left;
 }
 .share-icon img {
-  margin: 15px;
+  margin: 2px;
 }
 
 .share-icon.rss {
