@@ -22,3 +22,10 @@ Testing the API of a microservice is a perfect component test. Microservices are
 
 I'm not sure if any of that made sense, but maybe a walk-through will illustrate what I'm getting at. Below I will step through component testing my example weather microservice.
 
+## Weather or not
+
+## And that's why your always write a client
+
+## 422: I'm a Teapot
+
+## You Mocked me once, never do it again!
