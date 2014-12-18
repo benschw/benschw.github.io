@@ -2,7 +2,7 @@
 layout: post
 status: publish
 published: true
-title: Microservices in Go: Testing
+title: Microservices in Go - Testing
 author_login: benschwartz
 author_email: benschw@gmail.com
 categories:
@@ -63,7 +63,7 @@ Weather-go uses mysql to store the locations you add, so before you can run the 
 
 Now that we have that out of the way, time to talk about testing!
 
-## And that's why your always write a client
+## And that's why you always write a client
 Even if you don't plan on leveraging your service in another go app, it pays to write a client library. 
 
 If you do plan on composing many go services together (having one service call another to model complex operations) then even better! In either case, I like to put the client library and the structs that serve as our API model into their own packages. That way your service can depend on the `api` package, but not know or care about the `client` package. Likewise, the client can depend only on the `api` and be imported by another app without exposing the implementation of the service.
@@ -106,6 +106,7 @@ I've stripped out the noise, but you can see the gist of it above (or the whole 
 With a running server, we can now make some real http requests and start testing that they behave the way we expect. For example, testing the `POST`
 
 Here is a test for the happy path, we try to add a location, and it gets added
+
 	// Location should be added
 	func (s *TestSuite) TestAdd(c *C) {
 		// given
@@ -122,6 +123,7 @@ Here is a test for the happy path, we try to add a location, and it gets added
 	}
 
 Here we test that we get a `400` (bad request) if the location we are trying to add doesn't validate
+
 	// Client should return ErrStatusBadRequest when entity doesn't validate
 	func (s *TestSuite) TestAddBadRequest(c *C) {
 		// given
@@ -135,6 +137,7 @@ Here we test that we get a `400` (bad request) if the location we are trying to 
 	}
 
 And finally we test that we get a `409` (conflict) if we try to `POST` an entity with an Id that already exists. Note that our client doesn't support doing this, so we had to make the request at a lower level.
+
 	// Client should return ErrStatusConflict when id exists
 	// (not supported by client so pulled impl into test)
 	func (s *TestSuite) TestAddConflict(c *C) {
@@ -153,7 +156,7 @@ And finally we test that we get a `409` (conflict) if we try to `POST` an entity
 
 So there it is: component testing our application's http interface. If the underlying implementation changes, these tests will tell us if they've changed in a way that will impact code using our service, but we won't get bogged down in updating lower level tests that at best don't provide additional value, or at worst are brittle and cause false negatives.
 
-(Also, take a look at the [openweather package](https://github.com/benschw/weather-go/tree/master/openweather) which I organized and tested in the same way as the location package with a `client` and `api` sub package. The only difference is there is no implementation, but this way it's exposed to my app in a format I'm used to working with.)
+(Also, take a look at the [openweather package](https://github.com/benschw/weather-go/tree/master/openweather) which I organized and tested in the same way as the location package; with a `client` and `api` sub package. The only difference is there is no service implementation, but this way it's exposed to my app in a format I'm used to working with.)
 
 ## 418: I'm a Teapot
 My next point to make regarding component tests for microservices, is you should only test things that you have use cases for. You don't need to validate every possible http error, only the ones you're using. Which probably means you don't need to test for "418: I'm a Teapot" or any number of other esoteric status codes.
@@ -168,7 +171,7 @@ I've found that there are seven status codes that I regularly use, and barely if
 - http.StatusNotFound
 - http.StatusNoContent
 
-You don't need to constrain your service to using as few codes as possible, but make sure you're aware of which are being used and test them all. Adding more granular codes might make for a richer interface, but it also makes for a more brittle one.
+You don't need to constrain your service to using as few codes as possible, but make sure you're aware of which are being used and test them all. This list is your cheat sheet for what to test. Adding additional, more granular codes might make for a richer interface, but it also makes for a more brittle one.
 
 ## You Mocked me once, never do it again!
 Martin Fowler's [The Difference Between Mocks and Stubs](http://martinfowler.com/articles/mocksArentStubs.html#TheDifferenceBetweenMocksAndStubs)
