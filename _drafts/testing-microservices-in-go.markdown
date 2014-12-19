@@ -174,6 +174,69 @@ I've found that there are seven status codes that I regularly use, and barely if
 You don't need to constrain your service to using as few codes as possible, but make sure you're aware of which are being used and test them all. This list is your cheat sheet for what to test. Adding additional, more granular codes might make for a richer interface, but it also makes for a more brittle one.
 
 ## You Mocked me once, never do it again!
+First off, let me warn you: I'm not going to create a stub for the database; it's a pain to do and MySQL is fast. 
+
+We are, however, going to stub the [openweather client](https://github.com/benschw/weather-go/blob/master/openweather/client/weather_client.go) because it is communicating over the WAN with a third party service ([http://api.openweathermap.org/](http://api.openweathermap.org/)). This stub will simply return some generic weather data for the hard coded "Austin, Texas" query and an empty result for anything else (simulating how the client responds if a city/state isn't found.)
+
+Writing stubs (or mocks) in go is pretty elegant. All you have to do is define an interface for the component you need to use, refer to it by the interface in your implementation, and then you can mock or stub it out for test. Key to this strategy, is that even if you need to use a third party library which doesn't provide an interface you're OK. Since in go you don't need to declare when you are implementing an interface, you can add interfaces for a third party library in your application. This is even useful for integrating with your own code, because it allows you to constrain the library down to the parts you need and keep the declaration close to your implementation.
+
+(Karl Matthias wrote an article, [Writing Testable Code in Go](http://relistan.com/writing-testable-apps-in-go/), with a particularly good explanation for why you should write your interfaces along side the code that use them, not the code that implements them.)
+
+To put this into clearer terms, lets look at an example from weather-go where we stub the openweather client.
+
+In our `location` package, we define an interface for the client.
+
+	package location
+
+	import (
+		"github.com/benschw/weather-go/openweather/api"
+	}
+
+	type WeatherClient interface {
+		FindForLocation(city string, state string) (api.Conditions, error)
+	}
+
+In the `LocationService`, we refer to the `openweather` client by the interface we just created. The `NewLocationService` factory method specifies to use the implementation from the `openweather` package. 
+
+	import (
+		"github.com/benschw/weather-go/openweather/client"
+		...
+	)
+
+	type LocationService struct {
+		...
+		WeatherClient WeatherClient
+	}
+
+	func NewLocationService(bind string, dbStr string) (*LocationService, error) {
+		s := &LocationService{}
+		...
+		s.WeatherClient = &client.WeatherClient{}
+
+		return s, nil
+	}
+
+Since we built `LocationService` with the client as a field, our tests can inject a stub client. This way, if you build the service with the `NewLocationService` factory you are wired to use the real client, but you can also define a different implementation and construct a `LocationService` with that:
+
+	type WeatherClientStub struct {
+	}
+
+	func (c *WeatherClientStub) FindForLocation(city string, state string) (api.Conditions, error) {
+		...
+	}
+
+	server := &LocationService{
+		...
+		WeatherClient: &WeatherClientStub{},
+	}
+
+
+
+
+
+
+
+
+
 Martin Fowler's [The Difference Between Mocks and Stubs](http://martinfowler.com/articles/mocksArentStubs.html#TheDifferenceBetweenMocksAndStubs)
 
-Karl Matthias wrote an article, [Writing Testable Code in Go](http://relistan.com/writing-testable-apps-in-go/), with a particularly good explanation for why you should write your interfaces along side the code that use them, not the code that implements them.
