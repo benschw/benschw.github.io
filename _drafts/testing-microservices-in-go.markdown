@@ -113,7 +113,7 @@ Here is a test for the happy path, we try to add a location, and it gets added
 		locClient := client.LocationClient{Host: s.host}
 
 		// when
-		created, err := locClient.AddLocation("Austin", "Texas", 78751)
+		created, err := locClient.AddLocation("Austin", "Texas")
 
 		// then
 		c.Assert(err, Equals, nil)
@@ -130,7 +130,7 @@ Here we test that we get a `400` (bad request) if the location we are trying to 
 		locClient := client.LocationClient{Host: s.host}
 
 		// when
-		_, err := locClient.AddLocation("", "Texas", 78751)
+		_, err := locClient.AddLocation("", "Texas")
 
 		// then
 		c.Assert(err, Equals, rest.ErrStatusBadRequest)
@@ -143,7 +143,7 @@ And finally we test that we get a `409` (conflict) if we try to `POST` an entity
 	func (s *TestSuite) TestAddConflict(c *C) {
 		// given
 		locClient := client.LocationClient{Host: s.host}
-		created, _ := locClient.AddLocation("Austin", "Texas", 78751)
+		created, _ := locClient.AddLocation("Austin", "Texas")
 
 		// when
 		url := fmt.Sprintf("%s/location", s.host)
