@@ -176,3 +176,4 @@ You don't need to constrain your service to using as few codes as possible, but 
 ## You Mocked me once, never do it again!
 Martin Fowler's [The Difference Between Mocks and Stubs](http://martinfowler.com/articles/mocksArentStubs.html#TheDifferenceBetweenMocksAndStubs)
 
+Karl Matthias wrote an article, [Writing Testable Code in Go](http://relistan.com/writing-testable-apps-in-go/), with a particularly good explanation for why you should write your interfaces along side the code that use them, not the code that implements them.
