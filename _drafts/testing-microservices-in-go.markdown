@@ -104,7 +104,7 @@ I've stripped out the noise, but you can see the gist of it above (or the whole 
 - `SetUpTest` adds the location table to our test database.
 - `TearDownTest` drops all the data we left in the test database so we can start over with a clean slate.
 
-### Testing with our client library
+### Testing with the client library
 With a running server, we can now make some real http requests and start testing that they behave the way we expect. For example, testing the `POST`:
 
 Here is a test for the happy path. We try to add a location, and it gets added
@@ -176,9 +176,9 @@ I've found that there are seven status codes that I regularly use, and barely if
 You don't need to constrain your service to using as few codes as possible, but make sure you're aware of which are being used and test them all. This list is your cheat sheet for what to test. Adding additional, more granular codes might make for a richer interface, but it also makes for a more brittle one.
 
 ## You Mocked me once, never do it again!
-First off, let me warn you: I'm not going to create a stub for the database; it's a pain to do and MySQL is fast. (If you did want to avoid a real MySQL instance for testing, you could use the same techniques seen below to stub your database layer.)
+To make our tests faster and cleaner, we're going to fake the [openweather client](https://github.com/benschw/weather-go/blob/master/openweather/client/weather_client.go) calls. We can do this by creating a stub implementation which will return some generic weather data for the hard coded "Austin, Texas" query and an empty result for anything else (simulating how the client responds if a city/state isn't found.)
 
-We are, however, going to stub the [openweather client](https://github.com/benschw/weather-go/blob/master/openweather/client/weather_client.go) because it is communicating over the WAN with a third party service ([http://api.openweathermap.org/](http://api.openweathermap.org/)). This stub will simply return some generic weather data for the hard coded "Austin, Texas" query and an empty result for anything else (simulating how the client responds if a city/state isn't found.)
+It would work just fine to go ahead and use the real API, but because it is communicating over the WAN with a third party service ([http://api.openweathermap.org/](http://api.openweathermap.org/)) it will make our tests a lot quicker and effective if we fake it. (We are still testing the service, but we constrain these integration tests to the openweather/client package.) Additionally, if this were one of our own services, we wouldn't want to manage setting up that service, its database, and any transitive services etc. Not to mention, we shouldn't have to know how to set up our microservice dependencies, only how their API works; setting them up here would be a breach of encapsulation.
 
 Writing stubs (or mocks) in go is pretty elegant. All you have to do is define an interface for the component you need to use, refer to it by the interface in your implementation, and then you can mock or stub it out for test. Key to this strategy, is that even if you need to use a third party library which doesn't provide an interface you're OK. Since in _go_ you don't need to declare when you are implementing an interface, you can add interfaces for a third party library in your application. This is even useful for integrating with your own code, because it allows you to constrain the library down to the parts you need and keep the declaration close to your implementation.
 
@@ -236,11 +236,41 @@ Since we built `LocationService` with the client as a field, our tests can injec
 
 And now, our component tests will flow through a real http server, use a real database, but be tested against a fake weather service. Everything is still snappy and self contained (no WAN calls and MySQL is a small price to pay for simple testing.)
 
+### MySQL?
+
+You might have noticed, I didn't create a stub for the database; it's a pain to do and MySQL is fast. If we did want to fake the database layer, we could wrap the database object in a `LocationRepository` structure and then stub out that. The increased complexity added to our app only buys us a little though: we would need to separately test the repository, which would probably require running a real database anyway. 
+
+So that's why we just test with a real database.
+
+## These aren't the Drones you're looking for
+
+I typically have used [Drone.io](https://drone.io/) for ci because it's fast and I like that it's open source. But it also gets on my nerves because you have to configure your build steps in the ui and it doesn't support go 1.3 without [some hacking](https://gist.github.com/benschw/7b479c42f426ef07cb79). ([Installing drone](https://github.com/drone/drone) yourself is a different story: it has `.drone.yml` for build step configuration and you get to supply whatever container images you want!)
+
+Anyway, I was excited to see that [Travis CI](https://travis-ci.org/) has added Docker support and this seemed like a great chance to try it out. The verdict? Works just as advertised and my builds started up a lot quicker then with VMs. Here's my config for `weather-go`. It creates the `LocationTest` database and tests our app against go 1.3 and "tip"
+
+`.travis.yml`
+
+	sudo: false
+	language: go
+
+	go:
+	  - 1.3
+	  - tip
+
+	services:
+	  - mysql
+
+	before_script:
+	  - mysql -e 'create database LocationTest;'
+
+	script: 
+	  - go get 
+	  - go get gopkg.in/check.v1 
+	  - go test ./...
+	  - go build
+
+_(for whatever reason, `sudo: false` is what makes it use Docker.)_
 
 
 
-
-
-
-Martin Fowler's [The Difference Between Mocks and Stubs](http://martinfowler.com/articles/mocksArentStubs.html#TheDifferenceBetweenMocksAndStubs)
 
