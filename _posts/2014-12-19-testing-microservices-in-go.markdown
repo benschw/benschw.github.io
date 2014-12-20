@@ -2,7 +2,7 @@
 layout: post
 status: publish
 published: true
-title: Microservices in Go - Testing
+title: Testing Microservices in Go
 author_login: benschwartz
 author_email: benschw@gmail.com
 categories:
