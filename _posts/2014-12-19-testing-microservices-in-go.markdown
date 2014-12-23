@@ -10,6 +10,8 @@ categories:
 tags: []
 ---
 
+_This site was statically generated with Jekyll (written in Ruby). For a more pure experience, [Gopher Academy Advent Series](http://blog.gopheracademy.com/advent-2014/testing-microservices-in-go/) is serving up a Hugo generated version (a go app)._
+
 This post is about testing microservices and why they should be tested differently from many types of software. Microservices are by their very nature simple and encapsulated behind their api. This means two things:
 
 
