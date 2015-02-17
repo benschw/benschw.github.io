@@ -28,7 +28,7 @@ Before getting into it, let me show you a couple simple tests for the program [f
 
 first create an example test file, `figlet-examples.md`, enumerating some tests with a "when" and "then" block under each. Inside the "when" is the command line usage in a code block that I want to test out and under the "then" is the expected output of said command, also in a code block.
 
-	### test: figlet should be able to make ascii art out of text
+	### test: figlet makes ascii art out of text
 	#### when:
 		figlet hello world
 
@@ -40,7 +40,7 @@ first create an example test file, `figlet-examples.md`, enumerating some tests 
 		|_| |_|\___|_|_|\___/    \_/\_/ \___/|_|  |_|\__,_|
 
 
-	### test: the "-f script" option should make output cursive
+	### test: The "-f script" option makes your output cursive
 	#### when:
 		figlet -f script hello world
 
@@ -59,7 +59,7 @@ Running these tests is as simple as pointing [cli-unit](http://txt.fliglio.com/c
 
 And since every modern source control system renders markdown, if you navigate to `figlet-examples.md` in, for example github, it renders as:
 
-### test: figlet should be able to make ascii art out of text
+### test: figlet makes ascii art out of text
 #### when:
 	figlet hello world
 
@@ -71,7 +71,7 @@ And since every modern source control system renders markdown, if you navigate t
 	|_| |_|\___|_|_|\___/    \_/\_/ \___/|_|  |_|\__,_|
 
 
-### test: the "-f script" option should make output cursive
+### test: The "-f script" option makes your output cursive
 #### when:
 	figlet -f script hello world
 
