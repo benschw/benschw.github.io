@@ -16,7 +16,7 @@ This post will walk through how to knock out both these problems with one stone:
 
 <!--more-->
 
-_Full disclosure, this post shamelessly promotes a couple of projects I just finished working on: [jsonfilter](http://txt.fliglio.com/jsonfilter/) and [cli-unit](http://txt.fliglio.com/cli-unit/). ([figlet](http://www.figlet.org/) isn't mine however, despite the resemblance to my domain name)_
+_Full disclosure, this post shamelessly promotes a couple of projects I just finished working on: [jsonfilter](http://txt.fliglio.com/jsonfilter/) and [cli-unit](http://txt.fliglio.com/cli-unit/). ([figlet](http://www.figlet.org/) isn't mine, despite the resemblances between its name and my domain)_
 
 [Cli-unit](http://txt.fliglio.com/cli-unit/) is a testing framework for command line interfaces that uses vanilla markdown for its test files. Its uses are limited to simple validation of expected output and exit codes, this is to keep your test files readable by someone who isn't familiar with _cli-unit_. 
 
