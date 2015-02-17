@@ -179,9 +179,9 @@ The last step was to wire it all into my ci ([drone.io]()) which I did in a _Mak
         rm -rf ./.cli-unit
 
 
-And now jsonfilter's interface is under test and its docs are always up to date!
+And now jsonfilter's interface is under test and its docs are always up to date.
 
-## you can even test your blog!
+## You can even test your blog!
 One last example...
 
 Since I'm using Jekyl and my blog is written in markdown, I can even use cli-unit to spell check this post!
@@ -192,5 +192,11 @@ Since I'm using Jekyl and my blog is written in markdown, I can even use cli-uni
 #### then:
 	success!
 
+Oops! this test would only pass if I added a bunch of file extensions and tech words to my library... 
 
-_n.b. this test would only pass if I added a bunch of file extensions and tech words to my library..._
+	$ cli-unit _drafts/2015-01-17-integration-testing-and-documenting-your-clis.markdown
+	--- FAIL: this post should not have spelling errors
+	exit status 255: 
+	Fail (2/3 tests successful)
+
+But it did verify those `figlet` tests! _(the rendered output example, since all other examples aren't actually markdown, just code blocks.)_
