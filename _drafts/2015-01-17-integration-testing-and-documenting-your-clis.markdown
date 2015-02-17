@@ -51,11 +51,37 @@ first create an example test file, `figlet-examples.md`, enumerating some tests 
 		|/ \   |/  |/  |/  /  \_  |  |  |_/  \_/  |  |/  /  |  
 		|   |_/|__/|__/|__/\__/    \/ \/  \__/    |_/|__/\_/|_/
 	                                                       
-	                                      
+
 Running these tests is as simple as pointing [cli-unit](http://txt.fliglio.com/cli-unit/) to all your markdown files with tests in them:
 
 	$ cli-unit figlet-examples.md 
 	Pass (2/2 tests successful)
+
+And since every modern source control system renders markdown, if you navigate to `figlet-examples.md` in, for example github, it renders as:
+
+### test: figlet should be able to make ascii art out of text
+#### when:
+	figlet hello world
+
+#### then:
+	 _          _ _                            _     _ 
+	| |__   ___| | | ___   __      _____  _ __| | __| |
+	| '_ \ / _ \ | |/ _ \  \ \ /\ / / _ \| '__| |/ _` |
+	| | | |  __/ | | (_) |  \ V  V / (_) | |  | | (_| |
+	|_| |_|\___|_|_|\___/    \_/\_/ \___/|_|  |_|\__,_|
+
+
+### test: the "-f script" option should make output cursive
+#### when:
+	figlet -f script hello world
+
+#### then:
+	 _          _   _                             _        
+	| |        | | | |                           | |    |  
+	| |     _  | | | |  __             __   ,_   | |  __|  
+	|/ \   |/  |/  |/  /  \_  |  |  |_/  \_/  |  |/  /  |  
+	|   |_/|__/|__/|__/\__/    \/ \/  \__/    |_/|__/\_/|_/
+
 
 And there you have it! Not particularly useful to test someone else's interface, but figlet seemed particularly suited for a "hello world" example.
 
