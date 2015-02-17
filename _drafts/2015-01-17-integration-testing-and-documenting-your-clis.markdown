@@ -26,7 +26,7 @@ Before getting into it, let me show you a couple simple tests for the program [f
 
 ### Figlet Example
 
-first create an example test file, `figlet-examples.md`, enumerating some tests with a "when" and "then" block under each. Inside the "when" is the command line usage in a code block that I want to test out and under the "then" is the expected output of said command, also in a code block.
+First off, create a test file (`figlet-examples.md`) with some tests, each with a "when" and "then" block specified. Inside the "when" is the command line we want to test in a code block and under the "then" is the expected output of said command, also in a code block.
 
 	### test: figlet makes ascii art out of text
 	#### when:
