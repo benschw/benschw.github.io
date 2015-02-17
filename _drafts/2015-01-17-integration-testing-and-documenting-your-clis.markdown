@@ -10,13 +10,13 @@ categories:
 tags: []
 ---
 
-An area that often gets neglected in testing is the command line interface. I find myself testing the internals, keeping the flag processing light, and just hoping for the best. Additionally, there's the difficult chore of keeping the docs on your project page up to date as you add and even rename flags.
+An area that often gets neglected in testing is the command line interface. I found myself in the past testing the internals, keeping the flag processing light, and just hoping for the best. Additionally, there's the difficult chore of keeping the docs on your project page up to date as you add and even rename flags.
 
 This post will walk through how to knock out both these problems with one stone: [cli-unit](http://txt.fliglio.com/cli-unit/), a testing framework that runs off of _example usage_ friendly markdown you can include right in your `README`.
 
 <!--more-->
 
-_Full disclosure, this post shamelessly promotes a couple of projects I just finished working on. ([figlet](http://www.figlet.org/) isn't mine however, despite the resemblance to my domain name)_
+_Full disclosure, this post shamelessly promotes a couple of projects I just finished working on: [jsonfilter](http://txt.fliglio.com/jsonfilter/) and [cli-unit](http://txt.fliglio.com/cli-unit/). ([figlet](http://www.figlet.org/) isn't mine however, despite the resemblance to my domain name)_
 
 [Cli-unit](http://txt.fliglio.com/cli-unit/) is a testing framework for command line interfaces that uses vanilla markdown for its test files. Its uses are limited to simple validation of expected output and exit codes, this is to keep your test files readable by someone who isn't familiar with _cli-unit_. 
 
@@ -167,4 +167,5 @@ Since I'm using Jekyl and my blog is written in markdown, I can even use cli-uni
 	aspell -c _drafts/2015-01-17-integration-testing-and-documenting-your-clis.markdown && echo success!
 #### then:
 	success!
+
 
