@@ -57,7 +57,7 @@ Running these tests is as simple as pointing [cli-unit](http://txt.fliglio.com/c
 	$ cli-unit figlet-examples.md 
 	Pass (2/2 tests successful)
 
-And since every modern source control system renders markdown, if you navigate to `figlet-examples.md` in, for example github, it renders as:
+And since every modern source control system renders markdown, if you navigate to `figlet-examples.md` (for example, in github) it renders as:
 
 ### test: figlet makes ascii art out of text
 #### when:
