@@ -8,6 +8,7 @@
 
 		<!-- <link rel="stylesheet" type="text/css" media="screen" href="/css/stylesheet.css"> -->
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 		<!-- syntax highlighting CSS -->
 		<link rel="stylesheet" href="/css/syntax.css">
@@ -46,12 +47,33 @@
 			<div class="container">
 				<div class="navbar-header">
 					<a class="navbar-brand" href="/">{{ site.name }}</a>
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse-primary">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
 				</div>
-				<div class="navbar-collapse collapse">
+				<div class="navbar-collapse collapse" id="nav-collapse-primary">
 					<ul class="nav navbar-nav">
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="/about">about</a></li>
+						<li><a href="/all-posts">all posts</a></li>
+						<li><a href="/feed.xml" title="RSS" rel="nofollow" target="_blank"><i class="fa fa-rss"></i></a></li>
+						<li><a href="http://www.twitter.com/benhschwartz" title="Twitter" rel="nofollow" target="_blank"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="http://www.github.com/benschw" title="Github" rel="nofollow" target="_blank"><i class="fa fa-github"></i></a></li>
+						<li><a href="mailto:benschw@gmail.com" title="Email" rel="nofollow" target="_blank"><i class="fa fa-at"></i></a></li>
+						<li class="visible-xs mobile-follow">
+							<!-- Twitter -->
+							<a href="https://twitter.com/benhschwartz" class="twitter-follow-button" data-show-count="true">Follow</a>
+							<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+						</li>
+						<li class="visible-xs mobile-follow">
+							<!-- Github -->
+							<iframe src="http://ghbtns.com/github-btn.html?user=benschw&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+						</li>
+
 					</ul>
 				</div>
 			</div>
@@ -59,31 +81,34 @@
 
 
 		<div class="container">
-			<div class="row row-offcanvas row-offcanvas-right">
+			<div class="row">
 
-				<div class="col-xs-12 col-sm-9">
-					<p class="pull-right visible-xs">
-						<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-					</p>
-				
+				<div class="col-xs-12 col-sm-8">
+					<div class="visible-xs">
+
+						<!-- Adsense -->
+						<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+						<!-- txt.fliglio.com mobile banner -->
+						<ins class="adsbygoogle"
+						     style="display:inline-block;width:320px;height:50px"
+						     data-ad-client="ca-pub-6571676266096984"
+						     data-ad-slot="4085104154"></ins>
+						<script>
+						(adsbygoogle = window.adsbygoogle || []).push({});
+						</script>
+						<br />
+
+
+
+					</div>
+
 					{{ content }}
 					
 				</div>
 
 				<!-- MAIN NAV -->
-				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+				<div class="col-sm-4 visible-desktop" id="sidebar" role="navigation">
 
-					<div class="sidebar-module">
-
-						<!-- icons: https://github.com/danleech/simpleicons -->
-						<ul class="share-icons">
-							<li><a class="share-icon rss" href="/feed.xml"><img src="/images/rss-32.png" alt="rss"/></a></li>
-							<li><a class="share-icon twitter" target="_blank" href="http://www.twitter.com/benhschwartz"><img src="/images/twitter-32.png" alt="twitter"/></a></li>
-							<li><a class="share-icon github" target="_blank" href="http://www.github.com/benschw"><img src="/images/github-32.png" alt="github"/></a></li>
-							<li><a class="share-icon email" href="mailto:benschw@gmail.com"><img src="/images/email-32.png" alt="email"/></a></li>
-						</ul>
-						<div style="clear:both"></div>
-					</div>
 
 					<div class="sidebar-module sidebar-module-inset">
 						<ul id="posts-nav">
@@ -121,7 +146,7 @@
 						</script>					
 					</div>
 
-				</div><!--/span-->
+				</div>
 			</div>
 
 		</div>
