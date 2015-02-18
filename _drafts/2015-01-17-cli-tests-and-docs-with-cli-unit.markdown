@@ -2,7 +2,7 @@
 layout: post
 status: publish
 published: true
-title: Free Docs when you Integration Test Your CLI; and Vice Versa
+title: Testing and Documenting your CLI with cli-unit
 author_login: benschwartz
 author_email: benschw@gmail.com
 categories:
