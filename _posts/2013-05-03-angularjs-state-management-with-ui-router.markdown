@@ -77,7 +77,7 @@ Not much is going on here, but basically this is how you'd implement a conventio
 Lets build a simplified version of the settings section from the  <a href="http://jsfiddle.net/benschwartz/LhydD/">JSFiddle example</a>.
 </a>
 <h2>Settings</h2>
-<a href="/images/settings-comp2.png"><img src="/images/settings-comp2.png" alt="settings-comp2" width="523" height="266" class="alignnone size-full wp-image-107" /></a>
+<a href="/images/settings-comp2.png"><img class="post-image-full" src="/images/settings-comp2.png" alt="settings-comp2" width="523" height="266" class="alignnone size-full wp-image-107" /></a>
 
 So how do we build it?
 Lets start by decomposing our pages (edit details and edit quotes) into states. To represent these two pages, we need three states: an abstract base state (settings) and two concrete child states (details and quotes.)
@@ -209,7 +209,7 @@ No, not $scope creep. Scope creep like what Marketing throws at you after you're
 
 Now we're being asked to create a status bar in the settings section that will always display a description of what the user is supposed to be doing. (Don't ask me why marketing would want this... but it does help to illustrate another feature of ui-router)
 
-<a href="/images/settings-comp3.png"><img src="/images/settings-comp3.png" alt="settings-comp3" width="528" height="387" class="alignnone size-full wp-image-145" /></a>
+<a href="/images/settings-comp3.png"><img class="post-image-full" src="/images/settings-comp3.png" alt="settings-comp3" width="528" height="387" class="alignnone size-full wp-image-145" /></a>
 
 <h3>Multiple (named) Views</h3>
 We've already seen multiple views per page in the form of hierarchical states, each with their own view, but what about a single state that needs to display multiple views? Our new requirement, displaying a description of what the user is supposed to be doing, relies on just that.

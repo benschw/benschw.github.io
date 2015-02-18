@@ -42,7 +42,7 @@ To put <a href="http://docs.docker.io/en/latest/use/working_with_links_names/" t
 	<li>The Java app running inside a container needs to talk to another Java app running in a different container.</li>
 	<li>The second Java app needs to talk to a Memcached service running in its own container.</li>
 </ol>
-<a href="/images/svc-discovery-poc2.png"><img class="alignnone size-full wp-image-264" alt="svc-discovery-poc2" src="/images/svc-discovery-poc2.png" width="736" height="137" /></a>
+<a href="/images/svc-discovery-poc2.png"><img class="post-image-full" alt="svc-discovery-poc2" src="/images/svc-discovery-poc2.png" width="736" height="137" /></a>
 
 To keep the implementation of these scenarios simple, I've written a single Java app with two resources to simulate two services. By running the app in two separate containers, we can treat them as separate applications. For each, I expose my application to the end user using <a href="https://github.com/dotcloud/hipache" target="_blank">Hipache</a>.
 <h3>Docker Names and Links</h3>

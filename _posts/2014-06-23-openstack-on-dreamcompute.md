@@ -19,21 +19,21 @@ First and foremost, DreamCompute account gives you your own [Openstack Tenant](h
 
 Speaking of resources, the folks at DreamHost have been pretty generous: I got up to 10 instances, 50 gigs of ram, 20 CPUs, a terrabyte of disk, and 5 floating IPs. Not too shabby for a free beta!
 
-<img src="/images/overview.png" alt="Overview panel" width="100%" />
+<a href="/images/overview.png"><img class="post-image-full" src="/images/overview.png" alt="Overview panel" width="100%" /></a>
 
 ## Quickstart
 
 Once you've reset your password, you are directed by the welcome email to the [quickstart](https://dashboard.dreamcompute.com/project/quickstart/). The first thing you'll have to do is wire up your network and put in place a security group to use when creating an instance. The [quickstart](https://dashboard.dreamcompute.com/project/quickstart/) feature will do this for you: create an IPv4 and IPv6 network, a security group permitting ssh, http, and https, and an initial floating IP to use.
 
 _default group settings_
-<img src="/images/default-group.png" alt="default group settings" width="100%" />
+<a href="/images/default-group.png"><img class="post-image-full" src="/images/default-group.png" alt="default group settings" width="100%" /></a>
 
 ## CLI
 Now that your network is nicely configured, lets test out the API from the command line. 
 
 The first step is to download your _Openstack RC File_. Navigate to _Access & Security_ from the left menu, then select the _API Access_ tab. Now you can _Download Openstack RC File_.
 
-<img src="/images/rc-file.png" alt="download openstack rc file" width="100%" />
+<a href="/images/rc-file.png"><img class="post-image-full" src="/images/rc-file.png" alt="download openstack rc file" width="100%" /></a>
 
 In a terminal, `source` this file (`source ~/Downloads/dhc447391-openrc.sh`) and punch in your DreamCompute password. Now you can use the [Nova](https://wiki.openstack.org/wiki/Nova) (compute management) / [Neutron](https://wiki.openstack.org/wiki/Neutron) (network management) cli clients to control your tenant.
 
@@ -180,7 +180,7 @@ Now that we've collected everything we need, we can put it together to wire in o
 
 ## Wrapping up
 
-<img src="/images/overview-2.png" alt="Overview panel" width="100%" />
+<a href="/images/overview-2.png"><img class="post-image-full" src="/images/overview-2.png" alt="Overview panel" width="100%" /></a>
 
 Although I'm a little disappointed at the lack of heat support, DreamCompute is a very slick and turn-key IaaS solution using OpenStack. 
 

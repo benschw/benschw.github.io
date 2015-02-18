@@ -31,7 +31,7 @@ The Stack consists of:
 - a Spring Boot demo application
 - a pair of Spring Boot back-end services (named "foo") for the demo app to discover and utilize.
 
-<a href="/images/consul-puppet.png"><img src="/images/consul-puppet.png" alt="Consul Stack" width="750" height="306" class="alignnone size-full wp-image-107" /></a>
+<a href="/images/consul-puppet.png"><img class="post-image-full" src="/images/consul-puppet.png" alt="Consul Stack" width="750" height="306" class="alignnone size-full wp-image-107" /></a>
 
 ### Running your stack:
 

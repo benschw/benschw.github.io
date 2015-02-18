@@ -39,7 +39,7 @@ Look through the [Vagrantfile](https://github.com/benschw/consul-cluster-vagrant
 
 Go take a look: [http://172.20.20.12:8500/ui](http://172.20.20.12:8500/ui) (the vagrant cluster defines your ips explicitly, so you can just follow this link.)
 
-<img src="/images/consul-ui.png" alt="consul status ui" />
+<a href="/images/consul-ui.png"><img class="post-image-full" src="/images/consul-ui.png" alt="consul status ui" /></a>
 
 It's pretty straight forward, so just poke around. You can view all registered services and the nodes instances of your service are running on, or go to the "Nodes" tab and see a list of nodes with the services running on each. There are also health check status and key/value tabs that we'll talk about later.
 

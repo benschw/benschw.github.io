@@ -45,7 +45,7 @@ _If you don't have any of the dependencies (node, npm, bower, grunt) there are i
 
 Essentially this is a fake webapp with a home page and a settings section. The home page is pretty straight forward and would have made sense to be implemented with routes, but the settings section illustrates the composition problem I outlined above.
 
-<a href="/images/uirouter.details.png"><img src="/images/uirouter.details.png" alt="setting details" width="750"/></a>
+<a href="/images/uirouter.details.png"><img class="post-image-full" src="/images/uirouter.details.png" alt="setting details" width="750"/></a>
 
 This isn't a "details page." It's a web app with a top nav and footer, containing a settings section with "details" selected as the primary focus.
 

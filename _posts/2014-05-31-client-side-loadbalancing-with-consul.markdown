@@ -87,7 +87,7 @@ Querying for "my-svc" from the consul example above. No caching is used, and loa
 	fmt.Printf("%s", address.String()) // 172.20.20.14:8076
 
 ## Feedback
-<a href="http://www.reddit.com/r/todayilearned/comments/1zv60v/til_of_cunninghams_law_the_best_way_to_get_the/" target="_blank" ><img src="/images/cunninghams-law.png" alt="Cunningham's Law" /></a>
+<a href="http://www.reddit.com/r/todayilearned/comments/1zv60v/til_of_cunninghams_law_the_best_way_to_get_the/" target="_blank" ><img class="post-image-full" src="/images/cunninghams-law.png" alt="Cunningham's Law" /></a>
 
 While researching my [previous post](http://txt.fliglio.com/2014/05/encapsulated-services-with-consul-and-confd/), I was amazed to find that there didn't seem to be any well established patterns or solutions for working with SRV records. Since I'm still fairly certain that this is due to my poor use of _Google_, I'm going to imploy [Cunningham's Law](http://meta.wikimedia.org/wiki/Cunningham's_Law) to get some answers. If this isn't the case, and the people working with SRV records really are keeping their solutions to themselves, then maybe this library can be of some use to people.
 

@@ -76,6 +76,9 @@ footer {
 }
 
 
+.hamburger-text {
+}
+
 #social-tools {
   padding: 45px 0;
 }
@@ -97,6 +100,13 @@ footer {
   list-style-type: none;
 }
 
+
+@media (max-width: 728px) {
+   .post-image-full{
+      width: 100%;
+      height: auto;
+   }
+}
 
 /*sidebar*/
 

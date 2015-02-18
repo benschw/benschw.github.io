@@ -22,7 +22,7 @@ Since I'd rather show you an example than espouse a bunch of ideas (despite the 
 
 Before we get started, this whole example is available [on Github in the form of a Vagrant Stack](https://github.com/benschw/consul-cluster-puppet). Just follow the instructions in the README (or keep reading) and you'll have a production-ish set of VirtualBox VMs doing their thing: three Consul server nodes clustered up, a UI to track your Consul cluster state, a Spring Boot demo application, and a pair of Spring Boot back-end services (named "foo") for the demo app to discover and utilize.
 
-<a href="/images/consul-puppet.png"><img src="/images/consul-puppet.png" alt="Consul Stack" width="750" height="306" class="alignnone size-full wp-image-107" /></a>
+<a href="/images/consul-puppet.png"><img class="post-image-full" src="/images/consul-puppet.png" alt="Consul Stack" width="750" height="306" class="alignnone size-full wp-image-107" /></a>
 
 ### Get your stack running:
 
