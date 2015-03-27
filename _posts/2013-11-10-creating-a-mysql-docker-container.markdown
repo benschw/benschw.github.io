@@ -133,7 +133,7 @@ To solve this, let's create a `startup.sh` script to replace simply invoking `/u
 First, let's write our `startup.sh` script to do the initialization only if our data directory isn't already populated.
 
 {% highlight bash %}
-#/bin/bash
+#!/bin/bash
 
 if [ ! -f /var/lib/mysql/ibdata1 ]; then
     mysql_install_db
@@ -154,7 +154,7 @@ CMD ["/bin/bash", "/opt/startup.sh"]
 We can also add in our admin user with the `startup.sh` script:
 
 {% highlight bash %}
-#/bin/bash
+#!/bin/bash
 
 if [ ! -f /var/lib/mysql/ibdata1 ]; then
 	mysql_install_db
@@ -205,7 +205,7 @@ CMD ["/bin/bash", "/opt/startup.sh"]
 <h4>startup.sh</h4>
 
 {% highlight bash %}
-#/bin/bash
+#!/bin/bash
 
 if [ ! -f /var/lib/mysql/ibdata1 ]; then
 
