@@ -15,7 +15,7 @@ tags: []
 
 Docker, The Good Parts
 
-So what is docker? It's a moonshot experiment that is both resonating with a whole lot of people but also making a whole lot of people rightfully uncomfortable.
+So what is docker? It's a moonshot experiment that is both resonating with a whole lot of people but also making a whole lot of people (rightfully) uncomfortable.
 
 In this post I'm going to discuss what makes Docker attractive to me and what I'm not such a fan of. Then I'm going to build a proof of concept cloud platform that seeks to take advantage of the best parts of Docker without locking me in to the not so great parts.
 
