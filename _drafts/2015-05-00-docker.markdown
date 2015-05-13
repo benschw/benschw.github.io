@@ -2,7 +2,7 @@
 layout: post
 status: publish
 published: true
-title: Dependency Injection, Duck Typing, and Clean Code in Go
+title: Docker, The Good Parts
 author_login: benschwartz
 author_email: benschw@gmail.com
 categories:
@@ -10,10 +10,9 @@ categories:
 tags: []
 ---
 
+Dense clouds, transactional installs, and the right tool for the right job
 
 <!--more-->
-
-Docker, The Good Parts
 
 So what is docker? It's a moonshot experiment that is both resonating with a whole lot of people but also making a whole lot of people (rightfully) uncomfortable.
 
