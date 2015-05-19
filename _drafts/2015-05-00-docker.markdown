@@ -136,7 +136,7 @@ Summary:
 - Not composable with existing infrastructure patterns and tools
 
 
-### If not Docker, Then What?!
+## If not Docker, Then What?!
 I'm not saying we should forget about docker and go back to the tried and true way
 of doing things. I'm not even saying to wait for the area to mature and produce
 better abstractions. I'm simply suggesting you to do what you've always done:
@@ -144,7 +144,7 @@ choose the right tool for the right job, pragmatically apply the parts of Docker
 that make sense for you, and remember that the industry isn't done changing so
 you should keep your architecture in a state that you can iterate on.
 
-# Other players in this space
+### Other players in this space
 
 Part of Docker's appeal is its dirt simple bundling of a new approach
 that removes a lot of pain we've been having. But there are other tools out there
@@ -164,7 +164,7 @@ a very different way of treating our software but it isn't going to stay the onl
 major player for long and some of the old rules still apply:
 _Keep your architecture in a place that you can iterate on._
 
-## Lxd, cfg mgmt, docker, and the next generation of stateless apps
+### Lxd, cfg mgmt, docker, and the next generation of stateless apps
 
 So that was a lot of analysis. Now I'm going to switch gears and transition to a
 designing a hypothetical cloud platform which illustrates one way to incorporate
