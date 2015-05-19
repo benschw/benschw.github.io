@@ -170,8 +170,6 @@ So that was a lot of analysis. Now I'm going to switch gears and transition to a
 designing a hypothetical cloud platform which illustrates one way to incorporate
 Docker without uprooting your infrastructure or damaging your ability to iterate on it.
 
-### Overview
-
 Here are some of the goals and objectives I am trying to achieve in my design:
 
 - The density and elasticity of containers
