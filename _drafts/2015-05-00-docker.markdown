@@ -14,12 +14,22 @@ Dense clouds, transactional installs, and the right tool for the right job
 
 <!--more-->
 
-So what is docker? It's a moonshot experiment that is both resonating with a whole lot of people but also making a whole lot of people (rightfully) uncomfortable.
+So what is docker? It's a moonshot experiment that is both resonating with a whole
+lot of people but also making a whole lot of people (rightfully) uncomfortable.
 
-In this post I'm going to discuss what makes Docker attractive to me and what I'm not such a fan of. Then I'm going to build a proof of concept cloud platform that seeks to take advantage of the best parts of Docker without locking me in to the not so great parts.
+In this post I'm going to discuss what makes Docker attractive to me and what I'm
+not such a fan of. Then I'm going to build a proof of concept cloud platform that
+seeks to take advantage of the best parts of Docker without locking me in to the
+not so great parts.
 
 ### The Good
-Some aspects of docker are home runs. In a time where microservices rule and developing software for the cloud is an obvious choice, how can you pass up a tool that makes managing a gazillion apps as cheap and easy as managing your monolith? And it's a DevOps game changer: in the same way AWS removed the friction between dev and ops for provisioning a VM, docker removes the friction of configuring an app's dependencies and installation. What's more, local dev of even dozens of applications can be kept lean and we're closer than ever to feeling confident in "it works on my laptop"
+Some aspects of docker are home runs. In a time where microservices rule and developing
+software for the cloud is an obvious choice, how can you pass up a tool that makes
+managing a gazillion apps as cheap and easy as managing your monolith? And it's a
+DevOps game changer: in the same way AWS removed the friction between dev and ops
+for provisioning a VM, docker removes the friction of configuring an app's dependencies
+and installation. What's more, local dev of even dozens of applications can be kept
+lean and we're closer than ever to feeling confident in "it works on my laptop"
 
 In summary:
 
@@ -30,34 +40,82 @@ In summary:
 - developer workflow is simple and production-like
 
 ### The Bad
-A lot of the design decisions of Docker involve tradeoffs and networking is no exception. For local dev, where managing many VMs is especially difficult and high availability isn't important, Docker's unique method of standing up a virtual bridge interface and allocating new ips as containers are started is really convenient. But it is less than complete when you start worrying about high availability and exposing your services to external systems. Layering in additional networking or mapping ports to the bridge interface starts to solve this problem, but it also leaves you with a non-standard jumble. 
+A lot of the design decisions of Docker involve tradeoffs and networking is no exception.
 
-Service discovery largely abstracts away this jumble, but at this point we've gone through at least three networking transformations to effectively address our services and we haven't even started to integrate with non-Docker managed services.
+For local dev, where managing many VMs is especially difficult and high availability
+isn't important, Docker's unique method of standing up a virtual bridge interface
+and allocating new ips as containers are started is really convenient. But it is
+less than complete when you start worrying about high availability and exposing
+your services to external systems. Layering in additional networking or mapping
+ports to the bridge interface starts to solve this problem, but it also leaves you
+with a non-standard jumble.
 
-Don't get me wrong, I definitely think service discovery is the way to go, I just think that since Docker coupled networking so tightly to its implementation, it should have made it more flexible and done more to make interhost communication work the same as intrahost communication. Additionally, better hooks to integrate with existing software defined networks would make all the integration work feel less like shaving a yak.
+Service discovery largely abstracts away this jumble, but at this point we've gone
+through at least three networking transformations to effectively address our services
+and we haven't even started to integrate with non-Docker managed services.
 
-Security is also a concern, but it is easier to shrug off because it should be [coming soon](http://blog.docker.com/2013/08/containers-docker-how-secure-are-they/). For the time being however, there is a lack of user namespaces in Docker containers, so UID 0 (root) in a container is also UID 0 (root) on the host machine and has all the access that comes with that.
+Don't get me wrong, I definitely think service discovery is the way to go, I just
+think that since Docker coupled networking so tightly to its implementation, it
+should have made it more flexible and done more to make interhost communication
+work the same as intrahost communication. Additionally, better hooks to integrate
+with existing software defined networks would make all the integration work feel
+less like shaving a yak.
 
-Another concerning thing about docker, is the Docker hub. Though you don't have to use this service or the images housed there in production, it's presented such that many people still do. The lack of signing for downloads is one thing thatmakes this a potential risk, another is that even the recommended images aren't particularly well vetted or kept necessarily kept up to date. Many are built on top of full OSes that expose a larger attack surface than is necessary and there is no established technique to insure the base OS is up to date on its patches. There are great resources for building thin base OSes and ways to make sure they are kept up to date however, but this is still more management left unaddressed and as an exercise to the end user.
+Isolation security is also a concern, but it is easier to shrug off because it should
+be [coming soon](http://blog.docker.com/2013/08/containers-docker-how-secure-are-they/).
+For the time being however, there is a lack of user namespaces in Docker containers,
+so UID 0 (root) in a container is also UID 0 (root) on the host machine and has all
+the access that comes with that.
+
+Another concerning thing about Docker, is the Docker hub. Though you don't have
+to use this service or the images housed there in production, it's presented such
+that many people still do. The lack of signing for downloads is one thing that
+makes this a potential risk, another is that even the recommended images aren't
+particularly well vetted or necessarily kept up to date. Many are built on top
+of full OSes that expose a larger attack surface than is necessary and there is
+no established technique to insure the base OS is up to date on its patches.
+There are great resources for building thin base OSes and ways to make sure they
+are kept up to date however, but this is still more management left unaddressed
+and as an exercise to the end user.
 
 In summary:
 
-- networking
 - user namespace security
 - docker hub security
+- networking
 
 ### The Ugly
-One of the first things you realize with Docker, is that you have to rethink _everything._ One is drawn in by the prospect of encapsulating their apps in a clean abstraction, but after fooling around with supervisord for awhile most people start down the slippery slope of rewriting their entire infrastructure to keep their implementation clean.
+One of the first things you realize with Docker, is that you have to rethink _everything._
+One is drawn in by the prospect of encapsulating their apps in a clean abstraction,
+but after fooling around with supervisord for awhile most people start down the
+slippery slope of rewriting their entire infrastructure to keep their implementation
+clean.
 
-This is because Docker isn't very composable when taken as a whole. If you want to talk to something in a docker container, you need an ambassador. If something in a docker container needs to talk to something not managed in docker, you need an ambassador. Sometimes, you even need an ambassador for two apps both running in containers. This isn't the end of the world, but it's more work and is a symptom of how the docker containers are really only composable with other Docker containers, not with our systems as a whole.
+This is because Docker isn't very composable when taken as a whole. If you want to
+talk to something in a docker container, you need an ambassador. If something in
+a docker container needs to talk to something not managed in docker, you need an
+ambassador. Sometimes, you even need an ambassador for two apps both running in
+containers. This isn't the end of the world, but it's more work and is a symptom
+of how the docker containers are really only composable with other Docker containers,
+not with our systems as a whole.
 
-What this means is that to leverage the parts of docker we want (the transactional installs, bundled dependencies, and simplified local dev), we have to rewrite and rewire a whole lot of stuff that wasn't broken or giving us trouble. Even if it was, you're still forced to tackle it all at once.
+What this means is that to leverage the parts of docker we want (the transactional
+installs, bundled dependencies, and simplified local dev), we have to rewrite and
+rewire a whole lot of stuff that wasn't broken or giving us trouble. Even if it was,
+you're still forced to tackle it all at once.
 
-If we were being honest about the shipping container analogy, we'd end up with a container ship not just carrying containers, but built with containers!
+If we were being honest about the shipping container analogy, we'd end up with a
+container ship not just carrying containers, but built with containers!
 
-A lot of these problems come from the same thing that makes Docker so easy to use: the bundling (and resulting tight coupling) of all components needed to build, manage, and schedule containers. 
+A lot of these problems come from the same thing that makes Docker so easy to use:
+the bundling (and resulting tight coupling) of all components needed to build,
+manage, and schedule containers.
 
-This becomes especially clear when trying to place Docker on Gabriel Monroy's [Strata of the Container Ecosystem](http://t.co/4wuzpvMJhe). Though he places Docker in layer 4 (the container engine) aspects of it leak into almost layer. It's this sprawl that makes Docker less composable and is why integrating with it often entails a huge amount of work.
+This becomes especially clear when trying to place Docker on Gabriel Monroy's
+[Strata of the Container Ecosystem](http://t.co/4wuzpvMJhe). Though he places
+Docker in layer 4 (the container engine) aspects of it leak into almost layer.
+It's this sprawl that makes Docker less composable and is why integrating with
+it often entails a huge amount of work.
 
 Summary:
 
@@ -66,27 +124,41 @@ Summary:
 
 
 ### If not Docker, Then What?!
-I'm not saying we should forget about docker and go back to the tried and true way of doing things. I'm not even saying to wait for the area to mature and produce better abstractions. I'm simply suggesting you to do what you've always done: choose the right tool for the right job, pragmatically apply the parts of Docker that make sense for you, and remember that the industry isn't done changing so you should keep your architecture in a state that you can iterate on.
+I'm not saying we should forget about docker and go back to the tried and true way
+of doing things. I'm not even saying to wait for the area to mature and produce
+better abstractions. I'm simply suggesting you to do what you've always done:
+choose the right tool for the right job, pragmatically apply the parts of Docker
+that make sense for you, and remember that the industry isn't done changing so
+you should keep your architecture in a state that you can iterate on.
 
 # Other players in this space
 
-Part of Docker's appeal is it's turn key, dirt simple bundling of a new approach that removes a lot of pain we've been having. But there are other tools out there that solve these same problems.
+Part of Docker's appeal is it's turn key, dirt simple bundling of a new approach
+that removes a lot of pain we've been having. But there are other tools out there
+that solve these same problems.
 
 - System containers like openvz or lxd provide similar cloud density characteristics
-- rkt is (almost ready to be) a competing application container that promises to implement a more composable architecture
-- snappy ubuntu offers an alternative model for transactional installs, bundling dependencies, and isolation
-- numerous SDN technologies 
+- rkt is (almost ready to be) a competing application container that promises to
+  implement a more composable architecture
+- snappy ubuntu offers an alternative model for transactional installs, bundling
+  dependencies, and isolation
+- numerous SDN technologies
 - config management provides deterministic and repeatable deploys.
 - vagrant simplifies local development in production like environments.
 
-I have no doubt that we will look back and see Docker as the catalyst that led to a very different way of treating our software but it isn't going to stay the only major player for long and some of the old rules still apply:
+I have no doubt that we will look back and see Docker as the catalyst that led to
+a very different way of treating our software but it isn't going to stay the only
+major player for long and some of the old rules still apply:
 _Keep your architecture in a place that you can iterate on._
 
 ## Lxd, cfg mgmt, docker, and the next generation of stateless apps
 
-So that was a lot of analysis. Now I'm going to switch gears and transition to a walkthrough of one way to incorporate Docker without uprooting your infrastructure or damaging your ability to iterate on it.
+So that was a lot of analysis. Now I'm going to switch gears and transition to a
+walkthrough of one way to incorporate Docker without uprooting your infrastructure
+or damaging your ability to iterate on it.
 
-I will try to take advantage of the parts of Docker I like and minimize the parts I either don't like or see as harmful to the long term health of my stack.
+I will try to take advantage of the parts of Docker I like and minimize the parts
+I either don't like or see as harmful to the long term health of my stack.
 
 ### Overview
 
@@ -94,17 +166,26 @@ Here are some of the goals and objectives I am trying to achieve in my design:
 
 - The density and elasticity of containers
 - Transactional installs and rollbacks for my applications
-- The ability to develop locally in a near production environment (without near production hardware)
+- The ability to develop locally in a near production environment (without near
+  production hardware)
 - Ephemeral systems
-- Managed systems (I'm not comfortable making them immutable because I trust config management tools more than a home rolled "re roll everything" script to protect me against the next bash vulnerability. This is an area I'd like to revisit soon.)
-- A composable platform that doesn't rely on the aspects of Docker (like networking) that would make iterating on it difficult.
-- Service discovery that influences how my applications and systems are build as little as possible
+- Managed systems (I'm not comfortable making them immutable because I trust config
+  management tools more than a home rolled "re roll everything" script to protect
+  me against the next bash vulnerability. This is an area I'd like to revisit soon.)
+- A composable platform that doesn't rely on the aspects of Docker (like networking)
+  that would make iterating on it difficult.
+- Service discovery that influences how my applications and systems are build as
+  little as possible
 
-What I've come up with is a cluster of general purpose system containers intended to run a single stateless app that can grow elastically. 
+What I've come up with is a cluster of general purpose system containers intended
+to run a single stateless app that can grow elastically.
 
-The general purpose system is a traditional os (Ubuntu) in a system container (lxd) managed with configuration management (Puppet), housing and supporting a single app running in an application container (Docker). 
+The general purpose system is a traditional os (Ubuntu) in a system container (lxd)
+managed with configuration management (Puppet), housing and supporting a single
+app running in an application container (Docker).
 
-Scaling my app or adding new services is achieved by adding additional lxc containers, not by adding Docker containers to an existing instance.
+Scaling my app or adding new services is achieved by adding additional lxc containers,
+not by adding Docker containers to an existing instance.
 
 
 - system containers
