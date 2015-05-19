@@ -14,37 +14,50 @@ Dense clouds, transactional installs, and the right tool for the right job
 
 <!--more-->
 
-So what is docker? It's a moonshot experiment that is both resonating with a whole
-lot of people but also making a whole lot of people (rightfully) uncomfortable.
+What is it about Docker that makes it so exciting? It was a moonshot experiment
+that struck home. Rather than providing an incremental improvement over existing
+infrastructure patterns, Docker takes several leaps forward by providing a fresh
+look at managing your applications and making it accessible to developers at the
+same time. Part of Docker's success relies on providing highly opinionated solutions
+to the problems which come with containerizing components in your system and while
+these solutions are invaluable in gaining adoption and accessibility, they are neither
+the only solutions, nor necessarily the best ones in every case. Even if you are
+sure you want to subscribe to the opinionated Docker way, or think it's a worth
+while tradeoff, you will still be trading in one set of problems for a another set
+that doesn't come with the benefit of a decade or so of tools and experience to leverage.
 
 In this post I'm going to discuss what makes Docker attractive to me and what I'm
-not such a fan of. Then I'm going to build a proof of concept cloud platform that
+not such a fan of. Then I'm going to design a concept cloud platform that
 seeks to take advantage of the best parts of Docker without locking me in to the
 not so great parts.
+
+_Spoiler: I am very interested in system containers, especially LXD, but the project
+is still to green to use in the way I describe later on. As such, I haven't attempted
+to actually build the concept cloud platform I will be describing._
 
 ### The Good
 Some aspects of docker are home runs. In a time where microservices rule and developing
 software for the cloud is an obvious choice, how can you pass up a tool that makes
 managing a gazillion apps as cheap and easy as managing your monolith? And it's a
 DevOps game changer: in the same way AWS removed the friction between dev and ops
-for provisioning a VM, docker removes the friction of configuring an app's dependencies
+for provisioning a VM, Docker removes the friction of configuring an app's dependencies
 and installation. What's more, local dev of even dozens of applications can be kept
 lean and we're closer than ever to feeling confident in "it works on my laptop"
 
 In summary:
 
-- dense clouds
-- transactional installs
-- bundled dependencies
-- tools for packaging deterministic and repeatable deploys.
-- developer workflow is simple and production-like
+- Dense clouds
+- Transactional installs
+- Bundled dependencies
+- Tools for packaging deterministic and repeatable deploys (and rollbacks)
+- Developer workflow is simple and production-like
 
 ### The Bad
 A lot of the design decisions of Docker involve tradeoffs and networking is no exception.
 
 For local dev, where managing many VMs is especially difficult and high availability
 isn't important, Docker's unique method of standing up a virtual bridge interface
-and allocating new ips as containers are started is really convenient. But it is
+and allocating new IPs as containers are started is really convenient. But it is
 less than complete when you start worrying about high availability and exposing
 your services to external systems. Layering in additional networking or mapping
 ports to the bridge interface starts to solve this problem, but it also leaves you
@@ -80,9 +93,9 @@ and as an exercise to the end user.
 
 In summary:
 
-- user namespace security
-- docker hub security
-- networking
+- User namespace security
+- Docker hub security
+- Networking
 
 ### The Ugly
 One of the first things you realize with Docker, is that you have to rethink _everything._
@@ -119,8 +132,8 @@ it often entails a huge amount of work.
 
 Summary:
 
-- incompatibile with config mgmt
-- not composable: forces rewrite of infrastructure tool integrations
+- Incompatibile with config mgmt
+- Not composable with existing infrastructure patterns and tools
 
 
 ### If not Docker, Then What?!
@@ -133,18 +146,18 @@ you should keep your architecture in a state that you can iterate on.
 
 # Other players in this space
 
-Part of Docker's appeal is it's turn key, dirt simple bundling of a new approach
+Part of Docker's appeal is its dirt simple bundling of a new approach
 that removes a lot of pain we've been having. But there are other tools out there
 that solve these same problems.
 
-- System containers like openvz or lxd provide similar cloud density characteristics
+- System containers like OpenVZ or LXD provide similar cloud density characteristics
 - rkt is (almost ready to be) a competing application container that promises to
   implement a more composable architecture
-- snappy ubuntu offers an alternative model for transactional installs, bundling
+- Snappy Ubuntu offers an alternative model for transactional installs, bundling
   dependencies, and isolation
-- numerous SDN technologies
-- config management provides deterministic and repeatable deploys.
-- vagrant simplifies local development in production like environments.
+- Numerous SDN technologies
+- Config management provides deterministic and repeatable deploys
+- Vagrant simplifies local development in production like environments
 
 I have no doubt that we will look back and see Docker as the catalyst that led to
 a very different way of treating our software but it isn't going to stay the only
@@ -154,11 +167,8 @@ _Keep your architecture in a place that you can iterate on._
 ## Lxd, cfg mgmt, docker, and the next generation of stateless apps
 
 So that was a lot of analysis. Now I'm going to switch gears and transition to a
-walkthrough of one way to incorporate Docker without uprooting your infrastructure
-or damaging your ability to iterate on it.
-
-I will try to take advantage of the parts of Docker I like and minimize the parts
-I either don't like or see as harmful to the long term health of my stack.
+designing a hypothetical cloud platform which illustrates one way to incorporate
+Docker without uprooting your infrastructure or damaging your ability to iterate on it.
 
 ### Overview
 
@@ -188,7 +198,5 @@ Scaling my app or adding new services is achieved by adding additional lxc conta
 not by adding Docker containers to an existing instance.
 
 
-- system containers
-- application containers
 
 
