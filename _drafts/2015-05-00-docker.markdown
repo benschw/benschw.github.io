@@ -150,14 +150,18 @@ Part of Docker's appeal is its dirt simple bundling of a new approach
 that removes a lot of pain we've been having. But there are other tools out there
 that solve these same problems.
 
-- System containers like OpenVZ or LXD provide similar cloud density characteristics
-- rkt is (almost ready to be) a competing application container that promises to
-  implement a more composable architecture
-- Snappy Ubuntu offers an alternative model for transactional installs, bundling
-  dependencies, and isolation
-- Numerous SDN technologies
-- Config management provides deterministic and repeatable deploys
-- Vagrant simplifies local development in production like environments
+- System containers like [OpenVZ](https://openvz.org/Main_Page) or
+  [LXD](http://www.ubuntu.com/cloud/tools/lxd) provide similar cloud density
+  characteristics
+- [rkt](https://github.com/coreos/rkt) is (almost ready to be) a competing
+  application container that promises to implement a more composable architecture
+- [Snappy Ubuntu](http://developer.ubuntu.com/en/snappy/) offers an alternative
+  model for transactional installs, bundling dependencies, and isolation
+- [Numerous SDN](http://thenewstack.io/sdn-series-part-eight-comparison-of-open-source-sdn-controllers/) 
+  technologies
+- Config management ([Puppet](https://puppetlabs.com/), [Chef](https://www.chef.io/chef/), 
+  [Ansible](http://www.ansible.com/home)) provides deterministic and repeatable deploys
+- [Vagrant](https://www.vagrantup.com/) simplifies local development in production like environments
 
 I have no doubt that we will look back and see Docker as the catalyst that led to
 a very different way of treating our software but it isn't going to stay the only
