@@ -22,7 +22,7 @@ at the same time.
 
 Part of Docker's success relies on providing highly opinionated solutions
 to the problems which come with containerizing components in your system. While
-these solutions are invaluable in terms of accessibility and gaining adoptionr,
+these solutions are invaluable in terms of accessibility and gaining adoption,
 they are neither the only solutions, nor necessarily the best ones in every case.
 Even if you are sure you want to subscribe to the opinionated "Docker way" or think
 it's a worth while trade-off, you will still be accepting a new set of problems in
