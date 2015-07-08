@@ -186,7 +186,7 @@ So, sorry to disapoint, but we only have one consul vm in this demo and if we ta
 will happen. I'll skip the "fail" video however, since this is a solved problem
 that I only omitted in the demo because I was already up to 6 vms.
 
-### There are a few warts though...
+### There are a few blemishes though...
 
 - requires a person to unseal
 - requires a person to provision instances
