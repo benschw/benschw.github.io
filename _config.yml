@@ -2,7 +2,7 @@ name: txt.fliglio.com
 description: foo
 url: txt.fliglio.com
 markdown: redcarpet
-highlighter: true
+pygments: true
 permalink: /:year/:month/:title/
 excerpt_separator: <!--more-->
 encoding: utf-8
