@@ -32,10 +32,25 @@ ignore it too; the cluster will install a copy built and hosted by [Drone](https
 The example `todo` service is very simple and its only dependency is a mysql database, but supporting this
 while maintaining the [twelve factor app methodology](http://12factor.net/) is easier said then done.
 
-The main problem requiring MySQL introduces, is the requirements around sharing database credentials while
+The main problems requiring MySQL introduces, are the requirements around sharing database credentials while
 maintaining environment independence. We can't keep everything the same for all environments, because
 that wouldn't be secure. We could drop config files on the box for our app to read, but that isn't the most
-secure thing either and it is hard to manage.
+secure thing either and it is hard to manage. On top of all that, we have to keep track of all those creds for various apps
+and have a game plan for if we ever need to change them.
+
+Vault solves these problems for us by managing the creation and access to creds with the
+[MySQL Secret Backend](https://vaultproject.io/docs/secrets/mysql/index.html), in addition to
+the policies which define what a given app has access to with native
+[Access Control Policies](https://vaultproject.io/docs/concepts/policies.html) and
+pluggable auth backends (our demo will use the [App ID Auth Backend](https://vaultproject.io/docs/auth/app-id.html)).
+
+A second problem, is that your MySQL database probably lives at different addresses in different environments.
+We use `consul` to addresses this issue by always looking up the address to MySQL via consul. This way we
+don't have to care about the actual address to MySQL, we can always just look it up via `mysql.service.consul`
+regardless of what environment we are in.
+
+With these problems solved, we are left with a single `todo` service artifact that we can install
+in any environment and that we can scale by adding as many instances as we want.
 
 
 ### Building Your Cluster
@@ -58,8 +73,35 @@ secure thing either and it is hard to manage.
 - `todo1` is a second instance of the todo service. Since these services are stateless, they are also totally interchangable.
 
 #### Helper Scripts
+puppet-deps.sh  
 
-### Todo, a REST Service
+01-init.sh  
+02-unseal.sh  
+03-configure.sh  
+04-provision-todo.sh  
+
+test-todo-service.sh 
+hiera  puppet  
+README.md  root_token  
+set_user_id.sh  
+
+#### Just Build it Already!
+	
+	# provision the core infrastructure
+	vagrant up consul vault0 vault1 mysql
+
+	# initialize, unseal, and configure `vault`
+	./01-init.sh && ./02-unseal.sh && ./03-configure.sh 
+	
+	# mint `user-id`s and provision the `todo` instances configured with them
+	./04-provision-todo.sh  
+
+	# confirm that everything went well
+	./test-todo-service.sh 
+
+	# how do I know that test script isn't faking something?
+	curl -X POST http://172.20.20.14:8080/todo -d '{"status": "new", "content": "Hello World"}'
+
 
 ### Can we break it?
 
@@ -144,5 +186,18 @@ So, sorry to disapoint, but we only have one consul vm in this demo and if we ta
 will happen. I'll skip the "fail" video however, since this is a solved problem
 that I only omitted in the demo because I was already up to 6 vms.
 
+### There are a few warts though...
+
+- requires a person to unseal
+- requires a person to provision instances
+- doesn't scale with the addition of new nodes
+- weak ecosystem
+	- not much buzz about it
+	- no puppet module
+
+All that being said, [Hashicorp](https://hashicorp.com/) has a great track record of building solid, well received
+apps (such as [consul](https://consul.io/) and [vagrant](https://www.vagrantup.com/) featured in this demo) and
+vault is still very young ([April 28th, 2015](https://hashicorp.com/blog/vault.html)) so I have high hopes
+that this will be another win for safe, resilient, and simple infrastructure.
 
 
