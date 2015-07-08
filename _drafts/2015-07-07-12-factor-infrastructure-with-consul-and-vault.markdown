@@ -22,11 +22,40 @@ tags: []
 
 
 ## Try it Out with Vagrant
-overview
+The rest of this post is a walk through of a demo cluster build with [Vagrant](https://www.vagrantup.com/).
+_Everything needed to follow along is included [on github here](https://github.com/benschw/vault-demo)._
+
+The demo cluster is essentially a bunch of infrastructure to support an example `todo` REST api written in [Go](http://golang.org/).
+(You can find the source for it [here](https://github.com/benschw/vault-todo) but feel free to
+ignore it too; the cluster will install a copy built and hosted by [Drone](https://drone.io/).)
+
+The example `todo` service is very simple and its only dependency is a mysql database, but supporting this
+while maintaining the [twelve factor app methodology](http://12factor.net/) is easier said then done.
+
+The main problem requiring MySQL introduces, is the requirements around sharing database credentials while
+maintaining environment independence. We can't keep everything the same for all environments, because
+that wouldn't be secure. We could drop config files on the box for our app to read, but that isn't the most
+secure thing either and it is hard to manage.
+
 
 ### Building Your Cluster
 
 #### The VMs
+- `consul` is our consul server vm which all other nodes with register and discover through.
+  It also offers up its key/value store for vault to use as a [data backend](https://vaultproject.io/docs/config/index.html).
+  In a real environment, we would want more instances of this clustered up to provide high availability.
+- `vault0` is one of two nodes running the vault server. When it comes online, the vault service is registered with consul
+  so that other services (`todo`) can discover it. Its health check is configured such that it is made available when
+  the vault server is running and unsealed. It is configured to store all of its secret data in consul under the `vault` key.
+  Vault's sole job in our demo cluster is to generate mysql credentials and expose them to our `todo` services.
+- `vault1` is the second vm running the vault server. Since it will boot second, it will come online in `stand by` mode. This meens
+  that it won't actually respond to requests from services, but instead redirect them to the leader (`vault0`.)
+  In the event of a failure on `vault0`, it will take over as leader and start servicing requests directly.
+- `mysql` is a mysql server. Vault is configured to manage creds for it using a `vaultadmin` account created with puppet, and
+  our `todo` services will use it to store the todo entriess that it supports.
+- `todo0` is an instance of our todo REST api. It is a stateless app that manages todo entries, 
+  uses MySQL (discovered with consul) to for data persistence, and uses vault to aquire creds to its MySQL database.
+- `todo1` is a second instance of the todo service. Since these services are stateless, they are also totally interchangable.
 
 #### Helper Scripts
 
@@ -108,6 +137,12 @@ For completeness however, here's our service crashing hard when we take away MyS
 Consul uses [The Raft Consensus Algorithm](https://raftconsensus.github.io/) to manage
 a highly consistent key/value and service discovery cluster, but I didn't include one in this demo.
 
-(Here's a post I wrote previously on [Provisioning Consul with Puppet](/2014/10/consul-with-puppet/))
+(Here's a post I wrote previously on [Provisioning Consul with Puppet](/2014/10/consul-with-puppet/), or
+just scan through [all of my posts](/all-posts/) - I think roughly half are about consul :))
 
-Even more out of scope!
+So, sorry to disapoint, but we only have one consul vm in this demo and if we take it away bad things
+will happen. I'll skip the "fail" video however, since this is a solved problem
+that I only omitted in the demo because I was already up to 6 vms.
+
+
+
