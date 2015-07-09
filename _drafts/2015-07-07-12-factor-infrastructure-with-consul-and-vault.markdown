@@ -91,16 +91,43 @@ set_user_id.sh
 	vagrant up consul vault0 vault1 mysql
 
 	# initialize, unseal, and configure `vault`
-	./01-init.sh && ./02-unseal.sh && ./03-configure.sh 
+	./01-init.sh && ./02-unseal.sh && ./03-configure.sh
 	
 	# mint `user-id`s and provision the `todo` instances configured with them
-	./04-provision-todo.sh  
+	./04-provision-todo.sh
 
 	# confirm that everything went well
-	./test-todo-service.sh 
+	./test-todo-service.sh
+	
+If you want to watch the todo service come online like in my recording below, just run the test script with watch:
 
-	# how do I know that test script isn't faking something?
+	watch --color ./test-todo-service.sh
+
+_recording of the cluster being provisioned_
+<a href="/images/boot-crop-opt.gif"><img class="post-image-full" src="/images/boot-crop-opt.gif" alt="provisioning the cluster" width="618" height="300" class="alignnone size-full" /></a>
+
+
+Sure the test works, but maybe you want to see the service in action for yourself!
+Here's an example of how to use the `todo` api:
+
 	curl -X POST http://172.20.20.14:8080/todo -d '{"status": "new", "content": "Hello World"}'
+	{"id":1,"status":"new","content":"Hello World"}
+
+	curl http://172.20.20.14:8080/todo/1
+	{"id":1,"status":"new","content":"Hello World"}
+
+	curl -X PUT http://172.20.20.14:8080/todo/1 -d '{"status": "open", "content": "Hello Galaxy"}'
+	{"id":1,"status":"open","content":"Hello Galaxy"}
+
+	# (we can use the other node too)
+	curl http://172.20.20.15:8080/todo/1
+	{"id":1,"status":"open","content":"Hello Galaxy"}
+
+	curl -i -X DELETE http://172.20.20.15:8080/todo/1
+	HTTP/1.1 204 No Content
+	Content-Type: application/json
+	Date: Thu, 09 Jul 2015 15:21:48 GMT
+
 
 
 ### Can we break it?
@@ -131,7 +158,7 @@ this test won't fail because we aren't testing services known to be unhealthy, b
 a narrow window (up to 5s) after the instance has been stopped but before consul has run its
 health check and noticed the problem.
 
-<a href="/images/todo-crop-opt.gif"><img class="post-image-full" src="/images/todo-crop-opt.gif" alt="todo failure demo" width="851" height="446" class="alignnone size-full" /></a>
+<a href="/images/todo-crop-opt.gif"><img class="post-image-full" src="/images/todo-crop-opt.gif" alt="todo failure demo" width="618" height="300" class="alignnone size-full" /></a>
 
 
 #### Vault Failures
@@ -159,7 +186,7 @@ Another thing to note is that after I start a vault server back up, I still need
 _Every time we add a new vault server or restart an existing one, it must be manually unsealed._
 
 
-<a href="/images/vault-crop-opt.gif"><img class="post-image-full" src="/images/vault-crop-opt.gif" alt="mysql failure demo" width="851" height="446" class="alignnone size-full" /></a>
+<a href="/images/vault-crop-opt.gif"><img class="post-image-full" src="/images/vault-crop-opt.gif" alt="mysql failure demo" width="618" height="300" class="alignnone size-full" /></a>
 
 _At the time of writing this, the most recent vault release is `0.1.2`. This release has a bug that
 makes failing over with a consul backend very slow. The bug is fixed in `master` however,
@@ -173,7 +200,7 @@ but those are all out of scope for this demo.
 
 For completeness however, here's our service crashing hard when we take away MySQL:
 
-<a href="/images/mysql-crop-opt.gif"><img class="post-image-full" src="/images/mysql-crop-opt.gif" alt="mysql failure demo" width="851" height="446" class="alignnone size-full" /></a>
+<a href="/images/mysql-crop-opt.gif"><img class="post-image-full" src="/images/mysql-crop-opt.gif" alt="mysql failure demo" width="618" height="300" class="alignnone size-full" /></a>
 
 #### Consul Failures
 Consul uses [The Raft Consensus Algorithm](https://raftconsensus.github.io/) to manage
