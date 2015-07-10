@@ -73,12 +73,35 @@ in any environment and that we can scale by adding as many instances as we want.
 - `todo1` is a second instance of the todo service. Since these services are stateless, they are also totally interchangable.
 
 #### Helper Scripts
-puppet-deps.sh  
 
-01-init.sh  
-02-unseal.sh  
-03-configure.sh  
-04-provision-todo.sh  
+In addition to [puppet-deps.sh](https://github.com/benschw/vault-demo/blob/master/puppet-deps.sh) 
+(a script to clone all the puppet modules used for provisioning the cluster VMs), there are a series of scripts to
+automate setting up `vault`: [01-init.sh](https://github.com/benschw/vault-demo/blob/master/01-init.sh),
+[02-unseal.sh](https://github.com/benschw/vault-demo/blob/master/02-unseal.sh),
+[03-configure.sh](https://github.com/benschw/vault-demo/blob/master/03-configure.sh),
+
+In the fourth script, [04-provision-todo.sh](https://github.com/benschw/vault-demo/blob/master/04-provision-todo.sh),
+adds `user-id` auto tokens to vault and then injects them into vagrant to provision the `todo` services.
+
+
+This work could be included in the normal vagrant provisioning, but it doesn't belong there. In order to rely on vault
+to keep our data secret, we can't just allow our normal config management to manage it - then it's can only be as
+trusted as our config management is. Since our secrets are only as reliable as the source managing them, we typically
+want these to be one off operations performed by a human and not a system perpetually authenticated in our datacenter.
+
+Since we are just trying things out though, I've scripted out the work needed to bootstrap our example. I didn't just
+add it to the vagrant provisioning so it would be easier to picture the different aspects of setting up our demo.
+
+
+Take a look at the scripts to see exactly whats going on, but basically it uses the vault REST api to perform the following work:
+
+- _Initialize the vault data store_ This must be run once, when you bring your first vault server on line in an environment.
+- _Unseal each vault server_ Every time a vault server is started (either when bringing on a new server, or restarting
+  an existing on) it must be unsealed. Remember what I said earlier about how perpetually authenticated systems are insecure?
+- _Create a "todo" policy_ This manages what secrets our app will have access to once authenticated
+-
+
+[test-todo-service.sh](https://github.com/benschw/vault-demo/blob/master/test-todo-service.sh)
 
 test-todo-service.sh 
 hiera  puppet  
@@ -86,6 +109,9 @@ README.md  root_token
 set_user_id.sh  
 
 #### Just Build it Already!
+	
+	# clone the puppet modules used to provision our cluster
+	./puppet-deps.sh  
 	
 	# provision the core infrastructure
 	vagrant up consul vault0 vault1 mysql
