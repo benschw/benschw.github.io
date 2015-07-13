@@ -217,7 +217,13 @@ service discovery, externalized config, software defined networking et. al.
 
 ### Conclusion
 
-I think there is definitely room for system and application containers to coexist
-and find it frustrating that many people think they have to shoose one or the other.
+The tired old debate of "Containers vs. Configuration Management" is rooted in fallacy.
+We've never tried solve all our problems with one technology before (you wouldn't pull down your
+Java libraries with Puppet, or keep your load balancer config in Maven Central) so why
+do we _have_ to start now.
 
-Hopefully more work will be done to make these two great technologies play nicely together
+Instead, I recommend we do what we always do: choose the right tool for the right job.
+
+I think there is definitely room for system and application containers to coexist and hopefully
+more work will be done to make these two great technologies play nicely together
+
