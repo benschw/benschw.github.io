@@ -15,28 +15,28 @@ tags: []
 
 <!--more-->
 
-## The Twelve Factor App
+- The Twelve Factor App
 
-## Consul & Vault
+- Consul & Vault
 
 
 
-## Try it Out with Vagrant
+## Let's build a cluster in Vagrant
 The rest of this post is a walk through of a demo cluster build with [Vagrant](https://www.vagrantup.com/).
 _Everything needed to follow along is included [on github here](https://github.com/benschw/vault-demo)._
 
 The demo cluster is essentially a bunch of infrastructure to support an example `todo` REST api written in [Go](http://golang.org/).
 (You can find the source for it [here](https://github.com/benschw/vault-todo) but feel free to
-ignore it too; the cluster will install a copy built and hosted by [Drone](https://drone.io/).)
+ignore it; the cluster will install a copy built and hosted by [Drone](https://drone.io/github.com/benschw/vault-todo/files).)
 
 The example `todo` service is very simple and its only dependency is a mysql database, but supporting this
 while maintaining the [twelve factor app methodology](http://12factor.net/) is easier said then done.
 
-The main problems requiring MySQL introduces, are the requirements around sharing database credentials while
-maintaining environment independence. We can't keep everything the same for all environments, because
+The main problems that using MySQL introduce surround sharing database credentials while
+maintaining environment independence and security. We can't keep everything the same for all environments, because
 that wouldn't be secure. We could drop config files on the box for our app to read, but that isn't the most
-secure thing either and it is hard to manage. On top of all that, we have to keep track of all those creds for various apps
-and have a game plan for if we ever need to change them.
+secure thing either and it is hard to manage (we would have to keep track of all those creds and where they go
+as well as have a game plan for changing them.)
 
 Vault solves these problems for us by managing the creation and access to creds with the
 [MySQL Secret Backend](https://vaultproject.io/docs/secrets/mysql/index.html), in addition to
@@ -53,9 +53,7 @@ With these problems solved, we are left with a single `todo` service artifact th
 in any environment and that we can scale by adding as many instances as we want.
 
 
-### Building Your Cluster
-
-#### The VMs
+### The VMs
 - `consul` is our consul server vm which all other nodes with register and discover through.
   It also offers up its key/value store for vault to use as a [data backend](https://vaultproject.io/docs/config/index.html).
   In a real environment, we would want more instances of this clustered up to provide high availability.
@@ -72,7 +70,7 @@ in any environment and that we can scale by adding as many instances as we want.
   uses MySQL (discovered with consul) to for data persistence, and uses vault to aquire creds to its MySQL database.
 - `todo1` is a second instance of the todo service. Since these services are stateless, they are also totally interchangable.
 
-#### Helper Scripts
+### Configuring the Cluster
 
 In addition to [puppet-deps.sh](https://github.com/benschw/vault-demo/blob/master/puppet-deps.sh) 
 (a script to clone all the puppet modules used for provisioning the cluster VMs), there are a series of scripts to
@@ -81,34 +79,43 @@ automate setting up `vault`: [01-init.sh](https://github.com/benschw/vault-demo/
 [03-configure.sh](https://github.com/benschw/vault-demo/blob/master/03-configure.sh),
 
 In the fourth script, [04-provision-todo.sh](https://github.com/benschw/vault-demo/blob/master/04-provision-todo.sh),
-adds `user-id` auto tokens to vault and then injects them into vagrant to provision the `todo` services.
+`user-id` auth tokens are added to vault and then injected into vagrant to provision the `todo` services.
 
 
 This work could be included in the normal vagrant provisioning, but it doesn't belong there. In order to rely on vault
-to keep our data secret, we can't just allow our normal config management to manage it - then it's can only be as
-trusted as our config management is. Since our secrets are only as reliable as the source managing them, we typically
-want these to be one off operations performed by a human and not a system perpetually authenticated in our datacenter.
+to keep our data secret, we can't just allow our normal config management to manage it. Since our secrets are only as
+reliable as the source managing them, we typically want these to be one off operations performed by a human and not a
+system perpetually authenticated in our datacenter.
 
-Since we are just trying things out though, I've scripted out the work needed to bootstrap our example. I didn't just
-add it to the vagrant provisioning so it would be easier to picture the different aspects of setting up our demo.
+Since we are just trying things out though, I've scripted the work needed to bootstrap our example (but kept it out
+of vagrant provisioning so it would be easier to picture the different aspects of configuring a cluster to use vault.)
 
 
 Take a look at the scripts to see exactly whats going on, but basically it uses the vault REST api to perform the following work:
 
-- _Initialize the vault data store_ This must be run once, when you bring your first vault server on line in an environment.
-- _Unseal each vault server_ Every time a vault server is started (either when bringing on a new server, or restarting
-  an existing on) it must be unsealed. Remember what I said earlier about how perpetually authenticated systems are insecure?
-- _Create a "todo" policy_ This manages what secrets our app will have access to once authenticated
--
+- *[Initialize the Vault Data Store.](https://vaultproject.io/docs/http/sys-init.html)* This must be run once, when you bring your first vault server online in an environment.
+- *[Unseal each Vault Server.](https://vaultproject.io/docs/http/sys-unseal.html)* Every time a vault server is started (either when bringing on a new server, or restarting
+  an existing one) it must be unsealed. If everything needed to access secret data was stored at rest, it would be easier to break in.
+- *[Create a "todo" Policy.](https://vaultproject.io/docs/http/sys-policy.html)* This manages what secrets our app will have access to once authenticated.
+- *Set up the [MySQL Backend.](https://vaultproject.io/docs/secrets/mysql/index.html)*
+	- *Mount a MySQL Secret Backend.* This component will allow vault to generate database credentials dynamically for our app.
+	- *Configure MySQL Secret Backend.* Set privileged connection settings for vault to use when creating credentials;
+      set the lease and max usage period for generated credentials (We are just leasing them for a minute to make the demo easier to inspect)
+	- *Create a MySQL "todo" Role.* With vault configured to create credentials, we next set up a role
+      with a templated SQL command that will grant the appropriate database permissions for our "todo" app. The username and password aren't included, because that's
+	  what vault will be generating for us.
+- *Set up the [App-Id Auth Backend.](https://vaultproject.io/docs/auth/app-id.html)*
+	- *Enable the "app-id" Auth Backend.* There are several options built into vault for authentication; we will be using "app-id".
+    This method relies on two tokens to authenticate. One, the `app-id`, is created ahead of time and can be included in your VM with config management.
+	The second token, `user-id`, needs to be unique per instance and made available in some way other than config management to keep all our eggs out of one basket.
+	- *Create "app-id" Token for "todo" App.* This is the `app-id` used by each instance of our `todo` service. When we add it to vault, 
+    we also associate it with the "todo" policy (which in tern allows access to the mysql "todo role" credential generator.)
+    In addition to setting the app-id here, we have [made it available via heira](https://github.com/benschw/vault-demo/blob/master/hiera/todo0.yaml) to puppet to configure the "todo" instances with.
+	- *Create "user-id" Token for "todo" App.* Finally, we create two `user-id`s for our two `todo` instances and pass them to `vagrant up todo0` and `vagrant up todo1`
+	as environment variables so they can be set on the new instances without going through our puppet configuration. In a real environment, this would ensure that only
+	trusted instances were given a `user-id` since a privileged user must be authenticated to create one.
 
-[test-todo-service.sh](https://github.com/benschw/vault-demo/blob/master/test-todo-service.sh)
-
-test-todo-service.sh 
-hiera  puppet  
-README.md  root_token  
-set_user_id.sh  
-
-#### Just Build it Already!
+### Just Build it Already!
 	
 	# clone the puppet modules used to provision our cluster
 	./puppet-deps.sh  
@@ -156,56 +163,65 @@ Here's an example of how to use the `todo` api:
 
 
 
-### Can we break it?
+## How does it all work?
 
-In the following sections I will explain how the todo service behaves in the
-face of various failures. Each failure I introduce is accompanied by a recording
-which will hopefully help illustrate the various behaviors.
+In the following sections I will talk about how the various components scale and interact as well as how
+they (and subsequently the todo service) behave in the face of various failures.
+Each failure I introduce is accompanied by a recording which will hopefully help
+illustrate the behaviors.
 
 Each recording has the same seven terminal panes included:
 
 - The top left pane is a health check running from my host OS to monitor the two `vault` and two `todo` vms.
   (The top two addresses are `vault`, the bottom two are `todo`)
 - The bottom left pane is also a terminal on my host OS.
-- The right panes are sessions in each vm (except the consul server) where I will
+- The right panes are sessions in each vm (except the consul server which I left out) where I will
   start and stop services to simulate failures. From top to bottom: `vault0`, `vault1`, `mysql`, `todo0`, `todo1`.
 
-#### Todo Failures
-Our todo service is stateless, relying entirely on MySQL to store todo entries. 
-In addition, we are always requesting an address to an instance through consul, which
-will only respond with healthy addresses.
+### Consul
+Consul uses [The Raft Consensus Algorithm](https://raftconsensus.github.io/) to manage
+a highly consistent and highly available key/value and service discovery cluster. It also uses
+[Serf and the Gossip Protocol](https://www.serfdom.io/docs/internals/gossip.html)
+to share state between the cluster nodes. This essentially allows each node to discover
+all other nodes (as well as the services registered on them) by simply joining the cluster.
 
-This means that any particular instance can come and go without interupting service to the `todo` service as a whole.
+Every VM has a consul client running on it that keeps the primary service of that VM
+registered with consul for discovery. This way, VMs can come and go or change IP and
+the services that rely on them don't need to be reconfigured.
 
-In the top left pane you can track the status of the todo instances.
-The "Health" column shows the instance's status according to consul, and the "Test"
-column shows the instance's status according to a test run from our host OS. For the most part
-this test won't fail because we aren't testing services known to be unhealthy, but there is
-a narrow window (up to 5s) after the instance has been stopped but before consul has run its
-health check and noticed the problem.
+...But I only included a single consul server node in this demo and if we take it away bad things
+will happen. I'll skip the "fail" video since this is a solved problem
+that I only omitted in the demo because I was already up to 6 vms.
 
-<a href="/images/todo-crop-opt.gif"><img class="post-image-full" src="/images/todo-crop-opt.gif" alt="todo failure demo" width="618" height="300" class="alignnone size-full" /></a>
+(Here's a post I wrote previously on [Provisioning Consul with Puppet](/2014/10/consul-with-puppet/), or
+just scan through [all of my posts](/all-posts/) - I think roughly half are about or use consul.)
 
+### Vault
+Each vault instance is stateless and are as HA as their backend. We are using consul's key/value
+store as a backend, so we can make vault HA by standing up two servers, both pointed at our consul server.
 
-#### Vault Failures
-Vault provides high availability differently from our todo service. All requests
-are routed to the `leader` server and additional servers are just standing by to
-accomplish a hot failover in the event of a problem with the current leader.
+Vault provides high availability by electing a `leader` server and having additional servers
+standing by to take over in the event of a problem. These nodes also do request forwarding to the leader.
 
-Multiple failover instances offer essentially the same resiliency as multiple stateless 
-services, but don't allow for the ability to scale by adding new instances.
+Multiple failover instances offer essentially the same resiliency as multiple stateless
+services, but they don't help to scale the application. In
+[the vault docs](https://vaultproject.io/docs/concepts/ha.html) they state that
+"in general, the bottleneck of Vault is the physical backend itself, not Vault core"
+and suggest scaling the backend (consul in our case) to increase vault's scalibility.
+
+#### failure demo:
 
 In the following recording, you can see that both todo instances remain healthy unless
 all vault servers go down.
 
 You can also see that the todo services don't start failing for awhile after both
-vault servers are in a critical state (or maybe you can't since the recording is sped up so much...)
-This is because the mysql creds vault is exposing to the todo service are good for a minute
-so it doesn't realize vault is gone for up to a minute. We could actually avoid a "todo"
-failure alltogether by hanging onto our old connection if vault isn't available,
-but I left that logic out of the todo service since this is largely a vault demo.
-Additionally, we wouldn't want to entirely rely on this since new services would have
-nowhere to get their creds from.
+vault servers are in a critical state. This is because the mysql creds vault is 
+exposing to the todo service are good for a minute, so the app doesn't realize vault
+is gone for up to a minute. We could actually avoid a "todo" failure alltogether 
+by hanging onto our old connection if vault isn't available, but I left that 
+logic out of the todo service since this is largely a vault demo. Additionally, 
+we wouldn't want to entirely rely on this since new services would have nowhere 
+to get their creds from.
 
 Another thing to note is that after I start a vault server back up, I still need to unseal it
 (by running a script from my host OS in the bottom left pane) before it becomes healthy again.
@@ -218,28 +234,49 @@ _At the time of writing this, the most recent vault release is `0.1.2`. This rel
 makes failing over with a consul backend very slow. The bug is fixed in `master` however,
 so I went ahead and built the server used in this demo from that._
 
-#### MySQL Failures
-Last, the uncomfortable single point of failure: MySQL.
+### MySQL
+Next up, the uncomfortable single point of failure: MySQL.
 
 There are of course strategies involving replicating to slaves or even master-master replication,
 but those are all out of scope for this demo.
+
+We are still, however, exposing the address to MySQL to our "todo" service with consul so
+that if we decided to add in an HA mechinesm, it could be done without needing to
+rework our application.
+
+#### failure demo:
 
 For completeness however, here's our service crashing hard when we take away MySQL:
 
 <a href="/images/mysql-crop-opt.gif"><img class="post-image-full" src="/images/mysql-crop-opt.gif" alt="mysql failure demo" width="618" height="300" class="alignnone size-full" /></a>
 
-#### Consul Failures
-Consul uses [The Raft Consensus Algorithm](https://raftconsensus.github.io/) to manage
-a highly consistent key/value and service discovery cluster, but I didn't include one in this demo.
+### Todo
+Our todo service is stateless, relying entirely on MySQL to store todo entries.
+In addition, we are always requesting an address to an instance through consul, which
+will only respond with healthy addresses. We are also registering the "todo" service with consul
+so as long as others discover it through that interface, we can scale it by adding instances.
 
-(Here's a post I wrote previously on [Provisioning Consul with Puppet](/2014/10/consul-with-puppet/), or
-just scan through [all of my posts](/all-posts/) - I think roughly half are about consul :))
+There is no other configuration needed for our app, but if there was we could add it to consul's
+key/value store in order to maintain a clean contract with our system and zero divergence
+between environments.
 
-So, sorry to disapoint, but we only have one consul vm in this demo and if we take it away bad things
-will happen. I'll skip the "fail" video however, since this is a solved problem
-that I only omitted in the demo because I was already up to 6 vms.
+This means that our todo service can be installed in any environment without modification 
+and that instances can come and go (and new instances can be added) and they will 
+neatly fold in the the existing ecosystem.
 
-### There are a few blemishes though...
+#### failure demo:
+
+In the following recording, track the status of the todo instances in the top left pane.
+The "Health" column shows the instance's status according to consul, and the "Test"
+column shows the instance's status according to a test run from our host OS. For the most part
+this test won't fail because we aren't testing services known to be unhealthy, but there is
+a narrow window (up to 5s) after the instance has been stopped but before consul has run its
+health check and noticed the problem.
+
+<a href="/images/todo-crop-opt.gif"><img class="post-image-full" src="/images/todo-crop-opt.gif" alt="todo failure demo" width="618" height="300" class="alignnone size-full" /></a>
+
+
+## There are a few blemishes though...
 
 - requires a person to unseal
 - requires a person to provision instances
