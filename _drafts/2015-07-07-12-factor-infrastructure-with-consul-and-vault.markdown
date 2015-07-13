@@ -21,7 +21,7 @@ A twelve factor app is only useful if you have an infrastructure that supports i
 Some of the twelve factors are more prescriptive then others, but most of them boil down to a few general principals:
 
 - Maintain portability between environments by keeping a clean contract with your infrastructure.
-- Use declarative automation to maintain environments and deployments in order to keep things repeatable.
+- Use declarative automation and configuration to maintain environments and deployments in order to keep things repeatable.
 - Allow for scaling and high availability without a bunch of extra work.
 	
 This post will walk you through building an example infrastructure that holds to these principals using
