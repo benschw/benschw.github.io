@@ -10,7 +10,7 @@ categories:
 tags: []
 ---
 
-[The Twelve Factor App](http://12factor.net/) is first and formost a description of how to build apps that run well on
+[The Twelve Factor App](http://12factor.net/) is a description of how to build apps that run well on
 [Heroku](https://devcenter.heroku.com/articles/architecting-apps), but it's also proven to be of general usefulness to
 describe good prinvipals for modern web application design.
 
