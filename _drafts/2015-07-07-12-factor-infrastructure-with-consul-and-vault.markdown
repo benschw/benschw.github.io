@@ -88,7 +88,8 @@ Before we start provisioning the cluster, here's a list of the VMs we will build
 Provisioning this cluster is a little more involved than a typical vagrant cluster. Configuring and managing
 vault shouldn't be done entirely by configuration management since you're going to rely on it to keep your secrets safe.
 We typically want these operations to be initiated (or even performed directly) by a human and not a
-system that remains perpetually authenticated within our datacenter.
+system that remains perpetually authenticated within our datacenter. Otherwise, we haven't secured anything - we've only added
+[another turtle](https://en.wikipedia.org/wiki/Turtles_all_the_way_down) to the stack.
 
 For this reason, I've provided scripts to configure vault rather than doing it in puppet the way the rest of 
 the cluster is configured. These scripts are in no way secure (Probably shouldn't write out the vault key and root token to files
