@@ -12,19 +12,19 @@ tags: []
 
 [The Twelve Factor App](http://12factor.net/) is a description of how to build apps that run well on
 [Heroku](https://devcenter.heroku.com/articles/architecting-apps), but it's also proven to be of general usefulness in
-describing good principals for modern web application design.
+describing good principles for modern web application design.
 
-A twelve factor app is only useful if you have an infrastructure that supports it however; that's what we'll be focusing on here.
+A twelve factor app is only useful if you have an infrastructure that supports it, however; that's what we'll be focusing on here.
 
 <!--more-->
 
-Some of the twelve factors are more prescriptive then others, but most of them boil down to a few general principals:
+Some of the twelve factors are more prescriptive then others, but most of them boil down to a few general principles:
 
 - Maintain portability between environments by keeping a clean contract with your infrastructure.
 - Use declarative automation and configuration to maintain environments and deployments in order to keep things repeatable.
 - Allow for scaling and high availability without a bunch of extra work.
 	
-This post will walk you through building an example infrastructure that holds to these principals using
+This post will walk you through building an example infrastructure that holds to these principles using
 [Vault](https://vaultproject.io/) to manage MySQL credentials and [Consul](https://consul.io/) for service discovery.
 We'll build the core, land a demo [todo service](https://github.com/benschw/vault-todo) in the cluster, and then take a look at how the
 different services interact and how they behave when there are failures.
@@ -41,11 +41,11 @@ ignore it; the cluster will install a copy built and hosted by [Drone](https://d
 and I'll explain how to use it later on.)
 
 The example `todo` service is very simple and its only dependency is a mysql database, but
-sharing database credentials while maintaining environment independence and security is easier said then done.
+sharing database credentials while maintaining environment independence and security is easier said than done.
 
 We can't keep credentials consistent across all environments because
 that wouldn't be secure. We could drop config files on the box for our app to read, but that isn't the most
-secure thing either and it is hard to manage (we would have to keep track of all those creds and where they go
+secure thing either, and it is hard to manage (we would have to keep track of all those creds and where they go
 as well as have a game plan for changing them.)
 
 [Vault](https://vaultproject.io/) solves these problems for us by managing the creation and access to creds with the
@@ -93,7 +93,7 @@ system that remains perpetually authenticated within our datacenter. Otherwise, 
 
 For this reason, I've provided scripts to configure vault rather than doing it in puppet the way the rest of 
 the cluster is configured. These scripts are in no way secure (Probably shouldn't write out the vault key and root token to files
-accessible within your production cluster for instance) but are included to illustrate the separation of configuration concerns while
+accessible within your production cluster, for instance) but are included to illustrate the separation of configuration concerns while
 trying to keep the demo cluster automated.
 
 _Following are the scripts used to configure vault:_
@@ -189,9 +189,9 @@ Here's an example of how to use the `todo` api with `todo0`'s IP hard wired in:
 
 ## How does it all work?
 
-In the following sections I will talk about how the various components scale and interact as well as how
+In the following sections I will talk about how the various components scale and interact, as well as how
 they (and subsequently the todo service) behave in the face of various failures.
-Each failure I introduce is accompanied by a recording which will hopefully help
+Each failure I introduce is accompanied by a recording that will hopefully help
 illustrate the behaviors.
 
 Each recording has the same seven terminal panes included:
@@ -210,10 +210,10 @@ to share state between the cluster nodes. This essentially allows each node to d
 all other nodes (as well as the services registered on them) by simply joining the cluster.
 
 Every VM has a consul client running on it that keeps the primary service of that VM
-registered with consul for discovery. This way, VMs can come and go or change IP and
+registered with consul for discovery. This way, VMs can come and go, or change IP, and
 the services that rely on them don't need to be reconfigured.
 
-...But I only included a single consul server node in this demo and if we take it away bad things
+...But I only included a single consul server node in this demo, and if we take it away bad things
 will happen. I'll skip the "fail" video since this is a solved problem
 that I only omitted in the demo because I was already up to 6 vms.
 
@@ -239,12 +239,12 @@ In the following recording, you can see that both todo instances remain healthy 
 all vault servers go down.
 
 You can also see that the todo services don't start failing for awhile after both
-vault servers are in a critical state. This is because the mysql creds vault is 
+vault servers are in a critical state. This is because the mysql creds that vault is 
 exposing to the todo service are good for a minute, so the app doesn't realize vault
-is gone for up to a minute. We could actually avoid a "todo" failure alltogether 
+is gone for up to a minute. We could actually avoid a "todo" failure altogether 
 by hanging onto our old MySQL connection if vault isn't available, but I left that 
 logic out of the todo service since this is largely a vault demo. Additionally, 
-we wouldn't want to entirely rely on this since new services would have nowhere 
+we wouldn't want to entirely rely on this, since new services would have nowhere 
 to get their creds from.
 
 Another thing to note is that after I start a vault server back up, I still need to unseal it
@@ -255,13 +255,13 @@ _Every time we add a new vault server or restart an existing one, it must be man
 <a href="/images/vault-crop-opt.gif"><img class="post-image-full" src="/images/vault-crop-opt.gif" alt="mysql failure demo" width="618" height="300" class="alignnone size-full" /></a>
 
 _At the time of writing this, the most recent vault release is `0.1.2`. This release has a bug that
-makes failing over with a consul backend very slow. The bug is fixed in `master` however,
+makes failing over with a consul backend very slow. The bug is fixed in `master`, however,
 so I went ahead and built the server used in this demo from that._
 
 ### MySQL
 Next up, the uncomfortable single point of failure: MySQL.
 
-There are of course strategies involving replicating to slaves or even master-master replication,
+There are, of course, strategies involving replicating to slaves, or even master-master replication,
 but those are all out of scope for this demo.
 
 We are still, however, exposing the MySQL address to our "todo" service with consul so
@@ -277,20 +277,20 @@ For completeness, here's our service crashing hard when we take away MySQL:
 Our todo service is stateless and relies on MySQL to store todo entries.
 We are always requesting an address to MySQL from consul, which ensures that we only get addresses to healthy instances.
 We are also registering the "todo" service with consul,
-so as long as others discover it through that interface we can scale it by adding instances.
+so as long as others discover it through that interface, we can scale it by adding instances.
 
-There is no other configuration needed for our app, but if there was we could add it to consul's
+There is no other configuration needed for our app, but if there was, we could add it to consul's
 key/value store in order to maintain a clean contract with our system and zero divergence
 between environments.
 
 This means that our todo service can be installed in any environment without modification, instances can come and go,
-new instances can be added, and they will all fold neatly into the the existing ecosystem.
+new instances can be added, and they will all fold neatly into the existing ecosystem.
 
 #### Failure Demo:
 
 In the following recording, track the status of the todo instances in the top left pane.
 The "Health" column shows the instance's status according to consul, and the "Test"
-column shows the instance's status according to a test run from our host OS. For the most part
+column shows the instance's status according to a test run from our host OS. For the most part,
 this test won't fail because we aren't testing services known to be unhealthy, but there is
 a narrow window (up to 5s) after the instance has been stopped but before consul has run its
 health check and noticed the problem.
@@ -302,25 +302,25 @@ health check and noticed the problem.
 
 Vault is a promising application, but there are a few areas where its immaturity is still cause for concern.
 
-One, it's hard to automate. Managing secrets securely is hard and to do it right a person often has to get involved.
+One, it's hard to automate. Managing secrets securely is hard, and to do it right, a person often has to get involved.
 The pain (inconvenience) this causes is especially apparent in the "unseal" requirement when starting a vault server.
-This is addressed [in the docs](https://vaultproject.io/docs/concepts/seal.html) as something there are plans to address,
+It is mentioned [in the docs](https://vaultproject.io/docs/concepts/seal.html) that there are plans to address this,
 but for now we're stuck doing it by hand.
 
 Another potential problem is a weak ecosystem. It's hard to expect too much since the product is so new, but it's still
-difficult to adopt a bleading edge application to use at the core of your infrastructure when it's hard to find people
+difficult to adopt a bleeding edge application to use at the core of your infrastructure when it's hard to find people
 talking about it. Additionally, there isn't community support software (like a puppet module to install it) yet, so
-you'd be managing a lot yourself (you can hound [solarkennedy](https://twitter.com/solarkennedy) for this, he did a great job
+you'd be managing a lot yourself (you can hound [solarkennedy](https://twitter.com/solarkennedy) for this; he did a great job
 with [puppet-consul](https://github.com/solarkennedy/puppet-consul)).
 
 Lastly, it would be really nice if there was a mechanism to scale it. [Scaling the backend](https://vaultproject.io/docs/concepts/ha.html)
-might be a big part of this, but its not the whole picture and there are certain usecases (using vault to protect large 
+might be a big part of this, but it's not the whole picture and there are certain usecases (using vault to protect large 
 amounts or a high throughput of data with the [Transit Secret Backend](https://vaultproject.io/docs/secrets/transit/index.html))
 that probably can't be met with a single node.
 
-All that being said, [Hashicorp](https://hashicorp.com/) has a great track record of building solid, well received
-apps (such as [consul](https://consul.io/) and [vagrant](https://www.vagrantup.com/) featured in this demo) and
-vault is still very young ([April 28th, 2015](https://hashicorp.com/blog/vault.html)) so I have high hopes
+All that being said, [Hashicorp](https://hashicorp.com/) has a great track record of building solid, well-received
+apps (such as [consul](https://consul.io/) and [vagrant](https://www.vagrantup.com/) featured in this demo), and
+vault is still very young ([April 28th, 2015](https://hashicorp.com/blog/vault.html)), so I have high hopes
 that this will be another win for safe, resilient, and simple infrastructure.
 
 
