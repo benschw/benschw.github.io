@@ -11,8 +11,8 @@ tags: []
 ---
 
 [The Twelve Factor App](http://12factor.net/) is a description of how to build apps that run well on
-[Heroku](https://devcenter.heroku.com/articles/architecting-apps), but it's also proven to be of general usefulness to
-describe good prinvipals for modern web application design.
+[Heroku](https://devcenter.heroku.com/articles/architecting-apps), but it's also proven to be of general usefulness in
+describe good principals for modern web application design.
 
 A twelve factor app is only useful if you have an infrastructure that supports it however; that's what we'll be focusing on here.
 
