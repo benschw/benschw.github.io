@@ -10,7 +10,13 @@ categories:
 tags: []
 ---
 
-_Dense clouds, transactional installs, and choosing the right tool for the right job._
+_Containers, Configuration ManagementDense clouds, and choosing the right tool for the right job._
+
+Docker brings an incredibly appealing method of managing applications to the table,
+but also requires us to rebuild a lot of systems that aren't broken. In this post
+I'm going to look at the pros and cons of Docker and its accompanying ecosystem,
+and take a look at how one might start to leverage the best parts of Docker without
+rewriting _everything._
 
 <!--more-->
 
@@ -33,9 +39,11 @@ In this post I'm going to discuss what makes Docker attractive to me and what I'
 not such a fan of. Then I'm going to explore a hybrid approach that seeks to take
 advantage of the best parts of Docker without locking me in to the not so great parts.
 
-_Spoiler: I am very interested in system containers, especially LXD, but the project
-is still too green to use in the way I describe later on. As such, I haven't attempted
-to actually build the hybrid platform I will be describing._
+_P.S. I was hoping to
+put together a working demo of the architecture I describe below, but the proposed
+integration is still [not possible](https://github.com/lxc/lxd/issues/608)... so that's not
+going to happen. I've sat on this post for awhile hoping things would change, but they haven't and
+I've decided to instead put this out there as is; as a theorhetical architecture._
 
 ### The Good
 Some aspects of docker are home runs. In a time where microservices rule and developing
@@ -63,7 +71,7 @@ and allocating new IPs as containers are started is really convenient. But it is
 less than complete when you start worrying about high availability and exposing
 your services to external systems. Layering in additional networking or mapping
 ports to the bridge interface starts to solve this problem, but it also leaves you
-with a non-standard jumble.
+with a jumble.
 
 Service discovery largely abstracts away this jumble, but at this point we've gone
 through at least three networking transformations to effectively address our services
@@ -74,7 +82,7 @@ think that since Docker has coupled networking so tightly to its implementation,
 should have made it more flexible and done more to make inter-host communication
 work the same as intra-host communication. Additionally, better hooks to integrate
 with existing software defined networks would make all the integration work feel
-less like shaving a yak.
+less like a yak shave.
 
 Isolation security is also a concern, but it is easier to shrug off because it should
 be [coming soon](http://blog.docker.com/2013/08/containers-docker-how-secure-are-they/).
@@ -84,8 +92,8 @@ the access that comes with that.
 
 Another concerning thing about Docker, is the Docker hub. Though you don't have
 to use this service or the images housed there in production, it's presented such
-that many people still do. The lack of signing for downloads is one thing that
-makes this a potential risk, another is that even the recommended images aren't
+that many people still do. Even with the addition of download signature checks,
+we are still left with and index of images that aren't
 particularly well vetted or necessarily kept up to date. Many are built on top
 of full OSes that expose a larger attack surface than is necessary and there is
 no established technique to insure the base OS is up to date on its patches.
@@ -120,7 +128,7 @@ rewire a whole lot of other stuff that wasn't broken or giving us trouble. Even 
 it was, you're still forced to tackle it all at once.
 
 If we were being honest about the shipping container analogy, we'd end up with a
-container ship not just carrying containers, but built with containers!
+container ship not just carrying containers, but built with containersi as well!
 
 A lot of these problems come from the same thing that makes Docker so easy to use:
 the bundling (and resulting tight coupling) of all components needed to build,
@@ -159,24 +167,22 @@ that solve these same problems.
   application container that promises to implement a more composable architecture
 - [Snappy Ubuntu](http://developer.ubuntu.com/en/snappy/) offers an alternative
   model for transactional installs, bundling dependencies, and isolation
-- [Numerous SDN](http://thenewstack.io/sdn-series-part-eight-comparison-of-open-source-sdn-controllers/) 
+- [Numerous SDN](http://thenewstack.io/sdn-series-part-eight-comparison-of-open-source-sdn-controllers/)
   technologies
-- Config management ([Puppet](https://puppetlabs.com/), [Chef](https://www.chef.io/chef/), 
+- Config management ([Puppet](https://puppetlabs.com/), [Chef](https://www.chef.io/chef/),
   [Ansible](http://www.ansible.com/home)) provides deterministic and repeatable deploys
 - [Vagrant](https://www.vagrantup.com/) simplifies local development in production like environments
 
 I have no doubt that we will look back and see Docker as the catalyst that led to
-a very different way of treating our software but it isn't going to stay the only
+a very different way of treating our software, but it isn't going to stay the only
 major player for long and some of the old rules still apply:
 _Keep your architecture in a place that you can iterate on._
 
 ### Lxd, cfg mgmt, docker, and the next generation of stateless apps
 
-So that was a lot of analysis. Now I'm going to switch gears and transition to a
-designing a hypothetical cloud platform which illustrates one way to incorporate
-Docker without uprooting your infrastructure or damaging your ability to iterate on it.
+So what would a cloud architecture that adopts just the good parts of Docker look like?
 
-Here are some of the goals and objectives I am trying to achieve in my design:
+First off, here are the characteristics that are important to me and that I would like to support:
 
 - The density and elasticity of containers
 - Transactional installs and rollbacks for my applications
@@ -184,23 +190,34 @@ Here are some of the goals and objectives I am trying to achieve in my design:
   production hardware)
 - Ephemeral systems
 - Managed systems (I'm not comfortable making them immutable because I trust config
-  management tools more than a home rolled "re roll everything" script to protect
-  me against the next bash vulnerability. This is an area I'd like to revisit soon.)
+  management tools more than a home built "re-roll everything" script to protect
+  me against the next bash vulnerability.)
 - A composable platform that doesn't rely on the aspects of Docker (like networking)
   that would make iterating on it difficult.
-- Service discovery that influences how my applications and systems are build as
-  little as possible
+- Reliance on service discovery rather than fixed addresses to keep things flexible.
 
-What I've come up with is a cluster of general purpose system containers intended
-to run a single stateless app that can grow elastically.
+One way to accomplish this it is to replace our traditional VMs with a system containers like LXD,
+continue managing infrastructure on those nodes the same way we always have with tools like Puppet,
+and start installing the service each node maintains in an application container like Docker.
 
-The general purpose system is a traditional os (Ubuntu) in a system container (lxd)
-managed with configuration management (Puppet), housing and supporting a single
-app running in an application container (Docker).
+I wish I could put together a demo to illustrate this, but right now
+[running Docker on LXD is infeasable](https://github.com/lxc/lxd/issues/608).
 
-Scaling my app or adding new services is achieved by adding additional lxc containers,
-not by adding Docker containers to an existing instance.
+With this setup, we would have to change relatively little: we can expose our application on
+known ports to abstract away non standard networking, we only have one app so the namspace security vulnerability isn't a problem,
+and our infrastructure only needs incremental updates to support a container instead of a process.
+
+Scaling can be acheived by adding new system container instances and while not as fast
+as spinning a new application container, it's still something that can be automated.
+We also don't have quite the same density, but we've retained most of the benefits there as well.
+
+With this as a starting point, we can build out more twelve factor cloud support based whats most important to us:
+service discovery, externalized config, software defined networking et. al.
 
 
+### Conclusion
 
+I think there is definitely room for system and application containers to coexist
+and find it frustrating that many people think they have to shoose one or the other.
 
+Hopefully more work will be done to make these two great technologies play nicely together
