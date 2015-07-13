@@ -165,7 +165,7 @@ _recording of the cluster being provisioned_
 
 
 Sure the test works, but maybe you want to see the service in action for yourself!
-Here's an example of how to use the `todo` api:
+Here's an example of how to use the `todo` api with `todo0`'s IP hard wired in:
 
 	curl -X POST http://172.20.20.14:8080/todo -d '{"status": "new", "content": "Hello World"}'
 	{"id":1,"status":"new","content":"Hello World"}
@@ -176,7 +176,7 @@ Here's an example of how to use the `todo` api:
 	curl -X PUT http://172.20.20.14:8080/todo/1 -d '{"status": "open", "content": "Hello Galaxy"}'
 	{"id":1,"status":"open","content":"Hello Galaxy"}
 
-	# (we can use the other node too)
+	# (we can use `todo1`'s IP too)
 	curl http://172.20.20.15:8080/todo/1
 	{"id":1,"status":"open","content":"Hello Galaxy"}
 
@@ -227,13 +227,13 @@ store as a backend, so we can make vault HA by standing up two servers backed by
 Vault provides high availability by electing a `leader` server and having additional servers
 standing by to take over in the event of a problem. These nodes also do request forwarding to the leader.
 
-Multiple failover instances offer essentially the same resiliency as multiple stateless
+Multiple failover instances offer essentially the same resiliency as multiple hot
 services, but they don't help to scale the application. In
-[the vault docs](https://vaultproject.io/docs/concepts/ha.html) they state that
+[the vault docs](https://vaultproject.io/docs/concepts/ha.html) it's stated that
 "in general, the bottleneck of Vault is the physical backend itself, not Vault core"
-and suggest scaling the backend (consul in our case) to increase vault's scalibility.
+and suggest scaling the backend (consul in our case) to increase vault's capacity.
 
-#### failure demo:
+#### Failure Demo:
 
 In the following recording, you can see that both todo instances remain healthy unless
 all vault servers go down.
@@ -242,7 +242,7 @@ You can also see that the todo services don't start failing for awhile after bot
 vault servers are in a critical state. This is because the mysql creds vault is 
 exposing to the todo service are good for a minute, so the app doesn't realize vault
 is gone for up to a minute. We could actually avoid a "todo" failure alltogether 
-by hanging onto our old connection if vault isn't available, but I left that 
+by hanging onto our old MySQL connection if vault isn't available, but I left that 
 logic out of the todo service since this is largely a vault demo. Additionally, 
 we wouldn't want to entirely rely on this since new services would have nowhere 
 to get their creds from.
@@ -264,31 +264,29 @@ Next up, the uncomfortable single point of failure: MySQL.
 There are of course strategies involving replicating to slaves or even master-master replication,
 but those are all out of scope for this demo.
 
-We are still, however, exposing the address to MySQL to our "todo" service with consul so
-that if we decided to add in an HA mechinesm, it could be done without needing to
-rework our application.
+We are still, however, exposing the MySQL address to our "todo" service with consul so
+that if we decided to add in an HA mechanism, it could be done without rework in our application.
 
-#### failure demo:
+#### Failure Demo:
 
 For completeness, here's our service crashing hard when we take away MySQL:
 
 <a href="/images/mysql-crop-opt.gif"><img class="post-image-full" src="/images/mysql-crop-opt.gif" alt="mysql failure demo" width="618" height="300" class="alignnone size-full" /></a>
 
 ### Todo
-Our todo service is stateless, relying entirely on MySQL to store todo entries.
-In addition, we are always requesting an address to it through consul which
-will only respond with addresses to healthy instances. We are also registering the "todo" service with consul
-so as long as others discover it through that interface, we can scale it by adding instances.
+Our todo service is stateless and relies on MySQL to store todo entries.
+We are always requesting an address to MySQL from consul, which ensures that we only get addresses to healthy instances.
+We are also registering the "todo" service with consul,
+so as long as others discover it through that interface we can scale it by adding instances.
 
 There is no other configuration needed for our app, but if there was we could add it to consul's
 key/value store in order to maintain a clean contract with our system and zero divergence
 between environments.
 
-This means that our todo service can be installed in any environment without modification 
-and that instances can come and go (and new instances can be added) and they will 
-neatly fold in the the existing ecosystem.
+This means that our todo service can be installed in any environment without modification, instances can come and go,
+new instances can be added, and they will all fold neatly into the the existing ecosystem.
 
-#### failure demo:
+#### Failure Demo:
 
 In the following recording, track the status of the todo instances in the top left pane.
 The "Health" column shows the instance's status according to consul, and the "Test"
