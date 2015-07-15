@@ -152,7 +152,7 @@ of doing things. I'm not even saying to wait for the area to mature and produce
 better abstractions. I'm simply suggesting you do what you've always done:
 Choose the right tool for the right job, pragmatically apply the parts of Docker
 that make sense for you, and remember that the industry isn't done changing, so
-you should keep your architecture in a state that allows for iterations.
+you should keep your architecture in a state that allows for iteration.
 
 ### Other players in this space
 
@@ -176,7 +176,7 @@ that solve these same problems.
 I have no doubt that we will look back and see Docker as the catalyst that led to
 a very different way of treating our software, but it isn't going to stay the only
 major player for long, and some of the old rules still apply:
-_Keep your architecture in a place that allows for iterations._
+_Keep your architecture in a place that allows for iteration._
 
 ### Lxd, cfg mgmt, docker, and the next generation of stateless apps
 
