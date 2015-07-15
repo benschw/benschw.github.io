@@ -15,3 +15,15 @@ tags: []
 
 <!--more-->
 
+
+
+12 factor intro
+
+our specific problems; solve with consul & vault
+
+
+## Code
+### bind
+### svc discovery
+### vault
+### test
