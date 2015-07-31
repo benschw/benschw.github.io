@@ -193,7 +193,6 @@ First off, here are the characteristics that are important to me and that I woul
   me against the next bash vulnerability.).
 - A composable platform that doesn't rely on the aspects of Docker (like networking)
   that would make iterating on it difficult.
-- Reliance on service discovery rather than fixed addresses to keep things flexible.
 
 One way to accomplish this it is to replace our traditional VMs with a system containers like LXD,
 continue managing infrastructure on those nodes the same way we always have with tools like Puppet,
@@ -223,6 +222,7 @@ do we _have_ to start now?
 
 Instead, I recommend we do what we always do: Choose the right tool for the right job.
 
-I think there is definitely room for system and application containers to coexist, and hopefully
-more work will be done to make these two great technologies play nicely together.
+I think there is definitely room for system containers, application containers,
+and configuration management to coexist. Hopefully more work will be done to make 
+these two great technologies play nicely together.
 
