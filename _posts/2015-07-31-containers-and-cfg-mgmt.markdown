@@ -2,7 +2,7 @@
 layout: post
 status: publish
 published: true
-title: Docker, The Good Parts
+title: Containers, Configuration Management, and The Right Tool for the Right Job
 author_login: benschwartz
 author_email: benschw@gmail.com
 categories:
@@ -10,7 +10,6 @@ categories:
 tags: []
 ---
 
-_Containers, Configuration ManagementDense clouds, and choosing the right tool for the right job._
 
 Docker brings an incredibly appealing method of managing applications to the table,
 but also requires us to rebuild a lot of systems that aren't broken. In this post
