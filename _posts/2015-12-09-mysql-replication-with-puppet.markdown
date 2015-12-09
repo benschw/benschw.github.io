@@ -131,8 +131,6 @@ Make sure database is locked down, take note of the bin log `File` and `Position
 	vagrant ssh mysqlmaster
 
 	$ mysql -u root -pchangeme
-	mysql> SLAVE STOP;
-	Query OK, 0 rows affected (0.00 sec)
 	mysql> FLUSH TABLES WITH READ LOCK;
 	Query OK, 0 rows affected (0.00 sec)
 
@@ -163,6 +161,11 @@ Import the export just taken from the master and configure the slave
 
 
 	vagrant ssh mysqlslave
+	
+	$ mysql -u root -pchangeme
+	mysql> SLAVE STOP;
+	Query OK, 0 rows affected (0.00 sec)
+	mysql> EXIT;
 	
 	$ mysql -u root -pchangeme demo < /vagrant/demo.sql
 	$ mysql -u root -pchangeme
