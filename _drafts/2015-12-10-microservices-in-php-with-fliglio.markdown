@@ -18,50 +18,60 @@ Now, I will attempt to show you how to use with a _Getting Started_ guide for RE
 
 <!--more-->
 
+_(See also my post about [Testing PHP Fliglio Microservices with Docker](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/).)_
 
 Before we go any further, grab a copy of the demo application [here](https://github.com/fliglio/rest-gs).
 
 	git clone https://github.com/fliglio/rest-gs.git
 
 
-This demo requires [memcache](http://us2.php.net/manual/en/memcache.installation.php) to serve
-as a light weight database (don't count on your data from this app being durable!), so either 
-make sure thats installed (along with [apache](https://httpd.apache.org/) or [nginx](https://www.nginx.com/) 
-and the appropriate version of php).
+This demo requires [MySQL](https://www.mysql.com/) to back the todo entries (along with 
+[apache](https://httpd.apache.org/) or [nginx](https://www.nginx.com/) and the appropriate version of php).
 
-If that sounds like a pain in the ass, the demo repo [comes with tools](https://github.com/fliglio/rest-gs/tree/master/docker) to get running fast with [Docker](https://www.docker.com/).
+If that sounds like a pain in the ass, you can also use [Docker](https://www.docker.com/). The demo repo comes with a 
+[Makefile](https://github.com/fliglio/rest-gs/blob/master/Makefile) to easily run Fliglio services in a Docker container.
 
 
 ## Run The App
 
 Let's just use Docker.
 
-	cd rest-gs
-	make docker-build
-	make docker-start
+_(If you're on OS X, make sure your have [docker-machine installed and running](https://docs.docker.com/mac/started/).
+On linux, you just need [Docker installed](https://docs.docker.com/linux/started/).)_
+
+	make run
+
+This will pull down the [Docker](https://www.docker.com/) image [fliglio/local-dev](https://hub.docker.com/r/fliglio/local-dev/) 
+and run the app in a container. It's spitting out logs to stdout and will keep running until you hit `CTRL+c`.
+
+With that going, open a new terminal and run:
+
+	make migrate
+
+This will apply the database migrations for the app (see [db/migrations](https://github.com/fliglio/rest-gs/tree/master/db/migrations)).
 
 
-Docker has a bunch of flags and things to remember, so I scripted it into a 
-[Makefile](https://github.com/fliglio/rest-gs/blob/master/Makefile). Nothing too exciting is
-happening though: after running `make docker-start` you'd have a container hosting the `rest-gs/web` on port 80
-with nginx and php5-fpm (along with memcache).
-
-So now you should be able to see it work:
+Now you try out the app:
 
 
 	$ curl -s -X POST localhost/todo -d '{"description": "take out the trash", "status": "new"}' | jq .
-	{
-	  "id": "5669d68a8430b",
-	  "status": "new",
-	  "description": "take out the trash"
-	}
-	
-	$ curl -s localhost/todo/5669d68a8430b | jq .
-	{
-	  "id": "5669d68a8430b",
-	  "status": "new",
-	  "description": "take out the trash"
-	}
+
+{% highlight json %}
+{
+  "id": "1",
+  "status": "new",
+  "description": "take out the trash"
+}
+{% endhighlight%}
+
+	$ curl -s localhost/todo/1 | jq .
+{% highlight json %}
+{
+  "id": "1",
+  "status": "new",
+  "description": "take out the trash"
+}
+{% endhighlight%}
 
 
 Cool! Let's look at the code now.
@@ -70,7 +80,7 @@ Cool! Let's look at the code now.
 ## Code Overview
 
 - The project uses [Composer](https://getcomposer.org/) to manage its dependencies.
-- The `/web` directory contains a lightweight `index.php` to bootstrap the application
+- The `/httpdocs` directory contains a lightweight `index.php` to bootstrap the application
 - `/src` contains the meat of the application.
 
 
@@ -80,11 +90,11 @@ that is configured by one or more configuration classes ([\Demo\DemoConfiguratio
 
 The application class is the application's entry point and is responsible for managing configuration classes as well as actually dispatching a request.
 
-The configuration class is responsible for things like specifying how to preprocess and route a request, and instantiating application dependencies.
+The configuration class is responsible for things like specifying how to route a request and instantiating application dependencies.
 
 ## Todo, A Microservice
 I'm sure I could explain everything about the framework, but I'm also sure you wouldn't care.
-So let's just jump in and look at the service we're building
+So let's just jump in and look at the service we're building.
 
 ### Defining a resource
 
@@ -94,100 +104,113 @@ on this class to handle providing basic CRUD functionality for todos with http v
 By hinting the parameters to these methods with classes like `PathParam`, `GetParam`, and `Entity`, we can specify
 what parameters we need to perform an action.
 
-	class TodoResource {
-		private $db;
-		public function __construct(TodoDbm $db) {
-			$this->db = $db;
-		}
-		
-		// GET /todo
-		public function getAll(GetParam $status = null) {
-			$todos = $this->db->findAll(is_null($status) ? null : $status->get());
-			return Todo::marshalCollection($todos);
-		}
-		
-		// GET /todo/:id
-		public function get(PathParam $id) {
-			$todo = $this->db->find($id->get());
-			if (is_null($todo)) {
-				throw new NotFoundException();
-			}
-			return $todo->marshal();
-		}
-		// POST /todo
-		public function add(Entity $entity, ResponseWriter $resp) {
-			$todo = $entity->bind(Todo::getClass());
-			$this->db->save($todo);
-			$resp->setStatus(Http::STATUS_CREATED);
-			return $todo->marshal();
-		}
-		// PUT /todo/:id
-		public function update(PathParam $id, Entity $entity) {
-			$todo = $entity->bind(Todo::getClass());
-			$todo->setId($id->get());
-			$this->db->save($todo);
-			return $todo->marshal();
-		}
-		// DELETE /todo/:id
-		public function delete(PathParam $id) {
-			$todo = $this->db->find($id->get());
-			if (is_null($todo)) {
-				throw new NotFoundException();
-			}
-			$this->db->delete($todo);
-		}
+{% highlight php %}
+<?php
+class TodoResource {
+	private $db;
+
+	public function __construct(TodoDbm $db) {
+		$this->db = $db;
 	}
+	
+	// GET /todo
+	public function getAll(GetParam $status = null) {
+		$todos = $this->db->findAll(is_null($status) ? null : $status->get());
+		return Todo::marshalCollection($todos);
+	}
+	
+	// GET /todo/:id
+	public function get(PathParam $id) {
+		$todo = $this->db->find($id->get());
+		if (is_null($todo)) {
+			throw new NotFoundException();
+		}
+		return $todo->marshal();
+	}
+
+	// POST /todo
+	public function add(Entity $entity, ResponseWriter $resp) {
+		$todo = $entity->bind(Todo::getClass());
+		$this->db->save($todo);
+		$resp->setStatus(Http::STATUS_CREATED);
+		return $todo->marshal();
+	}
+
+	// PUT /todo/:id
+	public function update(PathParam $id, Entity $entity) {
+		$todo = $entity->bind(Todo::getClass());
+		$todo->setId($id->get());
+		$this->db->save($todo);
+		return $todo->marshal();
+	}
+
+	// DELETE /todo/:id
+	public function delete(PathParam $id) {
+		$todo = $this->db->find($id->get());
+		if (is_null($todo)) {
+			throw new NotFoundException();
+		}
+		$this->db->delete($todo);
+	}
+}
+{% endhighlight %}
 
 Those comments aren't magical however; we still need to map this functionality to urls. We manage this in the 
 configuration class
 
-	class DemoConfiguration extends DefaultConfiguration {
-		public function getRoutes() {
-			// Database Mapper
-			$mem = new \Memcache();
-			$mem->connect('localhost', 11211);
-			$cache = new MemcacheCache();
-			$cache->setMemcache($mem);
-			$db = new TodoDbm($cache);
+{% highlight PHP %}
+<?php
+class DemoConfiguration extends DefaultConfiguration {
 
-			// Resources
-			$resource = new TodoResource($db);
-			
-			return [
-				RouteBuilder::get()
-					->uri('/todo')
-					->resource($resource, 'getAll')
-					->method(Http::METHOD_GET)
-					->build(),
-				RouteBuilder::get()
-					->uri('/todo/:id')
-					->resource($resource, 'get')
-					->method(Http::METHOD_GET)
-					->build(),
-				RouteBuilder::get()
-					->uri('/todo')
-					->resource($resource, 'add')
-					->method(Http::METHOD_POST)
-					->build(),
-				RouteBuilder::get()
-					->uri('/todo/:id')
-					->resource($resource, 'update')
-					->method(Http::METHOD_PUT)
-					->build(),
-				RouteBuilder::get()
-					->uri('/todo/:id')
-					->resource($resource, 'delete')
-					->method(Http::METHOD_DELETE)
-					->build(),
-						
-			];
-		}
-	}	
+	// Database Mapper
+	protected function getDbm() {
+		$dsn = "mysql:host=localhost;dbname=todo";
+		$db = new \PDO($dsn, 'admin', 'changeme', [\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
+		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		return new TodoDbm($db);
+	}
 
+	// Todo Resource
+	protected function getTodoResource() {
+		return new TodoResource($this->getDbm());
+	}
 
+	public function getRoutes() {
+		$resource = $this->getTodoResource();
+		return [
+			RouteBuilder::get()
+				->uri('/todo')
+				->resource($resource, 'getAll')
+				->method(Http::METHOD_GET)
+				->build(),
+			RouteBuilder::get()
+				->uri('/todo/:id')
+				->resource($resource, 'get')
+				->method(Http::METHOD_GET)
+				->build(),
+			RouteBuilder::get()
+				->uri('/todo')
+				->resource($resource, 'add')
+				->method(Http::METHOD_POST)
+				->build(),
+			RouteBuilder::get()
+				->uri('/todo/:id')
+				->resource($resource, 'update')
+				->method(Http::METHOD_PUT)
+				->build(),
+			RouteBuilder::get()
+				->uri('/todo/:id')
+				->resource($resource, 'delete')
+				->method(Http::METHOD_DELETE)
+				->build(),
+					
+		];
+	}
+}
+{% endhighlight %}
 
 ### Next Steps
 
 Not a terribly in depth introduction to [Fliglio](https://github.com/fliglio), but I've gotta start somewhere, right?
 
-
+Before you go off and build your own app though, take a look at [Testing PHP Fliglio Microervices with Docker](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/).
