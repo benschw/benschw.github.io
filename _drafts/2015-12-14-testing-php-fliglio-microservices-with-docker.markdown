@@ -26,24 +26,25 @@ to facilitate automated testing.
 _(If you're on OS X, make sure your have [docker-machine installed and running](https://docs.docker.com/mac/started/).
 On linux, you just need [Docker installed](https://docs.docker.com/linux/started/).)_
 
+	git clone https://github.com/fliglio/rest-gs.git
+	cd rest-gs
+	composer up
 	make test
 
 
 That was easy, right? What did we just do?
 
-`make test` runs two sets of test, "unit" and "component." The unit tests should
+`make test` runs two sets of tests, "unit" and "component." The unit tests should
 be familiar, they're just a suite of tests located in [`src/test/unit/`](https://github.com/fliglio/rest-gs/tree/master/src/test/unit)
 that we point [phpunit](https://phpunit.de/) at.
 
-The component tests are a little different however. They are integration tests
-with all dependencies we can't run in a docker container mocked out. In this simple example,
-we actually don't have to mock anything.
+The component tests are a little different however. 
 
 ## Component Tests
 
 
-Testing the service's REST API is especially useful with microservices.
-Lower level tests are less useful than they are with a monolith for protecting against regressions
+Testing a service's REST API is especially useful with microservices.
+Low level tests are less useful than they are with a monolith for protecting against regression bugs
 (because there isn't a sprawl of code depending on any of these libraries.)
 
 Instead of other components in our system relying on library interfaces however, 
@@ -62,8 +63,8 @@ to run our service for local exploratory testing.)
 
 ### Write some tests
 
-Now that we can automate running an environment to test with Docker and our [Makefile](https://github.com/fliglio/rest-gs/blob/master/Makefile),
-All we have to do is write some tests.
+Now that we can automate running an environment with Docker and our [Makefile](https://github.com/fliglio/rest-gs/blob/master/Makefile),
+All we have to do is write some tests against it.
 
 Luckily, we already wrote a [PHP client for our service](https://github.com/fliglio/rest-gs/blob/master/src/main/Demo/Client/TodoClient.php),
 so we can use that in our tests to validate our service's API.
@@ -111,6 +112,8 @@ class CrudTest extends \PHPUnit_Framework_TestCase {
 }
 {% endhighlight %}
 
+_(you'll of course also want to test error cases and all your methods...)_
+
 ### Mocking external resources
 Up to here, we've really been talking about integration testing our application, but
 sometimes you either don't have control of certain resource dependencies or you have a spidering web of transitive
@@ -132,8 +135,8 @@ try {
 
 {% endhighlight %}
 
-This entry point is the same as your normal `index.php` except we are configuring
-the Demo Application with `TestDemoConfiguration`. Since we wire up most of our
+This entry point is the same as the normal `index.php` except we are configuring
+the `DemoApplication` with `TestDemoConfiguration`. Since we wire up most of our
 application in this class, we can mock individual components here to simplify
 our environment and eliminate components that don't need to be tested by us.
 
@@ -141,7 +144,6 @@ our environment and eliminate components that don't need to be tested by us.
 <?php
 class TestDemoConfiguration extends DemoConfiguration {
 	protected function getWeatherClient() {
-		error_log("using stub weather client");
 		$fac = new WeatherClientStubFactory();
 		return $fac->create();
 	}

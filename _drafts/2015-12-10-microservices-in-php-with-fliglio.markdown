@@ -12,14 +12,16 @@ tags: []
 
 
 In addition to being the domain I landed this blog on, Fliglio is the name of the PHP Framework
-we've been using and build at work for the past several years. Recently we went through the
-effort of cleaning it up and making an opensource version available [on github](https://github.com/fliglio).
-Now, I will attempt to show you how to use with a _Getting Started_ guide for RESTful microservices.
+we built and have been using at work for several years now. Recently we went through the
+effort of cleaning it up to make available [on github](https://github.com/fliglio).
+
+In this post I will attempt to show you how to use Fliglio with a _Getting Started_ guide for RESTful microservices.
 
 <!--more-->
 
 _(See also my post about [Testing PHP Fliglio Microservices with Docker](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/).)_
 
+## Running The App
 Before we go any further, grab a copy of the demo application [here](https://github.com/fliglio/rest-gs).
 
 	git clone https://github.com/fliglio/rest-gs.git
@@ -32,13 +34,12 @@ If that sounds like a pain in the ass, you can also use [Docker](https://www.doc
 [Makefile](https://github.com/fliglio/rest-gs/blob/master/Makefile) to easily run Fliglio services in a Docker container.
 
 
-## Run The App
-
-Let's just use Docker.
+...Let's just use Docker.
 
 _(If you're on OS X, make sure your have [docker-machine installed and running](https://docs.docker.com/mac/started/).
 On linux, you just need [Docker installed](https://docs.docker.com/linux/started/).)_
 
+	composer up
 	make run
 
 This will pull down the [Docker](https://www.docker.com/) image [fliglio/local-dev](https://hub.docker.com/r/fliglio/local-dev/) 
@@ -48,11 +49,11 @@ With that going, open a new terminal and run:
 
 	make migrate
 
-This will apply the database migrations for the app (see [db/migrations](https://github.com/fliglio/rest-gs/tree/master/db/migrations)).
+This will apply the [phinx](https://phinx.org/) database migrations for the app (see [db/migrations](https://github.com/fliglio/rest-gs/tree/master/db/migrations)).
 
 
-Now you try out the app:
-
+#### Now you can explore the service:
+Add a todo
 
 	$ curl -s -X POST localhost/todo -d '{"description": "take out the trash", "status": "new"}' | jq .
 
@@ -63,6 +64,7 @@ Now you try out the app:
   "description": "take out the trash"
 }
 {% endhighlight%}
+query for that todo we just created
 
 	$ curl -s localhost/todo/1 | jq .
 {% highlight json %}
@@ -85,16 +87,16 @@ Cool! Let's look at the code now.
 
 
 At a high level, the application comes together by having a main application class ([\Demo\DemoApplication](https://github.com/fliglio/rest-gs/blob/master/src/Demo/DemoApplication.php))
-that is configured by one or more configuration classes ([\Demo\DemoConfiguration](https://github.com/fliglio/rest-gs/blob/master/src/Demo/DemoConfiguration.php)).
+that is configured by one or more configuration classes ([\Demo\DemoConfiguration](https://github.com/fliglio/rest-gs/blob/master/src/Demo/DemoConfiguration.php))
+which manages your resources ([\Demo\Resources\TodoResource](https://github.com/fliglio/rest-gs/blob/master/src/main/Demo/Resource/TodoResource.php).)
 
-
-The application class is the application's entry point and is responsible for managing configuration classes as well as actually dispatching a request.
-
-The configuration class is responsible for things like specifying how to route a request and instantiating application dependencies.
+- The application class is the application's entry point and is responsible for managing configuration classes as well as actually dispatching a request.
+- The configuration class is responsible for things like specifying how to route a request and for instantiating application dependencies.
+- Typically, a microservice will also have one or more resources classes to organize behavior for individual urls.
 
 ## Todo, A Microservice
 I'm sure I could explain everything about the framework, but I'm also sure you wouldn't care.
-So let's just jump in and look at the service we're building.
+So let's just jump in and look at the service.
 
 ### Defining a resource
 
@@ -102,7 +104,8 @@ This should be pretty familiar if you're used to REST apis. We're defining metho
 on this class to handle providing basic CRUD functionality for todos with http verbs.
 
 By hinting the parameters to these methods with classes like `PathParam`, `GetParam`, and `Entity`, we can specify
-what parameters we need to perform an action.
+what parameters we need to perform an action (and allow the framework to inject them rather than parsing
+the Request directly.)
 
 {% highlight php %}
 <?php
@@ -163,7 +166,7 @@ class TodoResource {
 {% endhighlight %}
 
 _(Don't worry too much about the method `getWeatherAppropriate`, this is a contrived
-example to aid show [how to test](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/) all this.)_
+example to aid in showing [how to test](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/) all of this.)_
 
 Those comments aren't magical however; we still need to map this functionality to urls. We manage this in the 
 configuration class
@@ -219,8 +222,10 @@ class DemoConfiguration extends DefaultConfiguration {
 }
 {% endhighlight %}
 
+And there you have it! A framework for developing REST services.
+
 ### Next Steps
 
-Not a terribly in depth introduction to [Fliglio](https://github.com/fliglio), but I've gotta start somewhere, right?
+That wasn't a terribly in depth introduction to [Fliglio](https://github.com/fliglio), but I've gotta start somewhere, right?
 
 Before you go off and build your own app though, take a look at [Testing PHP Fliglio Microervices with Docker](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/).
