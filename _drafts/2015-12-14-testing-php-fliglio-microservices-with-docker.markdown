@@ -21,7 +21,7 @@ Last time, we used `make run` to stand the app up in a docker container we could
 use for exploratory testing. This time we'll go one step further and use [Docker](https://docs.docker.com/)
 to facilitate automated testing.
 
-### Try it out
+## Try it out
 
 _(If you're on OS X, make sure your have [docker-machine installed and running](https://docs.docker.com/mac/started/).
 On linux, you just need [Docker installed](https://docs.docker.com/linux/started/).)_
@@ -39,11 +39,11 @@ The component tests are a little different however. They are integration tests
 with all dependencies we can't run in a docker container mocked out. In this simple example,
 we actually don't have to mock anything.
 
-### Component Tests
+## Component Tests
 
 
 Testing the service's REST API is especially useful with microservices.
-Lower level tests to prevent regressions are less useful than they are with a monolith
+Lower level tests are less useful than they are with a monolith for protecting against regressions
 (because there isn't a sprawl of code depending on any of these libraries.)
 
 Instead of other components in our system relying on library interfaces however, 
@@ -55,36 +55,18 @@ most important thing to test.)_
 
 
 The heart of the `component-test` make task (which gets used when you run `make test`)
-is a Docker container build from the [fliglio/test](https://hub.docker.com/r/fliglio/test/) image.
-This container is the same as the [local dev](https://hub.docker.com/r/fliglio/local-dev/)
-container we used in [Microservices in PHP with Fliglio](/2015/12/2015-12-10-microservices-in-php-with-fliglio/),
-except it uses [src/test/httpdocs/index.php](https://github.com/fliglio/rest-gs/blob/master/src/test/httpdocs/index.php)
-as the application entry point.
-
-{% highlight php %}
-<?php
-try {
-	$svc = new DemoApplication(new TestDemoConfiguration());
-	$svc->run();
-} catch (\Exception $e) {
-	error_log($e);
-	http_response_code(500);
-}
-
-{% endhighlight %}
-
-This entry point is the same as your normal `index.php` except we are configuring
-the Demo Application with `TestDemoConfiguration`. Since we wire up most of our
-application in this class, this allows us to mock individual components for our tests.
+is a Docker container built from the [fliglio/local-dev](https://hub.docker.com/r/fliglio/test/) image
+(The same container we used in [Microservices in PHP with Fliglio](/2015/12/2015-12-10-microservices-in-php-with-fliglio/)
+to run our service for local exploratory testing.)
 
 
-#### Write some tests
+### Write some tests
 
 Now that we can automate running an environment to test with Docker and our [Makefile](https://github.com/fliglio/rest-gs/blob/master/Makefile),
 All we have to do is write some tests.
 
 Luckily, we already wrote a [PHP client for our service](https://github.com/fliglio/rest-gs/blob/master/src/main/Demo/Client/TodoClient.php),
-so we can just use that in our tests to validate that our service's API behaves like it should:
+so we can use that in our tests to validate our service's API.
 
 {% highlight php %}
 <?php
@@ -129,10 +111,105 @@ class CrudTest extends \PHPUnit_Framework_TestCase {
 }
 {% endhighlight %}
 
+### Mocking external resources
+Up to here, we've really been talking about integration testing our application, but
+sometimes you either don't have control of certain resource dependencies or you have a spidering web of transitive
+service dependencies that aren't practical to run for local test.
 
+To solve this, the copy of our service we are testing against uses
+[src/test/httpdocs/index.php](https://github.com/fliglio/rest-gs/blob/master/src/test/httpdocs/index.php)
+as an alternate entry point.
+
+{% highlight php %}
+<?php
+try {
+	$svc = new DemoApplication(new TestDemoConfiguration());
+	$svc->run();
+} catch (\Exception $e) {
+	error_log($e);
+	http_response_code(500);
+}
+
+{% endhighlight %}
+
+This entry point is the same as your normal `index.php` except we are configuring
+the Demo Application with `TestDemoConfiguration`. Since we wire up most of our
+application in this class, we can mock individual components here to simplify
+our environment and eliminate components that don't need to be tested by us.
+
+{% highlight php %}
+<?php
+class TestDemoConfiguration extends DemoConfiguration {
+	protected function getWeatherClient() {
+		error_log("using stub weather client");
+		$fac = new WeatherClientStubFactory();
+		return $fac->create();
+	}
+}
+
+class WeatherClientStubFactory extends \PHPUnit_Framework_TestCase {
+	public function create() {
+		$stub = $this->getMockBuilder('\Demo\Weather\Client\WeatherClient')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$stub->method('getWeather')
+			->will($this->returnCallback(function($city, $state) {
+				if ($city == "Austin") {
+					return new Weather(80, "Clear");
+				} else {
+					return new Weather(80, "Rainy");
+				}
+			}));
+	
+		return $stub;
+	}
+}
+
+{% endhighlight %}
+
+By mocking the `WeatherClient` class, we can both remove our dependence on an external resource
+and ensure that the cities we use in our tests return consistent responses.
+
+{% highlight php %}
+<?php
+class WeatherFilteringTest extends \PHPUnit_Framework_TestCase {
+	private $client;
+
+	public function setup() {
+		$driver = new Client();
+		$this->client = new TodoClient($driver, 
+			sprintf("http://%s:%s", getenv('LOCALDEV_PORT_80_TCP_ADDR'), 80));
+	}
+	public function teardown() {
+		$todos = $this->client->getAll();
+		foreach ($todos as $todo) {
+			$this->client->delete($todo->getId());
+		}
+	}
+
+	public function testGetWeatherAppropriate() {
+		// given
+		$todo1 = $this->client->add(new Todo(null, "Watch TV", "new", false));
+		$todo2 = $this->client->add(new Todo(null, "Walk in the park", "new", true));
+		
+		// when
+		$outdoorTodos = $this->client->getWeatherAppropriate('Austin', 'Texas');
+		$indoorTodos = $this->client->getWeatherAppropriate('Seattle', 'Washington');
+
+		// then
+		$this->assertEquals([$todo1], $indoorTodos, "it's rainy, so get indoor todos");
+		$this->assertEquals([$todo2], $outdoorTodos, "it's clear, so get outdoor todos");
+	}
+}
+{% endhighlight %}
+
+This technique can also be used to mock clients to your own services. A typical application
+built with microservices will be comprised of several services and you shouldn't have to
+be running them all in order to test the REST API of the one you're working on.
 
 ### Wrapping Up
 
-Hopefully I've given you a good idea of how to effectively test your Fliglio microservices and
-protect it against regression.
+Hopefully I've given you a good idea of how to effectively test Fliglio microservices and
+protect them against regression.
 

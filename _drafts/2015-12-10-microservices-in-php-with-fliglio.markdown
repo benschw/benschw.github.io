@@ -108,9 +108,10 @@ what parameters we need to perform an action.
 <?php
 class TodoResource {
 	private $db;
-
-	public function __construct(TodoDbm $db) {
+	private $weather;
+	public function __construct(TodoDbm $db, WeatherClient $weather) {
 		$this->db = $db;
+		$this->weather = $weather;
 	}
 	
 	// GET /todo
@@ -118,7 +119,15 @@ class TodoResource {
 		$todos = $this->db->findAll(is_null($status) ? null : $status->get());
 		return Todo::marshalCollection($todos);
 	}
-	
+	// GET /todo/weather
+	public function getWeatherAppropriate(GetParam $city, GetParam $state, GetParam $status = null) {
+		$status = is_null($status) ? null : $status->get();
+		$weather = $this->weather->getWeather($city->get(), $state->get());
+		error_log(print_r($weather->marshal(), true));
+		$outdoorWeather = $weather->getDescription() == "Clear";
+		$todos = $this->db->findAll($status, $outdoorWeather);
+		return Todo::marshalCollection($todos);
+	}
 	// GET /todo/:id
 	public function get(PathParam $id) {
 		$todo = $this->db->find($id->get());
@@ -127,7 +136,6 @@ class TodoResource {
 		}
 		return $todo->marshal();
 	}
-
 	// POST /todo
 	public function add(Entity $entity, ResponseWriter $resp) {
 		$todo = $entity->bind(Todo::getClass());
@@ -135,7 +143,6 @@ class TodoResource {
 		$resp->setStatus(Http::STATUS_CREATED);
 		return $todo->marshal();
 	}
-
 	// PUT /todo/:id
 	public function update(PathParam $id, Entity $entity) {
 		$todo = $entity->bind(Todo::getClass());
@@ -143,7 +150,6 @@ class TodoResource {
 		$this->db->save($todo);
 		return $todo->marshal();
 	}
-
 	// DELETE /todo/:id
 	public function delete(PathParam $id) {
 		$todo = $this->db->find($id->get());
@@ -153,7 +159,11 @@ class TodoResource {
 		$this->db->delete($todo);
 	}
 }
+
 {% endhighlight %}
+
+_(Don't worry too much about the method `getWeatherAppropriate`, this is a contrived
+example to aid show [how to test](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/) all this.)_
 
 Those comments aren't magical however; we still need to map this functionality to urls. We manage this in the 
 configuration class
