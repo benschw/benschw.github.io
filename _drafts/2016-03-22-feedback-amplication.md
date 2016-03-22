@@ -10,11 +10,26 @@ categories:
 tags: []
 ---
 
-intro
+Quick feedback loops are a critical part of Agile development processes. The common
+wisdom is that by implementing processes with rapidly repeating cycles it is possible
+to learn from the frequent feedback and continually adapt and improve the process.
+Quick feedback isn't enough however. Equally important is the quality of the feedback and what you do with it.
 
 <!--more-->
 
-- feedback cycle for adaption v. cmplification
+With an iterative and quickly repeating process, your feedback will naturally amplify over time.
+By capturing the right feedback and paying attention to its amplitude,
+you can better identify signal in your feedback.
+
+
+
+This amplification effect isn't only beneficial for deriving signal either. Sometimes
+it is beneficial to leverage the process loop to amplify a certain behavior in order to
+reinforce a habbit or build new 
+
+
+
+- feedback cycle for adaption v. amplification
 - automate gathering the feedback you want to want to measure
 	- what signal is important, not what is easy to quantify
 - leverage fast cadence to form habits by adding behaviors to feedback cycle
@@ -22,7 +37,12 @@ intro
 Metric: feedback amplitude
 
 ## What is a feedback loop?
+- CI / automated test
+- CD
+- pair programming, code reviews
+- daily scrums, sprints
 
+- 
 ## Why is quick feedback important?
 
 ## How does feedback produce amplification?
