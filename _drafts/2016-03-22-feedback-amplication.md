@@ -19,13 +19,13 @@ Quick feedback isn't enough however. Equally important is the quality of the fee
 
 With an iterative and quickly repeating process, your feedback will naturally amplify over time.
 By capturing the right feedback and paying attention to its amplitude,
-you can better identify signal in your feedback.
+you can more easily recognise signal.
 
 
 
-This amplification effect isn't only beneficial for deriving signal either. Sometimes
+This amplification effect isn't only beneficial for deriving signal. Sometimes
 it is beneficial to leverage the process loop to amplify a certain behavior in order to
-reinforce a habbit or build new 
+reinforce a habbit or build a new one
 
 
 
