@@ -19,8 +19,6 @@ In this post I will attempt to show you how to use Fliglio with a _Getting Start
 
 <!--more-->
 
-_(See also my post about [Testing PHP Fliglio Microservices with Docker](/2015/12/2015-12-14-testing-php-fliglio-microservices-with-docker/).)_
-
 ## Running The App
 Before we go any further, grab a copy of the demo application [here](https://github.com/fliglio/rest-gs).
 
