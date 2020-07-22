@@ -13,38 +13,40 @@ tags: []
 This is my take on how the [Agile Manifesto](https://agilemanifesto.org/) can be applied to architecture. While certainly not exhaustive,
 I've tried to include not just generalizations but also tangible ways to apply the principals of Agile to your own architectural practices.
 
+<!--more-->
+
 ## Individuals and interactions over processes and tools
 
 ### Shared understanding of the design
 It is important for a dev team to have a shared understanding of the vision and
 goals of an application and its design.
 
-- A common understanding of an application's design:
-	- Helps to ensure that collaboration can occur with minimal friction
-	- Helps prevent false starts and wasted effort on divergent solutions
-	- Results in a leaner application that behaves more efficiently
+* A common understanding of an application's design:
+	* Helps to ensure that collaboration can occur with minimal friction
+	* Helps prevent false starts and wasted effort on divergent solutions
+	* Results in a leaner application that behaves more efficiently
 
 #### Method
-- Maintain a high level design of the application that can be referenced. This design
+* Maintain a high level design of the application that can be referenced. This design
   should be kept up to date as it evolves.
-- Organize full team design sessions to help ensure that there is a shared understanding
+* Organize full team design sessions to help ensure that there is a shared understanding
   not just of how the application solves a problem, but why it does it in the way it does.
 
 ### Software benefits from more than one set of eyes
 More than one developer should understand each software component and be involved in the
 process of bringing it to life.
 
-- Software built by more than one developer benefits from:
-	- The multiple experiences and backgrounds of its authors
-	- Constant discussion of a problem helps prevent fragile implementations and
+* Software built by more than one developer benefits from:
+	* The multiple experiences and backgrounds of its authors
+	* Constant discussion of a problem helps prevent fragile implementations and
 	  development efforts that get "stuck in a rut"
-	- Over time, it is easier to share knowledge about the component and ensure
+	* Over time, it is easier to share knowledge about the component and ensure
 	  there are people available to work on it
 
 #### Method
-- Pair programming or shared ownership over each software component ensures
+* Pair programming or shared ownership over each software component ensures
   that the software is benefiting from a high degree of collaboration.
-- Code Reviews can't replace collaboration: a code review from an outside developer
+* Code Reviews can't replace collaboration: a code review from an outside developer
   is useful for many reasons, but if the outside developer has an insuficient
   depth of knowledge regarding the piece of software they will be unable to effectively
   review how well the software meets its goals and the review may turn into a proofreading excercise.
