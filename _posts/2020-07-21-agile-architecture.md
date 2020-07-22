@@ -59,23 +59,23 @@ a project's goals leads to a waterfall approach. This either necesitates
 rework when what we think we know changes, or else blind adherance to a plan without
 realizing that we are not longer solving problems in the most effective way.
 
-- Regardless of how much up front work goes into planning an implementation, our
+* Regardless of how much up front work goes into planning an implementation, our
   understanding of the problem is likely to evolve and our software implementation
   should evolve along with it.
-- Determining how something will work based on up front assumptions has dimishing returns
+* Determining how something will work based on up front assumptions has dimishing returns
   while iterative planning and review allows for a design to be refined with
   the best possible information.
 
 #### Method
-- Tracer bullet architecture (building out the scaffolding of the entire application
+* Tracer bullet architecture (building out the scaffolding of the entire application
   before iterating on the implementation of its business logic) is one approach
   for ensuring that software works from day-one, can be grown and refined without
   deviating from the project's goals, and that risk isn't unnecessarily deferred.
-- Build software iteratively rather than incrementally. (Compare to a printer
+* Build software iteratively rather than incrementally. (Compare to a printer
   vs. an artist: A printer creates a picture incrementally by drawing line by line
   starting at the top. An artist creates a picture iteratively by sketching the outline,
   then shading in the detail, and finally adding color and other final touches.)
-	- With an iterative approach, designs and implementations can easily evolve
+	* With an iterative approach, designs and implementations can easily evolve
 	  as more is known. With an incremental approach, problems aren't identified
 	  until later and course corrections require more rework.
 
@@ -85,16 +85,16 @@ realizing that we are not longer solving problems in the most effective way.
 It is important for a team to have a shared understanding with the business
 regarding the vision and goals of a project.
 
-- A common understanding of the business functions, domain knowledge, and nomenclature used to describe an application:
-	- Ensures that the right features are built
-	- Enables developers to provide feedback regarding the assumptions of the business
-	- Facilitates an evolving solution that better meets the underlying goals of the application
+* A common understanding of the business functions, domain knowledge, and nomenclature used to describe an application:
+	* Ensures that the right features are built
+	* Enables developers to provide feedback regarding the assumptions of the business
+	* Facilitates an evolving solution that better meets the underlying goals of the application
 
 #### Method
-- Make the development team aware of why they are building an application, not just what it should do
-- Promote discussion between development and the business regarding requirements
-- Collaborate on building a roadmap and requirements for beta, mvp, and beyond
-- Perform regular demos to ensure development is tracking with the business vision
+* Make the development team aware of why they are building an application, not just what it should do
+* Promote discussion between development and the business regarding requirements
+* Collaborate on building a roadmap and requirements for beta, mvp, and beyond
+* Perform regular demos to ensure development is tracking with the business vision
 
 ## Responding to change over following a plan
 
@@ -102,29 +102,29 @@ regarding the vision and goals of a project.
 As software is built, our understanding of how it works changes and up front planning
 will likely diminish in relevance.
 
-- The plan for building an application should evolve with our understanding of how our
+* The plan for building an application should evolve with our understanding of how our
   software is actually performing. As we learn more about the systems we are building
   our design and priorities should be updated to accomodate this new information.
-- Software should be built to facilitate early feedback:
-	- Understanding early how a design or integration plan stands up to actual
+* Software should be built to facilitate early feedback:
+	* Understanding early how a design or integration plan stands up to actual
 	  implementation makes it easier to course correct and less likely to result in
 	  overly cumbersome interfaces that satisfy "what we thought we needed"
 	  instead of "what we actually need"
-	- When coupled components are developed separately and to a specification,
+	* When coupled components are developed separately and to a specification,
 	  the likelyhood that an impedence mismatch will be introduced and allowed to
 	  grow unchecked increases.
 
 #### Method
-- Regular backlog grooming with design discussions ensure that designs and requirements
+* Regular backlog grooming with design discussions ensure that designs and requirements
   are kept up to date with current information
-- Implement continuous integration and continuous deployment:
-	- Prevents drift in integration goals by shedding light on impedence mismatches quickly
-	- Brings design failures to light early so they can be corrected without creating
+* Implement continuous integration and continuous deployment:
+	* Prevents drift in integration goals by shedding light on impedence mismatches quickly
+	* Brings design failures to light early so they can be corrected without creating
 	  an excess of rework.
-	- Brings design failures to light early so they can be corrected rather than
+	* Brings design failures to light early so they can be corrected rather than
 	  being allowed to remain and solved for with work-arounds.
-	- Bugs are caught more quickly (though this is the least important benefit of CI/CD)
-- Effective use of automated testing facilitates more frequent integration and thus
+	* Bugs are caught more quickly (though this is the least important benefit of CI/CD)
+* Effective use of automated testing facilitates more frequent integration and thus
   faster and more frequent feedback
 
 ### Pay special attention to integrations with outside software
@@ -132,20 +132,20 @@ The adoption of new technologies and integration with vendors is often the bigge
 source of risk for a project. In addition to bringing a design to life, it must
 be integrated with a system that may not behave in a way that is expected.
 
-- The full cost of integrating with a vendor or new technology can't be
+* The full cost of integrating with a vendor or new technology can't be
   fully understood up front and won't be until completed.
-- If the assumptions about a vendor or new technology prove to be wrong, a new
+* If the assumptions about a vendor or new technology prove to be wrong, a new
   solution may need to be found.
 
 #### Method
-- Integration with a vendor or new technology should be identified as higher
+* Integration with a vendor or new technology should be identified as higher
   risk and performed early. This will:
-	- Remove the unknown cost of integration as soon as possible
-	- Bring the domain knowledge into the team's shared understanding to ensure
+	* Remove the unknown cost of integration as soon as possible
+	* Bring the domain knowledge into the team's shared understanding to ensure
 	  that development doesn't procede with a blind spot
-	- Give adequate time to go back to the drawing board if the vendor or
+	* Give adequate time to go back to the drawing board if the vendor or
 	  technology doesn't work out
-- Use an existing technology instead. Does the problem being solved with a new
+* Use an existing technology instead. Does the problem being solved with a new
   technology really warrant the cost and risk of adopting a new technology?
 
 ## Other
@@ -154,14 +154,14 @@ The benefits of the consistency acheived through shared patterns and technologie
 often outweigh the benefits of a software design that is optimized for a specific
 problem.
 
-- Consistent patterns, techniques, and technologies promote:
-	- Systems that are understood and supportable by more people
-	- Less automation and implementation work to get off the ground
-	- Less risk from integrating with new software
-	- Systems that can more easily be kept up to date
+* Consistent patterns, techniques, and technologies promote:
+	* Systems that are understood and supportable by more people
+	* Less automation and implementation work to get off the ground
+	* Less risk from integrating with new software
+	* Systems that can more easily be kept up to date
 
 #### Method
-- Determine if a similar problem has already been solved by another team
-- When adopting a new technology, compare the pros and cons of using an existing
+* Determine if a similar problem has already been solved by another team
+* When adopting a new technology, compare the pros and cons of using an existing
   technology. Are you accurately accounting for all the non-functional costs of
   bringing in new software?
