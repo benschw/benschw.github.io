@@ -152,7 +152,7 @@ be integrated with a system that may not behave in a way that is expected.
 ### Optimize for the platform, not the local problem
 _I couldn't figure out how to fit this tenant of agile architecture into the existing framework, but I also didn't want
 to leave it out. Being agile relies on an ability to respond to change and no architecture
-will be able to do this if it's complexity grows at the same rate as its feature set. Hense the "Other" category_
+will be able to do this if its complexity grows at the same rate as its feature set. Hense the "Other" category_
 
 The benefits of the consistency acheived through shared patterns and technologies
 often outweigh the benefits of a software design that is optimized for a specific
