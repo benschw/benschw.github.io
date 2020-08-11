@@ -160,7 +160,7 @@ _the full test can be found [here](https://github.com/benschw/di-duck-types-clea
 
 Sure it's great that we don't have to test our app through the cli anymore, but we really need to do something about those consul and wrapping bash script dependencies. Luckily, we aren't in the business of testing consul or even the load balancer library, so we can just mock it in our tests.
 
-Thats where duck typing comes in. If we want to use a mock implementation of the load balancer, can can't have our `Discover` function depend on it. If the load balancer implemented an interface, we could use that in place of the structure name for our type hint, but it doesn't so we can't.
+Thats where duck typing comes in. If we want to use a mock implementation of the load balancer, we can't have our `Discover` function depend on it. If the load balancer implemented an interface, we could use that in place of the structure name for our type hint, but it doesn't so we can't.
 
 Luckily, in go (and other [structural type systems](http://en.wikipedia.org/wiki/Structural_type_system)) you can "implement an interface" without declaring that you are doing so simply by having a signature which matches the interface. It is this mechanism that makes it possible to have type safe duck typing in golang.
 
