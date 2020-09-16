@@ -9,6 +9,9 @@ categories:
 tags: []
 ---
 
+
+## How did we get here?
+
 The problem with writing successful software is that you are never done.
 When we design software, we are constantly balancing just getting the
 application to work with predicting how it will be used and how it will
@@ -49,7 +52,7 @@ Regardless of which path you take (or maybe you're starting a new project and
 don't have these problems... yet) microservices might be able to help manage
 the complexity.
 
-## Microservices
+## What is a microservice?
 
 Microservices aren't a silver bullet. They aren't a one-size-fits-all
 solution either. They don't even really reduce complexity (they just
@@ -68,9 +71,9 @@ into components that encapsulate a bounded context and can be composed
 to expose greater functionality; By implementing these components as
 microservices, we are able to better manage complexity and the evolving
 needs of our application. By organizing the bounded context of each
-microservice around a business function, our components can have coarse
-grained interfaces that expose functionality without necessitating an
-unnecessary understanding of its implementation.
+microservice around a business function, our components can have interfaces
+that expose functionality without necessitating an unnecessary understanding
+of its implementation.
 
 Implementing our application's components as web services comes at a
 cost though. A high degree of automation and visibility is required to
@@ -202,7 +205,7 @@ done.
 Designing the components of an application is only half the battle
 however; the components also need to communicate. In order to keep an
 application’s components loosely coupled and maintainable, microservices
-should expose a coarse grained interface and use lightweight and well
+should expose a tightly controlled interface and use lightweight and well
 known technologies.
 
 Since communication bridges the bounded context encapsulated by each
@@ -239,17 +242,6 @@ of the application can be enhanced if there is some consistency. In the
 end there is no right way to balance these two concerns and the
 individual needs of an application and a given microservice interface
 must be analyzed.
-
-Technical limitations also play a role in the design of an API.
-Microservice communication is relatively slow when compared to the
-communication of monolithic components because it is typically done over
-a network. This necessitates a coarse grained interface to keep
-communication performant. For instance, if you know that consumers of a
-service need to operate on a list of data, include all the information
-necessary to do the operations along with the list as a single API call.
-This way your consumers will not have to first ask for the list and then
-each individual entity to do their work.
-
 
 ## The Technical Flexibility and Constraints of Microservices
 
@@ -344,7 +336,7 @@ sufficient to protect internal-only services by walling them off from
 the public internet with networking, but if your application is higher
 risk or uses sensitive data, then a more robust solution is probably
 required. Depending on your application, encrypted communication might
-be warranted too.
+be warranted too, even if the traffic never leaves your network.
 
 Securing microservices can be a very complex problem, but it also has
 its advantages. The services of a microservice architecture might be a

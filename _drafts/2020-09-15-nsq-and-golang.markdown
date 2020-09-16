@@ -39,6 +39,48 @@ _Follow along here, or clone the [demo repo](https://github.com/benschw/nsq-demo
 
 ## Running NSQ
 
+To get started, all you need is to create a docker-compose config named 
+[docker-compose-nsq.yml](https://github.com/benschw/nsq-demo/blob/master/docker-compose-nsq.yml)
+with the following content:
+
+{% highlight yaml %}
+
+version: '3'
+services:
+
+  nsqlookupd:
+    image: nsqio/nsq
+    hostname: nsqlookupd
+    ports:
+      - "4160:4160"
+      - "4161:4161"
+    command: /nsqlookupd
+
+  nsqd:
+    image: nsqio/nsq
+    hostname: nsqd
+    ports:
+      - "4150:4150"
+      - "4151:4151"
+    command: /nsqd -broadcast-address=nsqd --lookupd-tcp-address=nsqlookupd:4160
+
+  nsqadmin:
+    image: nsqio/nsq
+    hostname: nsqadmin
+    ports:
+      - "4171:4171"
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+
+{% endhighlight %}
+
+
+And thats it, now you can start the NSQ cluster:
+
+	docker-compose -f docker-compose-nsq.yml up
+
+If you want, you can navigate to the admin web app in your browser [http://localhost:4171/](http://localhost:4171/)
+to poke around and confirm everything is connected right.
+
 ## Sending & Receiving Messages
 
 ## Worker Pattern
