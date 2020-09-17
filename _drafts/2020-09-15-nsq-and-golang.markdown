@@ -64,8 +64,8 @@ First, create a docker-compose config named
 [docker-compose-nsq.yml](https://github.com/benschw/nsq-demo/blob/master/docker-compose-nsq.yml)
 with the following content:
 
+docker-compose-nsq.yml
 {% highlight yaml %}
-
 version: '3'
 services:
 
@@ -166,6 +166,14 @@ when they are first published or subscribed to.
 
 <img src="/images/nsq-message-flow.gif" />
 
+_How messages are routed (shamelessly stolen from the [NSQ docs page](https://nsq.io/overview/design.html))_
+
+### Producer
+
+Lets start by sending some messages.
+
+
+_Again, follow along here or clone the [demo repo](https://github.com/benschw/nsq-demo) off Github_
 
 producer.go
 {% highlight go %}
@@ -187,27 +195,46 @@ var (
 
 func main() {
 
+	// parse the cli options
 	flag.Parse()
 	if *topic == "" || *message == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
+	// configure a new Producer
 	config := nsq.NewConfig()
 	producer, err := nsq.NewProducer(*addr, config)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// publish a nessage to the producer
 	err = producer.Publish(*topic, []byte(*message))
 	if err != nil {
 		log.Fatalf("Could not connect to %s", *addr)
 	}
 
+	// disconnect
 	producer.Stop()
 }
 {% endhighlight %}
 
+And send a message (even though nobody's listening yet)
+
+	$ go run cmd/producer/producer.go -topic test -message "hello world"
+	2020/09/17 09:35:43 INF    1 (localhost:4150) connecting to nsqd
+	2020/09/17 09:35:43 INF    1 stopping
+	2020/09/17 09:35:43 INF    1 (localhost:4150) beginning close
+	2020/09/17 09:35:43 INF    1 (localhost:4150) readLoop exiting
+	2020/09/17 09:35:43 INF    1 (localhost:4150) breaking out of writeLoop
+	2020/09/17 09:35:43 INF    1 (localhost:4150) writeLoop exiting
+	2020/09/17 09:35:43 INF    1 exiting router
+
+
+### Consumer
+
+OK! Now let's consume that message we just published to the "test" topic.
 
 consumer.go
 {% highlight go %}
@@ -229,6 +256,7 @@ var (
 	channel = flag.String("channel", "", "NSQ channel")
 )
 
+// MyHandler handles NSQ messages from the channel being subscribed to
 type MyHandler struct {
 }
 
@@ -239,21 +267,24 @@ func (h *MyHandler) HandleMessage(message *nsq.Message) error {
 
 func main() {
 
+	// parse the cli options
 	flag.Parse()
 	if *topic == "" || *channel == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
+	// configure a new Consumer
 	config := nsq.NewConfig()
-
 	consumer, err := nsq.NewConsumer(*topic, *channel, config)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// register our message handler with the consumer
 	consumer.AddHandler(&MyHandler{})
 
+	// connect to NSQ and start receiving messages
 	//err = consumer.ConnectToNSQD("nsqd:4150")
 	err = consumer.ConnectToNSQLookupd(*addr)
 	if err != nil {
@@ -266,11 +297,57 @@ func main() {
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	<-sigChan
+
+	// disconnect
 	consumer.Stop()
 }
 {% endhighlight %}
 
-_How messages are routed (shamelessly stolen from the [NSQ docs page](https://nsq.io/overview/design.html))_
+We just ran the `producer` on our host machine, but since we set up our `nsqd` daemon
+to broadcast on its `docker-compose` managed hostname, let's run the consumer with
+`docker-compose` as well to make finding it easier.
+
+First, build a docker image:
+	
+	docker build -t nsq-consumer -f Dockerfile-consumer .
+
+And now create a docker-compose config
+
+docker-compose-consumer.yml
+{% highlight yaml %}
+version: '3'
+services:
+  consumer:
+    image: nsq-consumer
+    command: /app/consumer -topic test -channel foo
+{% endhighlight %}
+
+
+	$ docker-compose -f docker-compose-consumer.yml up
+	Starting nsq-demo_consumer_1 ... done
+	Attaching to nsq-demo_consumer_1
+	consumer_1  | 2020/09/17 14:44:49 INF    1 [test/foo] querying nsqlookupd http://nsqlookupd:4161/lookup?topic=test
+	consumer_1  | 2020/09/17 14:44:49 INF    1 [test/foo] (nsqd:4150) connecting to nsqd
+	consumer_1  | 2020/09/17 14:44:49 Got a message: hello world
+
+Success! Publish a few more messages and our consumer should receive those too.
+
+
+Let's walk through what happened:
+
+* In our publisher, we published a message to the topic `test` which created the topic
+  on the `nsqd` instance we have running and added the message to it
+* When we started our consumer, it performed a lookup using `nsqlookupd` to find the
+  instance of `nsqd` that had the topic we were looking for (`test`). This isn't particularly useful
+  with only one instance of course, but pretend...
+	* In the `consumer.go` code, you can see the commented out line that would have connected directly to
+	  to the `nsqd` server without the intermediate `nsqlookupd` lookup. This would have been fine in our
+	  simple example, but fails to illustrate how it would work in a distributed system.
+* Having found the topic, the consumer created a channel named `foo` which will now receive
+  a copy of every message sent to the `test` topic.
+* Finally, we were delivered the message we sent earlier.
+
+
 ## Worker Pattern
 
 ## Pub/Sub Pattern
