@@ -289,7 +289,6 @@ func main() {
 	err = consumer.ConnectToNSQLookupd(*addr)
 	if err != nil {
 		log.Fatal(err)
-		log.Fatalf("Could not connect to nsqlookupd %s", *addr)
 	}
 
 	// wait for signal to exit
