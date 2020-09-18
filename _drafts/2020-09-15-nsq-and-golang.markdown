@@ -16,7 +16,7 @@ In this post, we'll look at how you can use [NSQ](https://nsq.io/) in your [gola
 applications to start leveraging messaging. Messaging offers the easiest way to build an async architecture,
 for which there are a number of benefits ranging from scalability to the reduction of cascading errors.
 In this post however, we will be focusing on how messaging can be used to decouple components in your software
-by looking at a couple of common patterns for doing so (work queues & pub/sub).
+by looking at a couple of common patterns for doing so: work queues & pub/sub.
 
 <!--more-->
 
@@ -25,7 +25,7 @@ by looking at a couple of common patterns for doing so (work queues & pub/sub).
 Also, it's written in Go and is distributed as two simple binaries (plus an optional admin web app
 and a collection of utility tools) so it is easy to install and keep up to date (no dependencies.)
 There are a slew of both official & community supported [client libraries](https://nsq.io/clients/client_libraries.html),
-and we will be using the officially supported [go](https://github.com/nsqio/go-nsq) one.
+and we will be using the officially supported [go](https://github.com/nsqio/go-nsq) one in the examples below.
 
 
 This post is divided up into four sections:
@@ -35,17 +35,16 @@ This post is divided up into four sections:
 * Third we will look at how to scale the consumption of our messages using the Worker pattern
 * Finally we will update our example to implement the Pub/Sub pattern
 
-_Follow along here, or clone the [demo repo](https://github.com/benschw/nsq-demo) if you prefer_
+_Follow along here, or clone the [demo repo](https://github.com/benschw/nsq-demo) if you perfer_
 
 ## Running NSQ
 
-The NSQ design is dirt simple (definitely one of its strongest characteristics) both
+The NSQ design is dirt simple both
 to get running and to use. The recommended install layout is to run an instance of `nsqd`
-alongside each service that is producing messages and to run a handfull (3-5 even
-for very large installations) of `nsqlookupd` instances for message consumers to
+alongside each service that is producing messages and to run a handfull of `nsqlookupd` instances
+(3-5 even for very large installations) for message consumers to
 discover the appropriate `nsqd` node with. To get everything talking to each other,
-`nsqd` needs to be configured to register with each instance of `nsqlookupd`
-using the `--lookupd-tcp-address` flag.
+`nsqd` needs to be configured to register with each instance of `nsqlookupd`.
 
 One thing to note here: the `nsqlookupd` instances do not discover each other.
 This means that each `nsqd` instance will need to register with all `nsqlookupd` instances
@@ -60,11 +59,9 @@ consumers leverage nsqlookupd to find the appropriate instance to consume from._
 
 ### Enough! let's get it running
 
-First, create a docker-compose config named 
-[docker-compose-nsq.yml](https://github.com/benschw/nsq-demo/blob/master/docker-compose-nsq.yml)
-with the following content:
+First, create a docker-compose config named `docker-compose-nsq.yml` with the following content:
 
-docker-compose-nsq.yml
+[docker-compose-nsq.yml](https://github.com/benschw/nsq-demo/blob/master/docker-compose-nsq.yml)
 {% highlight yaml %}
 version: '3'
 services:
@@ -143,7 +140,7 @@ resolve appropriately._
 #### nsqadmin
 
 `nsqadmin` isn't a part of the cluster's function, but still needs to discover it so
-that the details can be inspected and exposed. We can configure that connection with our
+that the details can be inspected and exposed. We configure that connection with our
 lookupd's http address using the `--lookupd-http-address=nsqlookupd:4161` flag.
 
 In addition, it needs to expose the http port that the web server is running on (4171)
@@ -175,7 +172,7 @@ Lets start by sending some messages.
 
 _Again, follow along here or clone the [demo repo](https://github.com/benschw/nsq-demo) off Github_
 
-producer.go
+[producer.go](https://github.com/benschw/nsq-demo/blob/master/cmd/producer/producer.go)
 {% highlight go %}
 package main
 
@@ -188,7 +185,7 @@ import (
 )
 
 var (
-	addr    = flag.String("addr", "localhost:4150", "NSQ lookupd addr")
+	addr    = flag.String("addr", "localhost:4150", "NSQ addr")
 	topic   = flag.String("topic", "", "NSQ topic")
 	message = flag.String("message", "", "Message body")
 )
@@ -236,7 +233,7 @@ And send a message (even though nobody's listening yet)
 
 OK! Now let's consume that message we just published to the "test" topic.
 
-consumer.go
+[consumer.go](https://github.com/benschw/nsq-demo/blob/master/cmd/consumer/consumer.go)
 {% highlight go %}
 package main
 
@@ -251,7 +248,7 @@ import (
 )
 
 var (
-	addr    = flag.String("addr", "localhost:4161", "NSQ lookupd addr")
+	addr    = flag.String("addr", "nsqlookupd:4161", "NSQ lookupd addr")
 	topic   = flag.String("topic", "", "NSQ topic")
 	channel = flag.String("channel", "", "NSQ channel")
 )
@@ -306,13 +303,23 @@ We just ran the `producer` on our host machine, but since we set up our `nsqd` d
 to broadcast on its `docker-compose` managed hostname, let's run the consumer with
 `docker-compose` as well to make finding it easier.
 
-First, build a docker image:
+First, build a docker image with the following Dockerfile:
 	
+[Dockerfile-consumer](https://github.com/benschw/nsq-demo/blob/master/Dockerfile-consumer)
+{% highlight Dockerfile %}
+FROM golang:latest
+RUN mkdir /app
+ADD . /app/
+WORKDIR /app
+RUN go build ./cmd/consumer
+CMD ["/app/consumer"]
+{% endhighlight %}
+
 	docker build -t nsq-consumer -f Dockerfile-consumer .
 
 And now create a docker-compose config
 
-docker-compose-consumer.yml
+[docker-compose-consumer.yml](https://github.com/benschw/nsq-demo/blob/master/docker-compose-consumer.yml)
 {% highlight yaml %}
 version: '3'
 services:
@@ -348,5 +355,141 @@ Let's walk through what happened:
 
 
 ## Worker Pattern
+The worker pattern is a strategy where you employ a single queue to manage tasks that need to be
+performed that you don't have to wait on to complete. This is especially useful when the task
+is resource or time intensive. With worker queues (or task queues) your publishers can queue up work and then move on to other
+things while consumers pull work off the queue and perform it. This pattern also
+allows you to effectively scale how many consumers you have without scaling your producers.
+Even waiting around for another service to complete work can impact your work producer's
+ability to handle new traffic, but by decoupling the service doing the work from the one
+identifying that it needs to be done with a message queue, the work producer can move on
+to it's next job.
+
+A simple example of this is sending email. Many different workloads may need to send email, so
+it makes sense to encapsulate that operation in its own service, but typically we don't care 
+when exactly the email is sent out. By leveraging a work queue as our email service's
+interface, our software and queue up email on a message queue and move on to other things knowing
+that our email service will consume those email messages and ensure they get sent. They can even
+implement retrys by returning messages to the queue if for example a destination mail server is
+not available for some reason.
+
+So what does that look like in practice? Let's set up a couple of "email services" with
+docker compose and send some email (actually, we'll just use the same producer & consumer applications
+from above, but imagine they're doing actual work.)
+
+[docker-compose-worker.yml](https://github.com/benschw/nsq-demo/blob/master/docker-compose-worker.yml)
+{% highlight yaml %}
+version: '3'
+services:
+  worker1:
+    image: nsq-consumer
+    command: /app/consumer -topic email -channel default
+  worker2:
+    image: nsq-consumer
+    command: /app/consumer -topic email -channel default
+{% endhighlight %}
+
+Your first inclination might be to start your consumers (the email service) first so you don't 
+miss any messages, but since the topic hasn't been created yet you won't be able to locate it.
+To solve for this, publish a throwaway message before starting your consumers
+(or head over to the [admin web app](http://localhost:4171/lookup) and create the new "email" topic
+manually.)
+
+
+In one terminal, run your consumers with docker-compose
+
+	docker-compose -f docker-compose-worker.yml up
+
+and in another, start publishing "emails"
+
+	go run cmd/producer/producer.go -topic email -message "hello world"
+	go run cmd/producer/producer.go -topic email -message "hello world"
+	go run cmd/producer/producer.go -topic email -message "hello world"
+
+
+
+As you can see from our logs, both consumers connect to `nsqd` and take turns
+handling messages as they showed up.
+
+	worker2_1  | 2020/09/18 14:17:07 INF    1 [email/default] querying nsqlookupd http://nsqlookupd:4161/lookup?topic=email
+	worker2_1  | 2020/09/18 14:17:07 INF    1 [email/default] (nsqd:4150) connecting to nsqd
+	worker1_1  | 2020/09/18 14:17:07 INF    1 [email/default] querying nsqlookupd http://nsqlookupd:4161/lookup?topic=email
+	worker1_1  | 2020/09/18 14:17:07 INF    1 [email/default] (nsqd:4150) connecting to nsqd
+	worker2_1  | 2020/09/18 14:17:11 Got a message: hello world
+	worker1_1  | 2020/09/18 14:17:12 Got a message: hello world
+	worker2_1  | 2020/09/18 14:17:14 Got a message: hello world
+
 
 ## Pub/Sub Pattern
+
+The worker pattern above provides scalability, resiliency, and performance gains to a pretty familiar pattern
+(it's basically an rpc call implemented with different technology and lacking a response), but
+pub/sub is something fundamentally different.
+
+Pub/sub is a powerful strategy for managing how your software is coupled. It works like
+the observer pattern, allowing multiple _observers_ to to register their desire to be notified
+when a _subject_ changes without the _subject_ being aware of them.
+This way as you add new observers of the
+subject you won't develop complexity hot spots by integrating with _n_ observers in the subject's code.
+
+With Pub/sub, your producer (subject) can publish events to a topic and _n_ consumers (observers)
+can subscribe using a unique channel to get their own copy of the event. Additionally,
+horizontal scaling can still be achieved by attaching multiple consumers to the
+same channel.
+
+In the following example, we'll build a hypothetical order processing application.
+Our producer will send out an event message when an order is placed, and 
+we will have two groups of consumers subscribed to this event: one to start
+fulfilling the order and another to email a confirmation message to the customer.
+(Again, we'll be using the same producer & consumer code from above and just naming our
+topic and channels to simulate the design)
+
+_Another thing to note here: you can either sent the whole order object in your
+message or just a reference to it. It depends if you are just leveraging this design
+to decouple your subscribers from the subject firing the event, or if you are trying to
+build a pipeline that doesn't need to query for additional information._
+
+[docker-compose-pub-sub.yml](https://github.com/benschw/nsq-demo/blob/master/docker-compose-pub-sub.yml)
+{% highlight yaml %}
+version: '3'
+services:
+  pubsub_fulfillment1:
+    image: nsq-consumer
+    command: /app/consumer -topic orders_placed -channel fulfillment
+  pubsub_fulfillment2:
+    image: nsq-consumer
+    command: /app/consumer -topic orders_placed -channel fulfillment
+  pubsub_email_confirmation1:
+    image: nsq-consumer
+    command: /app/consumer -topic orders_placed -channel email_confirmation
+  pubsub_email_confirmation2:
+    image: nsq-consumer
+    command: /app/consumer -topic orders_placed -channel email_confirmation
+{% endhighlight %}
+
+
+Just as before, either publish a throwaway message before starting your consumers,
+or head over to the [admin web app](http://localhost:4171/lookup) and create the new "orders_placed" topic
+manually.
+
+
+In one terminal, run your consumers with docker-compose
+
+	docker-compose -f docker-compose-pub-sub.yml up
+
+and in another, start publishing "orders"
+
+	go run cmd/producer/producer.go -topic orders_placed -message "order 123"
+	go run cmd/producer/producer.go -topic orders_placed -message "order 124"
+	go run cmd/producer/producer.go -topic orders_placed -message "order 125"
+	
+Looking at our logs, we can see that each order was delivered to each of
+the two consumer roles so each order can be fulfilled and have an email autoresponse sent.
+
+	pubsub_fulfillment1_1         | 2020/09/18 14:54:56 Got a message: order 123
+	pubsub_email_confirmation2_1  | 2020/09/18 14:54:56 Got a message: order 123
+	pubsub_fulfillment2_1         | 2020/09/18 14:54:58 Got a message: order 124
+	pubsub_email_confirmation1_1  | 2020/09/18 14:54:58 Got a message: order 124
+	pubsub_email_confirmation2_1  | 2020/09/18 14:55:00 Got a message: order 125
+	pubsub_fulfillment1_1         | 2020/09/18 14:55:00 Got a message: order 125
+
