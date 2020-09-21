@@ -3,10 +3,6 @@ layout: post
 status: publish
 published: true
 title: NSQ and Golang Messaging Primer
-author: benschwartz
-author_login: benschwartz
-author_email: benschw@gmail.com
-date: 2020-09-15 08:32:26.000000000 -05:00
 categories:
 - Post
 tags: []
@@ -493,3 +489,11 @@ the two consumer roles so each order can be fulfilled and have an email autoresp
 	pubsub_email_confirmation2_1  | 2020/09/18 14:55:00 Got a message: order 125
 	pubsub_fulfillment1_1         | 2020/09/18 14:55:00 Got a message: order 125
 
+
+## In Conclusion...
+
+Messaging is a powerful tool for building async architectures and NSQ makes it easy to get started.
+While it isn't a fit for all systems because of the high degree of orchestration required
+to keep everything discoverable and availablle in larger setups, for
+usecases that need fast and easy to manage messaging but don't require guarantees
+of durability or availability it is hard to top.
